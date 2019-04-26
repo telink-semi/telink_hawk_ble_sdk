@@ -777,7 +777,7 @@ void main_loop (void)
 
 	/* UI entry --------------------------------------------------------------*/
 	#if (BATT_CHECK_ENABLE)
-	if(clock_time_exceed(lowBattDet_tick, 5*1000)){///500*1000
+	if(clock_time_exceed(lowBattDet_tick, 500*1000)){
 		lowBattDet_tick = clock_time();
 		battery_power_check(BATTERY_VOL_MIN);
 	}
