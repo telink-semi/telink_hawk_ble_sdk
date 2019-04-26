@@ -282,7 +282,7 @@ typedef enum
 
 	//boot keyboard output report
 	HID_BOOT_KB_REPORT_OUTPUT_CD_H,			//UUID: 2803, 	VALUE:  			Prop: Read | write| write_without_rsp
-	HID_BOOT_KB_REPORT_OUTPUT_CCB_H,		//UUID: 2A32, 	VALUE: bootKeyOutReport
+	HID_BOOT_KB_REPORT_OUTPUT_DP_H,			//UUID: 2A32, 	VALUE: bootKeyOutReport
 
 	//consume report in
 	HID_CONSUME_REPORT_INPUT_CD_H,			//UUID: 2803, 	VALUE:  			Prop: Read | Notify
@@ -364,21 +364,19 @@ typedef enum
 		#define PB4_FUNC				AS_GPIO //debug gpio chn2 : PB4
 		#define PB5_FUNC				AS_GPIO //debug gpio chn3 : PB5
 		#define PA6_FUNC                AS_GPIO //debug gpio chn4 : PA6
-		#define PA7_FUNC                AS_GPIO //debug gpio chn5 : PA7
 
 		#define PB2_INPUT_ENABLE					0
 		#define PB3_INPUT_ENABLE					0
 		#define PB4_INPUT_ENABLE					0
 		#define PB5_INPUT_ENABLE					0
 		#define PA6_INPUT_ENABLE					0
-		#define PA7_INPUT_ENABLE					0
 
 		#define PB2_OUTPUT_ENABLE					1
 		#define PB3_OUTPUT_ENABLE					1
 		#define PB4_OUTPUT_ENABLE					1
 		#define PB5_OUTPUT_ENABLE					1
 		#define PA6_OUTPUT_ENABLE					1
-		#define PA7_OUTPUT_ENABLE					1
+
 
 		#define DBG_CHN0_LOW		( *(unsigned char *)0x80058b &= (~(1<<2)) )
 		#define DBG_CHN0_HIGH		( *(unsigned char *)0x80058b |= (1<<2) )
@@ -399,10 +397,6 @@ typedef enum
 		#define DBG_CHN4_LOW		( *(unsigned char *)0x800583 &= (~(1<<6)) )
 		#define DBG_CHN4_HIGH		( *(unsigned char *)0x800583 |= (1<<6) )
 		#define DBG_CHN4_TOGGLE		( *(unsigned char *)0x800583 ^= (1<<6) )
-
-		#define DBG_CHN5_LOW		( *(unsigned char *)0x800583 &= (~(1<<7)) )
-		#define DBG_CHN5_HIGH		( *(unsigned char *)0x800583 |= (1<<7) )
-		#define DBG_CHN5_TOGGLE		( *(unsigned char *)0x800583 ^= (1<<7) )
 #else
 		#define DBG_CHN0_LOW
 		#define DBG_CHN0_HIGH

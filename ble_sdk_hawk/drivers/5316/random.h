@@ -25,7 +25,7 @@
 #include "register.h"
 
 
-void rng_pre_init(void);
+void random_generator_init(void);
 
 unsigned int rand(void);
 

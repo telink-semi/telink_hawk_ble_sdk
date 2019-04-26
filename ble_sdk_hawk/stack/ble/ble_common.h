@@ -334,14 +334,31 @@ typedef enum {
 #define BLE_ADDR_RANDOM                  1
 #define BLE_ADDR_INVALID                 0xff
 
-//static
-#define IS_STATIC_ADDR(type, addr)  					( (type)==BLE_ADDR_RANDOM && (addr[5] & 0xC0) == 0xC0 )
+//Definition for BLE Common Address Type
+/*
+ *
+ *				  |--public  ..................................................... BLE_DEVICE_ADDRESS_PUBLIC
+ *                |
+ * Address Type --|		      |-- random static  ................................. BLE_DEVICE_ADDRESS_RANDOM_STATIC
+ *           	  |           |
+ *    			  |--random --|
+ * 			   				  |				       |-- non_resolvable private  ... BLE_DEVICE_ADDRESS_NON_RESOLVABLE_PRIVATE
+ * 			 				  |-- random private --|
+ *           					                   |-- resolvable private  ....... BLE_DEVICE_ADDRESS_RESOLVABLE_PRIVATE
+ *
+ */
 
-//non-resolvable private
-#define IS_NON_RESOLVABLE_PRIVATE_ADDR(type, addr)  	( (type)==BLE_ADDR_RANDOM && (addr[5] & 0xC0) == 0x00 )
+#define	BLE_DEVICE_ADDRESS_PUBLIC							1
+#define BLE_DEVICE_ADDRESS_RANDOM_STATIC					2
+#define BLE_DEVICE_ADDRESS_NON_RESOLVABLE_PRIVATE			3
+#define BLE_DEVICE_ADDRESS_RESOLVABLE_PRIVATE				4
 
-//resolvable private
-#define IS_RESOLVABLE_PRIVATE_ADDR(type, addr)  		( (type)==BLE_ADDR_RANDOM && (addr[5] & 0xC0) == 0x40 )
+
+
+#define IS_PUBLIC_ADDR(Type, Addr)  					( (Type)==BLE_ADDR_PUBLIC) )
+#define IS_RANDOM_STATIC_ADDR(Type, Addr)  				( (Type)==BLE_ADDR_RANDOM && (Addr[5] & 0xC0) == 0xC0 )
+#define IS_NON_RESOLVABLE_PRIVATE_ADDR(Type, Addr)  	( (Type)==BLE_ADDR_RANDOM && (Addr[5] & 0xC0) == 0x00 )
+#define IS_RESOLVABLE_PRIVATE_ADDR(Type, Addr)  		( (Type)==BLE_ADDR_RANDOM && (Addr[5] & 0xC0) == 0x40 )
 
 
 

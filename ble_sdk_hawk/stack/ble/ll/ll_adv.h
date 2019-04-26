@@ -114,10 +114,6 @@ void 		bls_ll_adjustScanRspTiming( s8 t_us );
 
 
 
-ble_sts_t   blc_ll_addAdvertisingInConnSlaveRole(void);
-ble_sts_t   blc_ll_removeAdvertisingFromConnSLaveRole(void);
-ble_sts_t 	blc_ll_setAdvParamInConnSlaveRole( u8 *adv_data, u8 advData_len, u8 *scanRsp_data, u8 scanRspData_len,
-											 u8 advType,   u8 ownAddrType, u8 adv_channelMap, u8 advFilterPolicy);
 
 
 /************************* Stack Interface, user can not use!!! ***************************/

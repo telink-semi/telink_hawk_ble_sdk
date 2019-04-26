@@ -37,6 +37,7 @@
 #define BLE_OTA_FW_CHECK_EN					1
 #endif
 
+#define FW_MAX_SIZE							0x40000			//256K
 
 #define CMD_OTA_FW_VERSION					0xff00
 #define CMD_OTA_START						0xff01
@@ -52,8 +53,12 @@ typedef struct{
 	u8  ota_start_flag;
 #if (BLE_OTA_FW_CHECK_EN)
 	u8 	fw_check_en;
-	u16 fw_crc_last_index;
+	u8  fw_check_match;
+	u8  rsvd;
+
 	u32 fw_crc_init;
+
+	u16 fw_crc_last_index;
 #endif
 }ota_service_t;
 

@@ -544,7 +544,7 @@ void  ble_remote_set_sleep_wakeup(u8 e, u8 *p, int n)
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-#if (BLT_SOFTWARE_TIMER_ENABLE)
+#if (BLT_TEST_SOFT_TIMER_ENABLE)
 
 int gpio_test0(void)
 {
@@ -751,7 +751,7 @@ void user_init()
 	device_led_init(GPIO_LED, 1);
 #endif
 
-#if (BLT_SOFTWARE_TIMER_ENABLE)
+#if (BLT_TEST_SOFT_TIMER_ENABLE)
 	blt_soft_timer_init();
 	blt_soft_timer_add(&gpio_test0, 23000);//23ms
 	blt_soft_timer_add(&gpio_test1, 7000); //7ms <-> 17ms
@@ -777,7 +777,7 @@ void main_loop (void)
 
 	/* UI entry --------------------------------------------------------------*/
 	#if (BATT_CHECK_ENABLE)
-	if(clock_time_exceed(lowBattDet_tick, 500*1000)){
+	if(clock_time_exceed(lowBattDet_tick, 5*1000)){///500*1000
 		lowBattDet_tick = clock_time();
 		battery_power_check(BATTERY_VOL_MIN);
 	}
@@ -785,7 +785,7 @@ void main_loop (void)
 
 
 
-	#if (BLT_SOFTWARE_TIMER_ENABLE)
+	#if (BLT_TEST_SOFT_TIMER_ENABLE)
 		blt_soft_timer_process(MAINLOOP_ENTRY);
 	#endif
 

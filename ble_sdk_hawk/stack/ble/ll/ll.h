@@ -33,7 +33,6 @@
 #include <stack/ble/ll/ll_adv.h>
 #include <stack/ble/ll/ll_encrypt.h>
 #include <stack/ble/ll/ll_pm.h>
-#include <stack/ble/ll/ll_scan.h>
 #include <stack/ble/ll/ll_slave.h>
 #include <stack/ble/ll/ll_whitelist.h>
 #include <stack/ble/uuid.h>

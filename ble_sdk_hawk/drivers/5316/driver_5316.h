@@ -42,8 +42,6 @@
 #include "drivers/5316/uart.h"
 #include "drivers/5316/register.h"
 #include "drivers/5316/watchdog.h"
-#include "drivers/5316/usbhw_i.h"
-#include "drivers/5316/usbhw.h"
 #include "drivers/5316/usbkeycode.h"
 #include "drivers/5316/register.h"
 #include "drivers/5316/dfifo.h"

@@ -52,6 +52,8 @@ void bubble_sort(unsigned short *pData, unsigned int len)
  * @Param:  None.
  * @Return: None.
  */
+u16 debug_battery_val[16] = {0};
+u8  debug_idx = 0;
 volatile signed short adcValue[BATTERY_SAMPLE_NUM];
 void battery_power_check(int minVol_mV)
 {
@@ -120,6 +122,8 @@ void battery_power_check(int minVol_mV)
 		vol  = (adcValueAvg * 295)>>8; ////vol = (adcValueAvg * 1180 * 8)>>13;//Unit:mV; 由于参考电压不准，实际的参考电压为1.18V(Vref = 1.2V);*8 indicate 1/8 scaler
 	}
 
+	debug_battery_val[debug_idx++] = vol;
+	debug_idx &= 0x0f;
 	/* Low voltage processing. Enter deep sleep. */
 	if(vol < minVol_mV){
 
@@ -133,7 +137,6 @@ void battery_power_check(int minVol_mV)
 			}
 			gpio_set_output_en(GPIO_LED, 0);
 		#endif
-
 		analog_write(DEEP_ANA_REG2, BATTERY_VOL_LOW);
 		cpu_sleep_wakeup(PM_SLeepMode_Deep, PM_WAKEUP_PAD, 0);
 	}
