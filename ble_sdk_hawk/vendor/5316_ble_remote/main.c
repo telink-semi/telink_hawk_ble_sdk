@@ -25,7 +25,9 @@
 #include "stack/ble/ble.h"
 #include "../common/user_config.h"
 
-extern void rc_ir_irq_prc(void);
+#if(REMOTE_IR_ENABLE)
+	extern void rc_ir_irq_prc(void);
+#endif
 
 _attribute_ram_code_ void irq_handler(void)
 {
@@ -42,7 +44,6 @@ int main(void){
 	blc_pm_select_internal_32k_crystal();
 
 	cpu_wakeup_init();
-
 
 	clock_init(SYS_CLK_16M_Crystal);
 

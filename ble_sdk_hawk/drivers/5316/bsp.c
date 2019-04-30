@@ -24,6 +24,13 @@
 #include "clock.h"
 #include "analog.h"
 
+/**
+ * @brief      This function performs a series of operations of writing digital or analog registers
+ *             according to a command table
+ * @param[in]  pt - pointer to a command table containing several writing commands
+ * @param[in]  size  - number of commands in the table
+ * @return     number of commands are carried out
+ */
 int load_tbl_cmd_set(const TBLCMDSET * pt, int size){
 	int l=0;
 
@@ -49,9 +56,14 @@ int load_tbl_cmd_set(const TBLCMDSET * pt, int size){
 	return size;
 }
 
-
-
-
+/**
+ * @brief      This function writes a byte data to analog register
+ * @param[in]  addr - the address of the analog register needs to write
+ * @param[in]  value  - the data will be written to the analog register
+ * @param[in]  e - the end address of value
+ * @param[in]  s - the start address of the value
+ * @return     none
+ */
 void sub_wr_ana(unsigned int addr, unsigned char value, unsigned char e, unsigned char s)
 {
 	unsigned char v, mask, tmp1, target, tmp2;
@@ -66,8 +78,14 @@ void sub_wr_ana(unsigned int addr, unsigned char value, unsigned char e, unsigne
 	WriteAnalogReg(addr, target);
 }
 
-
-
+/**
+ * @brief      This function writes a byte data to a specified analog register
+ * @param[in]  addr - the address of the analog register needs to write
+ * @param[in]  value  - the data will be written to the analog register
+ * @param[in]  e - the end address of value
+ * @param[in]  s - the start address of the value
+ * @return     none
+ */
 void sub_wr(unsigned int addr, unsigned char value, unsigned char e, unsigned char s)
 {
 	unsigned char v, mask, tmp1, target, tmp2;

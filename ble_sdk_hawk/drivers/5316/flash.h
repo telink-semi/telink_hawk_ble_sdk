@@ -75,6 +75,8 @@ _attribute_ram_code_ void flash_write_page(unsigned long addr, unsigned long len
  * @return none
  */
 _attribute_ram_code_ void flash_read_page(unsigned long addr, unsigned long len, unsigned char *buf);
+
+#if 0
 /**
  * @brief This function reads the status of flash.
  * @param[in]  none
@@ -143,4 +145,4 @@ _attribute_ram_code_ void flash_erase_chip(void);
  */
 _attribute_ram_code_ unsigned int flash_get_jedec_id();
 
-
+#endif

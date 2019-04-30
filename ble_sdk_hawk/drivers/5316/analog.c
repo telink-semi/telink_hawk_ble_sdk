@@ -26,11 +26,20 @@
 #include "register.h"
 #include "irq.h"
 
-
+/**
+ * @brief      This function serves to wait for analog register ready.
+ * @param[in]  none.
+ * @return     none.
+ */
 static inline void analog_wait(){
 	while(reg_ana_ctrl & FLD_ANA_BUSY){}
 }
 
+/**
+ * @brief      This function serves to analog register read.
+ * @param[in]  addr - address need to be read.
+ * @return     the result of read.
+ */
 _attribute_ram_code_ unsigned char analog_read(unsigned char addr){
 	unsigned char r = irq_disable();
 
@@ -49,6 +58,12 @@ _attribute_ram_code_ unsigned char analog_read(unsigned char addr){
 	return data;
 }
 
+/**
+ * @brief      This function serves to analog register write.
+ * @param[in]  addr - address need to be write.
+ * @param[in]  v - the value need to be write.
+ * @return     none.
+ */
 _attribute_ram_code_ void analog_write(unsigned char addr, unsigned char v){
 	unsigned char r = irq_disable();
 

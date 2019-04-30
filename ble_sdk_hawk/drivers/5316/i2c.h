@@ -76,7 +76,7 @@ static inline void i2c_set_id(unsigned char SlaveID)
  * @param[in]  PinGrp - the pin port selected as I2C interface pin port.
  * @return     none
  */
-void i2c_gpio_set(I2C_GPIO_GroupTypeDef i2c_pin_group);
+void i2c_set_pin(I2C_GPIO_GroupTypeDef i2c_pin_group);
 
 /**
  * @brief      This function set the id of slave device and the speed of I2C interface
@@ -182,54 +182,4 @@ static inline void i2c_clear_interrupt(void){
 #endif
 
 
-/*****
- * how to use I2C function. Just for example.
- */
 
-//1. define some macro
-//	#define I2C_CLK_SPEED        200000  //200K
-//	#define I2C_MASTER_DEVICE    0
-//	#define I2C_SLAVE_DEVICE     1
-//	#define I2C_DEVICE           I2C_MASTER_DEVICE
-//2. set relevant variable
-//volatile unsigned char i2c_tx_buff[16] = {0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
-//volatile unsigned char i2c_rx_buff[16] = {0}; ///the variable in DMA mode
-//__attribute__((aligned(128))) unsigned char i2c_slave_mapping_buff[128] = {0}; ////the variable in mapping mode
-//3. initial: master or slave. DMA mode or mapping mode. etc
-//	#if(I2C_DEVICE == I2C_MASTER_DEVICE)
-//		i2c_set_pin(I2C_GPIO_GROUP_M_A3A4);  	// SDA/CK : C0/C1
-//		i2c_master_init(0x5C, (unsigned char)(CLOCK_SYS_CLOCK_HZ/(4*I2C_CLK_SPEED)) ); // 200KHz
-//		debug_tick = clock_time();
-//
-//	#elif(I2C_DEVICE == I2C_SLAVE_DEVICE)
-//		i2c_set_pin(I2C_GPIO_GROUP_S_A3A4);  	// SDA/CK : C0/C1
-//		i2c_slave_init(0x5C, I2C_SLAVE_MAP, (i2c_slave_mapping_buff+64));
-////		i2c_set_interrupt();  // i2c interrupt
-//	#endif
-//4. master write and read function. dma write and read. mapping write and read.
-//	#if(I2C_DEVICE == I2C_MASTER_DEVICE)
-//		if(clock_time_exceed(debug_tick, 5*1000*1000)){
-//			WaitMs(100);
-//			i2c_tx_buff[0]++;
-////			i2c_dma_write_buff(0x8000, 2, (unsigned char *)i2c_tx_buff, 16);
-//			i2c_map_write_buff((unsigned char *)i2c_tx_buff, 16);
-//			WaitMs(100);
-////			i2c_dma_read_buff(0x8000,  2, (unsigned char *)i2c_rx_buff, 16);
-//			i2c_map_read_buff((unsigned char *)i2c_rx_buff, 16);
-//			debug_cnt++;
-//		}
-//	#endif
-
-
-/** \defgroup GP6  I2C Usage
- * 	This is the first Group
- * 	@{
- */
-
-//-----------------------------------------------------------1-6
-/*! \page i2c I2C Usage
-This page is for ...
-details.
-*/
-
- /** @}*/ //end of GP6

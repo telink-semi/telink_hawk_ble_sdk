@@ -58,7 +58,7 @@ typedef enum{
  * @param[in] none
  * @return none
  */
-static inline void reset_spi_moudle(void)
+static inline void spi_reset(void)
 {
 	reg_rst0 |= FLD_RST0_SPI;
 	reg_rst0 &= (~FLD_RST0_SPI);
@@ -83,7 +83,7 @@ extern void spi_master_init(unsigned char DivClock, SPI_ModeTypeDef Mode);
 /**
  *  @brief  This function configures the spi pins for a master device
  */
-extern void spi_master_gpio_set(SPI_GPIO_GroupTypeDef PinGrp);
+extern void spi_master_set_pin(SPI_GPIO_GroupTypeDef PinGrp);
 
 /**
  * @brief      This function serves to write a bulk of data to the SPI slave
@@ -96,7 +96,7 @@ extern void spi_master_gpio_set(SPI_GPIO_GroupTypeDef PinGrp);
  * @param[in]  CSPin - the CS pin specifing the slave device
  * @return     none
  */
-extern void spi_write(unsigned int Addr, unsigned char AddrLen,  unsigned char *Data, int DataLen, GPIO_PinTypeDef CSPin);
+extern void spi_write_buff(unsigned int Addr, unsigned char AddrLen,  unsigned char *Data, int DataLen, GPIO_PinTypeDef CSPin);
 
 /**
  * @brief      This function serves to read a bulk of data from the SPI slave
@@ -109,14 +109,14 @@ extern void spi_write(unsigned int Addr, unsigned char AddrLen,  unsigned char *
  * @param[in]  CSPin - the CS pin specifing the slave device
  * @return     none
  */
-extern void spi_read(unsigned int Addr, unsigned char AddrLen, unsigned char *Data, int DataLen, GPIO_PinTypeDef CSPin);
+extern void spi_read_buff(unsigned int Addr, unsigned char AddrLen, unsigned char *Data, int DataLen, GPIO_PinTypeDef CSPin);
 
 /**
  * @brief     This function selects a GPIO pin as CS of SPI function.
  * @param[in] CSPin - the selected CS pin
  * @return    none
  */
-extern void spi_masterCSpin_select(GPIO_PinTypeDef CSPin);
+extern void spi_master_set_cs_pin(GPIO_PinTypeDef CSPin);
 
 /**
  * @brief     This function configures the clock and working mode for SPI interface
@@ -137,7 +137,7 @@ extern void spi_slave_init(unsigned char DivClock, SPI_ModeTypeDef Mode);
 /**
  *  @brief  This function sets the spi pins for a slave device
  */
-extern void spi_slave_gpio_set(SPI_GPIO_GroupTypeDef PinGrp);
+extern void spi_slave_set_pin(SPI_GPIO_GroupTypeDef PinGrp);
 
-#endif /* End of __SPI_H */
+#endif /* End of SPI_H */
 

@@ -52,7 +52,7 @@ void spi_master_init(unsigned char DivClock, SPI_ModeTypeDef Mode)
 /**
  *  @brief  This function configures the spi pins for a master device
  */
-void spi_master_gpio_set(SPI_GPIO_GroupTypeDef PinGrp)
+void spi_master_set_pin(SPI_GPIO_GroupTypeDef PinGrp)
 {
 	GPIO_PinTypeDef sclk = GPIO_PB3 ,cs=GPIO_PB0 ;
 	GPIO_PinTypeDef sdo= GPIO_PB1   ,sdi=GPIO_PB2;
@@ -89,20 +89,7 @@ void spi_master_gpio_set(SPI_GPIO_GroupTypeDef PinGrp)
 	gpio_set_data_strength(sdi,0);
 	gpio_set_data_strength(sclk,0);
 
-	spi_masterCSpin_select(cs);
-}
-
-/**
- * @brief     This function selects a GPIO pin as CS of SPI function.
- * @param[in] CSPin - the selected CS pin
- * @return    none
- */
-void spi_masterCSpin_select(GPIO_PinTypeDef CSPin)
-{
-	gpio_set_func(CSPin,AS_GPIO);//enable GPIO function
-	gpio_set_input_en(CSPin,0); //disable input function
-	gpio_set_output_en(CSPin,1);//enable out put
-	gpio_write(CSPin,1);//output high level in idle state
+	spi_master_set_cs_pin(cs);
 }
 
 
@@ -117,7 +104,7 @@ void spi_masterCSpin_select(GPIO_PinTypeDef CSPin)
  * @param[in]  CSPin - the CS pin specifing the slave device
  * @return     none
  */
-void spi_write(unsigned int Addr, unsigned char AddrLen,  unsigned char *Data, int DataLen, GPIO_PinTypeDef CSPin)
+void spi_write_buff(unsigned int Addr, unsigned char AddrLen,  unsigned char *Data, int DataLen, GPIO_PinTypeDef CSPin)
 {
    int i = 0;
    gpio_write(CSPin,0);
@@ -153,7 +140,7 @@ void spi_write(unsigned int Addr, unsigned char AddrLen,  unsigned char *Data, i
  * @param[in]  CSPin - the CS pin specifing the slave device
  * @return     none
  */
-void spi_read(unsigned int Addr, unsigned char AddrLen, unsigned char *Data, int DataLen, GPIO_PinTypeDef CSPin)
+void spi_read_buff(unsigned int Addr, unsigned char AddrLen, unsigned char *Data, int DataLen, GPIO_PinTypeDef CSPin)
 {
 	 int i = 0;
 	 unsigned char temp = 0;
@@ -182,7 +169,18 @@ void spi_read(unsigned int Addr, unsigned char AddrLen, unsigned char *Data, int
 	 //pull up CS
 	 gpio_write(CSPin,1);//CS level is high
 }
-
+/**
+ * @brief     This function selects a GPIO pin as CS of SPI function.
+ * @param[in] CSPin - the selected CS pin
+ * @return    none
+ */
+void spi_master_set_cs_pin(GPIO_PinTypeDef CSPin)
+{
+	gpio_set_func(CSPin,AS_GPIO);//enable GPIO function
+	gpio_set_input_en(CSPin,0); //disable input function
+	gpio_set_output_en(CSPin,1);//enable out put
+	gpio_write(CSPin,1);//output high level in idle state
+}
 /**
  * @brief     This function configures the clock and working mode for SPI interface
  * @param[in] DivClock - the division factor for SPI module
@@ -215,7 +213,7 @@ void spi_slave_init(unsigned char DivClock, SPI_ModeTypeDef Mode)
 /**
  *  @brief  This function sets the spi pins for a slave device
  */
-void spi_slave_gpio_set(SPI_GPIO_GroupTypeDef PinGrp)
+void spi_slave_set_pin(SPI_GPIO_GroupTypeDef PinGrp)
 {
 	GPIO_PinTypeDef cs  = GPIO_PB0,sclk = GPIO_PB3;
 	GPIO_PinTypeDef sdo = GPIO_PB1,sdi  = GPIO_PB2;

@@ -29,7 +29,7 @@
  * @param[in]  PinGrp - the pin port selected as I2C interface pin port.
  * @return     none
  */
-void i2c_gpio_set(I2C_GPIO_GroupTypeDef i2c_pin_group)
+void i2c_set_pin(I2C_GPIO_GroupTypeDef i2c_pin_group)
 {
 	GPIO_PinTypeDef sda, scl;
 

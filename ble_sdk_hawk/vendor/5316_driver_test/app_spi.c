@@ -42,11 +42,11 @@
 void app_spi_test_init(void){
 	#if (SPI_DEVICE_MASTER) ///master
 		spi_master_init((unsigned char)(CLOCK_SYS_CLOCK_HZ/(2*500000)-1),SPI_MODE0);//div_clock. spi_clk = sys_clk/((div_clk+1)*2),mode select
-		spi_master_gpio_set(SPI_GPIO_GROUP_C2C3C4C5);//master mode: spi pin set
+		spi_master_set_pin(SPI_GPIO_GROUP_C2C3C4C5);//master mode: spi pin set
 		spi_start_tick = clock_time();
 	#else ///SPI_SLAVE_DEVICE //slave
 		spi_slave_init((unsigned char)(CLOCK_SYS_CLOCK_HZ/(2*500000)-1),SPI_MODE0);           //slave mode init
-		spi_slave_gpio_set(SPI_GPIO_GROUP_C2C3C4C5);      //slave mode spi pin set
+		spi_slave_set_pin(SPI_GPIO_GROUP_C2C3C4C5);      //slave mode spi pin set
 		reg_irq_mask |= FLD_IRQ_HOST_CMD_EN;
 		irq_enable();
 	#endif
@@ -56,8 +56,8 @@ void app_spi_test_init(void){
 #if (SPI_DEVICE_MASTER)
 	void spi_master_mainloop(void){
 		spi_tx_buff[0] ++;
-		spi_write(SLAVE_ADDR, SLAVE_ADDR_LEN,(unsigned char*)spi_tx_buff, BUFF_DATA_LEN,SPI_CS_PIN);
-		spi_read (SLAVE_ADDR, SLAVE_ADDR_LEN,(unsigned char*)spi_rx_buff, BUFF_DATA_LEN,SPI_CS_PIN);
+		spi_write_buff(SLAVE_ADDR, SLAVE_ADDR_LEN,(unsigned char*)spi_tx_buff, BUFF_DATA_LEN,SPI_CS_PIN);
+		spi_read_buff(SLAVE_ADDR, SLAVE_ADDR_LEN,(unsigned char*)spi_rx_buff, BUFF_DATA_LEN,SPI_CS_PIN);
 		WaitMs(100);
 	}
 #else

@@ -35,7 +35,7 @@
 #if (__PROJECT_5316_BLE_REMOTE__ )
 
 #define ADV_IDLE_ENTER_DEEP_TIME	60  //60 s
-#define CONN_IDLE_ENTER_DEEP_TIME	60  //60 s
+#define CONN_IDLE_ENTER_DEEP_TIME	10  //60 s
 
 #define MY_DIRECT_ADV_TMIE			2000000
 
@@ -268,6 +268,12 @@ void task_connect (u8 e, u8 *p, int n)
 void deep_wakeup_proc(void)
 {
 #if(DEEPBACK_FAST_KEYSCAN_ENABLE)
+
+#if (REMOTE_IR_ENABLE)
+	if(KEY_MODE_IR == analog_read(DEEP_ANA_REG1)){
+		return ;
+	}
+#endif
 	//if deepsleep wakeup is wakeup by GPIO(key press), we must quickly scan this
 	//press, hold this data to the cache, when connection established OK, send to master
 	//deepsleep_wakeup_fast_keyscan
@@ -605,6 +611,22 @@ void user_init()
 	/* load customized freq_offset CAP value and TP value.*/
 	blc_app_loadCustomizedParameters();
 
+	/***********************************************************************************
+	 * Keyboard matrix initialization. These section must be before battery_power_check.
+	 * Because when low battery,chip will entry deep.if placed after battery_power_check,
+	 * it is possible that can not wake up chip.
+	 *  *******************************************************************************/
+#if(RC_BTN_ENABLE)
+	u32 pin[] = KB_DRIVE_PINS;
+	for(int i=0; i<(sizeof (pin)/sizeof(*pin)); i++)
+	{
+		gpio_set_wakeup(pin[i],1,1);  	   //drive pin core(gpio) high wakeup suspend
+		cpu_set_gpio_wakeup (pin[i],1,1);  //drive pin pad high wakeup deepsleep
+	}
+
+	bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_keyboard);
+#endif
+
 	/*****************************************************************************************
 	 Note: battery check must do before any flash write/erase operation, cause flash write/erase
 		   under a low or unstable power supply will lead to error flash operation
@@ -707,17 +729,6 @@ void user_init()
 	bls_app_registerEventCallback (BLT_EV_FLAG_CONNECT, &task_connect);
 	bls_app_registerEventCallback (BLT_EV_FLAG_TERMINATE, &ble_remote_terminate);
 
-	/* Keyboard matrix initialization */
-#if(RC_BTN_ENABLE)
-	u32 pin[] = KB_DRIVE_PINS;
-	for(int i=0; i<(sizeof (pin)/sizeof(*pin)); i++)
-	{
-		gpio_set_wakeup(pin[i],1,1);  	   //drive pin core(gpio) high wakeup suspend
-		cpu_set_gpio_wakeup (pin[i],1,1);  //drive pin pad high wakeup deepsleep
-	}
-
-	bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_keyboard);
-#endif
 
 	/* Power Management initialization */
 #if(BLE_REMOTE_PM_ENABLE)

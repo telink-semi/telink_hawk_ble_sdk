@@ -68,22 +68,22 @@ __attribute__((aligned(4))) unsigned char trans_buff[TRANS_BUFF_LEN] = {0x0c, 0x
 	void app_uart_test_init(void){
 		WaitMs(2000);  //leave enough time for SWS_reset when power on
 		//note: dma addr must be set first before any other uart initialization! (confirmed by sihui)
-		uart_recbuff_init( (unsigned short *)&rec_buff, sizeof(rec_buff));
+		uart_set_recbuff( (unsigned short *)&rec_buff, sizeof(rec_buff));
 
-		uart_gpio_set(UART_TX_PA3, UART_RX_PA4);// uart tx/rx pin set
+		uart_set_pin(UART_TX_PA3, UART_RX_PA4);// uart tx/rx pin set
 
 		uart_reset();  //will reset uart digital registers from 0x90 ~ 0x9f, so uart setting must set after this reset
 
-		////9&13 indicate baud rate is 9600. other baud rate, pls use lua tool.
-		uart_init(9, 13,PARITY_NONE, STOP_BIT_ONE);
+		////9&13 indicate baud rate is 115200. other baud rate, pls use lua tool to calculate.
+		uart_init_baudrate(9, 13,PARITY_NONE, STOP_BIT_ONE);
 
-		uart_dma_enable(1, 1); 	//uart data in hardware buffer moved by dma, so we need enable them first
+		uart_dma_en(1, 1); 	//uart data in hardware buffer moved by dma, so we need enable them first
 
 		irq_set_mask(FLD_IRQ_DMA_EN);
 
 		dma_chn_irq_enable(FLD_DMA_CHN_UART_RX | FLD_DMA_CHN_UART_TX, 1);   	//uart Rx/Tx dma irq enable
 
-		uart_irq_enable(0, 0);  	//uart Rx/Tx irq no need, disable them
+		uart_irq_en(0, 0);  	//uart Rx/Tx irq no need, disable them
 
 		irq_enable();
 	}
@@ -99,50 +99,50 @@ __attribute__((aligned(4))) unsigned char trans_buff[TRANS_BUFF_LEN] = {0x0c, 0x
 	void app_uart_test_init(void){
 		WaitMs(2000);  //leave enough time for SWS_reset when power on
 		//note: dma addr must be set first before any other uart initialization! (confirmed by sihui)
-		uart_recbuff_init( (unsigned short *)&rec_buff, sizeof(rec_buff));
+		uart_set_recbuff( (unsigned short *)&rec_buff, sizeof(rec_buff));
 
-		uart_gpio_set(UART_TX_PA3, UART_RX_PA4);// uart tx/rx pin set
+		uart_set_pin(UART_TX_PA3, UART_RX_PA4);// uart tx/rx pin set
 
 		uart_reset();  //will reset uart digital registers from 0x90 ~ 0x9f, so uart setting must set after this reset
 
-		//baud rate: 9600
-		uart_init(9, 13, PARITY_NONE, STOP_BIT_ONE);
+		//9&13 indicate the baud rate is 115200. other baud rate, pls use lua tool to calculate.
+		uart_init_baudrate(9, 13, PARITY_NONE, STOP_BIT_ONE);
 
 		#if( FLOW_CTR == NORMAL)
 
-			uart_dma_enable(0, 0);
+			uart_dma_en(0, 0);
 
 			irq_clr_mask(FLD_IRQ_DMA_EN);
 
 			dma_chn_irq_enable(FLD_DMA_CHN_UART_RX | FLD_DMA_CHN_UART_TX, 0);
 
-			uart_irq_enable(1,0);   //uart RX irq enable
+			uart_irq_en(1,0);   //uart RX irq enable
 
-			uart_ndma_irq_triglevel(1,0);	//set the trig level. 1 indicate one byte will occur interrupt
+			uart_ndma_set_triglevel(1,0);	//set the trig level. 1 indicate one byte will occur interrupt
 
 		#elif( FLOW_CTR ==  USE_CTS )
 			//CTS pin.It can be A1/B2/B7/C2.
 			uart_set_cts(1, STOP_VOLT, UART_CTS_PC2);
 
-			uart_dma_enable(0, 0);				       //Disable DMA
+			uart_dma_en(0, 0);				       //Disable DMA
 
 			irq_clr_mask(FLD_IRQ_DMA_EN);
 
 			dma_chn_irq_enable(FLD_DMA_CHN_UART_RX | FLD_DMA_CHN_UART_TX, 0);	//Disable DMA irq
 
-			uart_irq_enable(0,0);   //uart RX irq disable
+			uart_irq_en(0,0);   //uart RX irq disable
 
 		#elif( FLOW_CTR ==   USE_RTS )
 			// RTS pin : A2  B3 B6 C3
 			uart_set_rts(1, RTS_MODE, RTS_THRESH, RTS_INVERT,UART_RTS_PA2);
-			uart_dma_enable(0, 0);
+			uart_dma_en(0, 0);
 
 			irq_clr_mask(FLD_IRQ_DMA_EN);
 			dma_chn_irq_enable(FLD_DMA_CHN_UART_RX | FLD_DMA_CHN_UART_TX, 0);
 
-			uart_irq_enable(1,0);   //uart RX irq enable
+			uart_irq_en(1,0);   //uart RX irq enable
 
-			uart_ndma_irq_triglevel(RTS_THRESH,0);
+			uart_ndma_set_triglevel(RTS_THRESH,0);
 		#endif
 
 			irq_enable();

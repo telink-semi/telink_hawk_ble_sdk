@@ -29,6 +29,11 @@ _attribute_ram_code_ static inline int flash_is_busy(){
 	return mspi_read() & 0x01;				//  the busy bit, pls check flash spec
 }
 
+/**
+ * @brief     This function serves to set flash write command.
+ * @param[in] cmd - set command.
+ * @return    none
+ */
 _attribute_ram_code_ static void flash_send_cmd(unsigned char cmd){
 	mspi_high();
 	sleep_us(1);
@@ -37,6 +42,11 @@ _attribute_ram_code_ static void flash_send_cmd(unsigned char cmd){
 	mspi_wait();
 }
 
+/**
+ * @brief     This function serves to send flash address.
+ * @param[in] addr - the flash address.
+ * @return    none
+ */
 _attribute_ram_code_ static void flash_send_addr(unsigned int addr){
 	mspi_write((unsigned char)(addr>>16));
 	mspi_wait();
@@ -46,7 +56,12 @@ _attribute_ram_code_ static void flash_send_addr(unsigned int addr){
 	mspi_wait();
 }
 
-//  make this a asynchorous version
+/**
+ * @brief     This function serves to wait flash done.
+ *            (make this a asynchorous version).
+ * @param[in] none.
+ * @return    none.
+ */
 _attribute_ram_code_ static void flash_wait_done()
 {
 	sleep_us(100);

@@ -129,12 +129,12 @@ static inline void uart_reset(void){
  * @param[in] RecvBufLen - length in byte of the receiving buffer
  * @return    none
  */
-void uart_recbuff_init(unsigned short *RecvAddr, unsigned short RecvBufLen);
+extern void uart_set_recbuff(unsigned short *RecvAddr, unsigned short RecvBufLen);
 
 /**
  *define the macro that configures pin port for UART interface
  */
-void uart_gpio_set(UART_TxPinDef tx_pin,UART_RxPinDef rx_pin);
+extern void uart_set_pin(UART_TxPinDef tx_pin,UART_RxPinDef rx_pin);
 
 /**
  *	@brief	uart initiate, set uart clock divider, bitwidth and the uart work mode
@@ -150,14 +150,14 @@ void uart_gpio_set(UART_TxPinDef tx_pin,UART_RxPinDef rx_pin);
  *		115200		19			13
  *		9600		237			13
  */
-void uart_init(unsigned short uart_div,  unsigned char bwpc,UART_ParityTypeDef Parity, UART_StopBitTypeDef StopBit);
+extern void uart_init_baudrate(unsigned short uart_div,  unsigned char bwpc,UART_ParityTypeDef Parity, UART_StopBitTypeDef StopBit);
 
 /**
  * @brief     enable uart DMA mode
  * @param[in] none
  * @return    none
  */
-extern void uart_dma_enable(unsigned char rx_dma_en, unsigned char tx_dma_en);
+extern void uart_dma_en(unsigned char rx_dma_en, unsigned char tx_dma_en);
 
 /**
  * @brief     config the irq of uart tx and rx
@@ -165,7 +165,7 @@ extern void uart_dma_enable(unsigned char rx_dma_en, unsigned char tx_dma_en);
  * @param[in] tx_irq_en - 1:enable tx irq. 0:disable tx irq
  * @return    none
  */
-extern void uart_irq_enable(unsigned char rx_irq_en,unsigned char tx_irq_en);
+extern void uart_irq_en(unsigned char rx_irq_en,unsigned char tx_irq_en);
 
 /**
  * @brief     uart send data function, this  function tell the DMA to get data from the RAM and start
@@ -195,7 +195,7 @@ volatile unsigned char uart_dma_send_byte(unsigned char byte);
  * @param[in] tx_level - transmit level value.ie 0x99[4,7]
  * @return    none
  */
-extern void uart_ndma_irq_triglevel(unsigned char rx_level, unsigned char tx_level);
+extern void uart_ndma_set_triglevel(unsigned char rx_level, unsigned char tx_level);
 
 /**
  * @brief     get the status of uart irq.
@@ -203,7 +203,7 @@ extern void uart_ndma_irq_triglevel(unsigned char rx_level, unsigned char tx_lev
  * @return    0: not uart irq ;
  *            not 0: indicate tx or rx irq
  */
-unsigned char uart_ndmairq_get(void);
+extern unsigned char uart_ndma_get_irq(void);
 
 /**
  * @brief     uart send data function with not DMA method.

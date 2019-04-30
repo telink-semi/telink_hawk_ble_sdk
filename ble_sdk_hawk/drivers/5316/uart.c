@@ -30,7 +30,7 @@
  * @param[in] RecvBufLen - length in byte of the receiving buffer
  * @return    none
  */
-void uart_recbuff_init(unsigned short *RecvAddr, unsigned short RecvBufLen){
+void uart_set_recbuff(unsigned short *RecvAddr, unsigned short RecvBufLen){
 	unsigned char bufLen;
 	bufLen = RecvBufLen>>4;
 
@@ -42,7 +42,7 @@ void uart_recbuff_init(unsigned short *RecvAddr, unsigned short RecvBufLen){
 /**
  *define the macro that configures pin port for UART interface
  */
-void uart_gpio_set(UART_TxPinDef tx_pin,UART_RxPinDef rx_pin)
+void uart_set_pin(UART_TxPinDef tx_pin,UART_RxPinDef rx_pin)
 {
 	//note: pullup setting must before uart gpio config, cause it will lead to ERR data to uart RX buffer(confirmed by sihui&sunpeng)
 	//PM_PIN_PULLUP_1M   PM_PIN_PULLUP_10K
@@ -73,8 +73,9 @@ void uart_gpio_set(UART_TxPinDef tx_pin,UART_RxPinDef rx_pin)
  *		115200		19			13
  *		9600		237			13
  */
-void uart_init(unsigned short uart_div,  unsigned char bwpc, UART_ParityTypeDef Parity, UART_StopBitTypeDef StopBit)
+void uart_init_baudrate(unsigned short uart_div,  unsigned char bwpc, UART_ParityTypeDef Parity, UART_StopBitTypeDef StopBit)
 {
+	reg_clk_en1 |= FLD_CLK1_RS232_EN;//enable uart clock
 	/*******************1.config bautrate and timeout********************************/
 	reg_uart_ctrl0 = bwpc; //set bwpc
 	reg_uart_clk_div = (uart_div | FLD_UART_CLK_DIV_EN); //set div_clock
@@ -106,7 +107,7 @@ void uart_init(unsigned short uart_div,  unsigned char bwpc, UART_ParityTypeDef 
  * @param[in] none
  * @return    none
  */
-void uart_dma_enable(unsigned char rx_dma_en, unsigned char tx_dma_en)
+void uart_dma_en(unsigned char rx_dma_en, unsigned char tx_dma_en)
 {
 
 	//enable DMA function of tx and rx
@@ -130,7 +131,7 @@ void uart_dma_enable(unsigned char rx_dma_en, unsigned char tx_dma_en)
  * @param[in] tx_irq_en - 1:enable tx irq. 0:disable tx irq
  * @return    none
  */
-void uart_irq_enable(unsigned char rx_irq_en, unsigned char tx_irq_en)
+void uart_irq_en(unsigned char rx_irq_en, unsigned char tx_irq_en)
 {
 	if(rx_irq_en){
 		reg_uart_ctrl0 |= FLD_UART_RX_IRQ_EN ;
@@ -207,7 +208,7 @@ volatile unsigned char uart_dma_send_byte(unsigned char byte)
  * @param[in] tx_level - transmit level value.ie 0x99[4,7]
  * @return    none
  */
-void uart_ndma_irq_triglevel(unsigned char rx_level, unsigned char tx_level)
+void uart_ndma_set_triglevel(unsigned char rx_level, unsigned char tx_level)
 {
 	reg_uart_ctrl3 = rx_level | (tx_level<<4);
 }
@@ -218,7 +219,7 @@ void uart_ndma_irq_triglevel(unsigned char rx_level, unsigned char tx_level)
  * @return    0: not uart irq ;
  *            not 0: indicate tx or rx irq
  */
-unsigned char uart_ndmairq_get(void)
+unsigned char uart_ndma_get_irq(void)
 {
 	return  (reg_uart_status0&FLD_UART_IRQ_FLAG );
 }

@@ -133,6 +133,7 @@ void battery_power_check(int minVol_mV)
 			}
 			gpio_set_output_en(GPIO_LED, 0);
 		#endif
+
 		analog_write(DEEP_ANA_REG2, BATTERY_VOL_LOW);
 		cpu_sleep_wakeup(PM_SLeepMode_Deep, PM_WAKEUP_PAD, 0);
 	}

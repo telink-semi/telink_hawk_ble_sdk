@@ -27,6 +27,11 @@
 #include "analog.h"
 
 
+/**
+ * @brief       This function to select the system clock source.
+ * @param[in]   SYS_CLK - the clock source of the system clock.
+ * @return      none
+ */
 void clock_init(SYS_CLK_TYPEDEF SYS_CLK)
 {
 
@@ -47,14 +52,7 @@ void clock_init(SYS_CLK_TYPEDEF SYS_CLK)
 	reg_tmr_ctrl8 |= FLD_TMR0_EN;  //Enable Timer0
 }
 
-//_attribute_ram_code_ unsigned int clock_time(void)
-//{
-// 	#if 0
-// 		return reg_tmr0_tick;
-// 	#else
-// 		return reg_system_tick;
-// 	#endif
-// }
+
 
 unsigned int clock_time_exceed(unsigned int ref, unsigned int span_us)
 {
@@ -74,38 +72,6 @@ _attribute_ram_code_ void sleep_us (unsigned int us)
  * @Param:  None.
  * @Return: None.
  */
-#if 0 ///old
-void MCU_24M_RC_ClockCalibrate(void)
-{
-	unsigned char temp = 0;
-
-	temp = analog_read(0x02);
-	temp |= (1<<4);
-	analog_write(0x02,temp);
-
-	/* Enable 24M RC calibration. */
-	temp = analog_read(0x83);
-	temp |= (1<<0);
-	temp &= ~(1<<1);
-	analog_write(0x83,temp);
-
-	/* Wait Calibration completely. */
-	while(!(analog_read(0x84) & 0x01));
-
-	unsigned char CalValue = 0;
-	CalValue = analog_read(0x85);
-	analog_write(0x30,CalValue);
-
-	/* Disable 24M RC calibration. */
-	temp = analog_read(0x83);
-	temp &= ~(1<<0);
-	analog_write(0x83,temp);
-
-	temp = analog_read(0x02);
-	temp &= ~(1<<4);
-	analog_write(0x02,temp);
-}
-#else
 void MCU_24M_RC_ClockCalibrate(void)
 {
 	unsigned char temp = 0;
@@ -144,11 +110,15 @@ void MCU_24M_RC_ClockCalibrate(void)
 	   }
 	}
 
+	/* Disable 24M RC calibration. */
+	temp = analog_read(0x83);
+	temp &= ~(1<<0);
+	analog_write(0x83,temp);
+
 	/* cap from pm_top */
 	temp = analog_read(0x02);
 	temp &= ~(1<<4);
 	analog_write(0x02,temp);
 }
-#endif
 
 /*----------------------------- End of File ----------------------------------*/
