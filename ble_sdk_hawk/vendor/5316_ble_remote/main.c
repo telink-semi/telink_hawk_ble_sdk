@@ -43,9 +43,24 @@ int main(void){
 
 	blc_pm_select_internal_32k_crystal();
 
+
+	/***********************************************
+	 * if the bin size is less than 48K, we recommend using this setting.
+	 */
+	#if (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K) ///FLASH_SIZE_OPTION_128K
+		bls_ota_setFirmwareSizeAndOffset(48, 0x10000);///default : ota_firmware_size_k=128;ota_program_bootAddr=0x20000; it is for hawk 128K flash
+		bls_smp_configParingSecurityInfoStorageAddr(0x1C000);
+	#endif
+
 	cpu_wakeup_init();
 
-	clock_init(SYS_CLK_16M_Crystal);
+	#if (CLOCK_SYS_CLOCK_HZ == 16000000)
+		clock_init(SYS_CLK_16M_Crystal);
+	#elif (CLOCK_SYS_CLOCK_HZ == 32000000)
+		clock_init(SYS_CLK_32M_Crystal);
+	#elif (CLOCK_SYS_CLOCK_HZ == 48000000)
+		clock_init(SYS_CLK_48M_Crystal);
+	#endif
 
 	gpio_init();
 

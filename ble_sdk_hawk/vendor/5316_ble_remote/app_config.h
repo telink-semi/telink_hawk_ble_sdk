@@ -36,6 +36,11 @@ extern "C" {
 #define RC_BTN_ENABLE               	1
 #define BLT_APP_LED_ENABLE				1
 
+/***select flash size***/
+#define FLASH_SIZE_OPTION_128K          0
+#define FLASH_SIZE_OPTION_512K          1
+
+#define FLASH_SIZE_OPTION               FLASH_SIZE_OPTION_128K
 
 /* software timer -----------------------------------------------------------*/
 #define BLT_TEST_SOFT_TIMER_ENABLE			0

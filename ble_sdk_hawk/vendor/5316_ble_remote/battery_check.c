@@ -85,7 +85,7 @@ void battery_power_check(int minVol_mV)
 	for(i=0;i<BATTERY_SAMPLE_NUM;i++){
 
 		//When the data is not zero or more than 1.5 sampling times (when the data is zero),The default data is already ready.
-		while((!adcValue[i])&&(!clock_time_exceed(t0,16)));  //wait for new adc sample data,
+		while((!adcValue[i])&&(!clock_time_exceed(t0,20)));  //wait for new adc sample data,
 
 		t0 = clock_time();
 

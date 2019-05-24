@@ -94,7 +94,7 @@ static inline void blc_app_loadCustomizedParameters(void)
 
 
 
-/////////////////// Code Zise & Feature ////////////////////////////
+/////////////////// Code Size & Feature ////////////////////////////
 
 
 
@@ -103,7 +103,10 @@ static inline void blc_app_loadCustomizedParameters(void)
 #endif
 
 
-
+#if (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K)
+//	#define	BLS_ADV_INTERVAL_CHECK_ENABLE			    0
+	#define BLE_CORE42_DATA_LENGTH_EXTENSION_ENABLE		0
+#endif
 
 
 #ifndef BLE_CORE42_DATA_LENGTH_EXTENSION_ENABLE
@@ -134,7 +137,7 @@ static inline void blc_app_loadCustomizedParameters(void)
 
 
 #ifndef		BLS_ADV_INTERVAL_CHECK_ENABLE
-#define		BLS_ADV_INTERVAL_CHECK_ENABLE					1
+#define		BLS_ADV_INTERVAL_CHECK_ENABLE					0 ////1 according to sihui's advise, disable interval check.
 #endif
 
 

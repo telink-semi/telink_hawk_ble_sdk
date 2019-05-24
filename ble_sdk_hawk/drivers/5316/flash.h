@@ -23,17 +23,33 @@
 #pragma once
 
 #include "compiler.h"
+#include "../../common/config/user_config.h"
 
-#ifndef		CFG_ADR_MAC
-#define		CFG_ADR_MAC						0x76000
-#endif
+#if (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_512K)
+	#ifndef		CFG_ADR_MAC
+	#define		CFG_ADR_MAC						0x76000
+	#endif
 
-#ifndef		CUST_CAP_INFO_ADDR
-#define		CUST_CAP_INFO_ADDR				0x77000
-#endif
+	#ifndef		CUST_CAP_INFO_ADDR
+	#define		CUST_CAP_INFO_ADDR				0x77000
+	#endif
 
-#ifndef		CUST_TP_INFO_ADDR
-#define		CUST_TP_INFO_ADDR				0x77040
+	#ifndef		CUST_TP_INFO_ADDR
+	#define		CUST_TP_INFO_ADDR				0x77040
+	#endif
+#else
+	#ifndef		CFG_ADR_MAC
+	#define		CFG_ADR_MAC						0x1F000
+	#endif
+
+	#ifndef		CUST_CAP_INFO_ADDR
+	#define		CUST_CAP_INFO_ADDR				0x1E000
+	#endif
+
+	#ifndef		CUST_TP_INFO_ADDR
+	#define		CUST_TP_INFO_ADDR				0x1E040
+	#endif
+
 #endif
 
 

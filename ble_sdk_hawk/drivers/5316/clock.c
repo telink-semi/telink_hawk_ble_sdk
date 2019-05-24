@@ -27,6 +27,8 @@
 #include "analog.h"
 
 
+int SYS_TICK_DIV = 0;
+
 /**
  * @brief       This function to select the system clock source.
  * @param[in]   SYS_CLK - the clock source of the system clock.
@@ -35,6 +37,18 @@
 void clock_init(SYS_CLK_TYPEDEF SYS_CLK)
 {
 
+	if(SYS_CLK == SYS_CLK_16M_Crystal){
+		SYS_TICK_DIV = 1;
+	}
+	else if(SYS_CLK == SYS_CLK_32M_Crystal){
+		SYS_TICK_DIV = 2;
+	}
+	else if(SYS_CLK == SYS_CLK_48M_Crystal){
+		SYS_TICK_DIV = 3;
+	}
+	else{
+		//debug. Do not support this system clock rate.
+	}
 
 	reg_clk_sel = (unsigned char)SYS_CLK;
 

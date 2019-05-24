@@ -25,26 +25,15 @@
 #include "driver_config.h"
 #include "compiler.h"
 #include "register.h"
-
-#if (CLOCK_SYS_CLOCK_HZ == 16000000)
-	#define	SYS_TICK_DIV	1
-#elif (CLOCK_SYS_CLOCK_HZ == 32000000)
-	#define	SYS_TICK_DIV	2
-#elif (CLOCK_SYS_CLOCK_HZ == 48000000)
-	#define	SYS_TICK_DIV	3
-#endif
+#include "../../common/config/user_config.h"
 
 
-#ifndef SYS_TICK_DIV
-#define	SYS_TICK_DIV	1   //16M system clock
-#endif
+extern int SYS_TICK_DIV;
 
 typedef enum{
 	SYS_CLK_16M_Crystal = 0x43,
-	SYS_CLK_24M_Crystal = 0x42,
 	SYS_CLK_32M_Crystal = 0x60,
-	SYS_CLK_16M_RC 		= 0xE0,
-	SYS_CLK_24M_RC      = 0x00,
+	SYS_CLK_48M_Crystal = 0x20,
 }SYS_CLK_TYPEDEF;
 
 
