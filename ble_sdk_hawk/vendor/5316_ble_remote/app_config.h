@@ -40,7 +40,7 @@ extern "C" {
 #define FLASH_SIZE_OPTION_128K          0
 #define FLASH_SIZE_OPTION_512K          1
 
-#define FLASH_SIZE_OPTION               FLASH_SIZE_OPTION_128K
+#define FLASH_SIZE_OPTION               FLASH_SIZE_OPTION_512K
 
 /* software timer -----------------------------------------------------------*/
 #define BLT_TEST_SOFT_TIMER_ENABLE			0
