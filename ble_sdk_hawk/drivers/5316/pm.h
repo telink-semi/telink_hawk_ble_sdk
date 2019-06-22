@@ -171,7 +171,7 @@ void pm_set_32k_tick(u32 tick);///_attribute_no_inline_
 void bls_pm_registerFuncBeforeSuspend (suspend_handler_t func );
 //int cpu_sleep_wakeup (int deepsleep, int wakeup_src, u32 wakeup_tick);
 int cpu_sleep_wakeup_32krc (SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
-int cpu_sleep_wakeup_32kpad (int deepsleep, int wakeup_src, u32 wakeup_tick);
+int cpu_sleep_wakeup_32kpad (SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
 
 
 /******************************* User Interface  ************************************/

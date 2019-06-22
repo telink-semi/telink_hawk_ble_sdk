@@ -23,6 +23,7 @@
 #include "i2c.h"
 #include "gpio.h"
 #include "common/string.h"
+#include "irq.h"
 
 /**
  * @brief      This function serves to select a pin port for I2C interface.
@@ -388,6 +389,15 @@ void i2c_map_read_buff(unsigned char * dataBuf, int dataLen)
 	 	while(reg_i2c_status & FLD_I2C_CMD_BUSY	);
 }
 
+/***
+ * brief: this function can enable i2c module interrupt.
+ */
+void i2c_irq_enable(void){
+	reg_clk_en0  |= FLD_CLK0_HOSTIRQ_EN;  // host irq enable; i2c and spi need to set this bit.
+	reg_irq_mask |= FLD_IRQ_HOST_CMD_EN;  // i2c interrupt
+
+	irq_enable();  // enable IRQ
+}
 
 /****
  * brief: this function will return I2C irq state

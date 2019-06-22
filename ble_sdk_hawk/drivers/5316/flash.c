@@ -144,7 +144,104 @@ _attribute_ram_code_ void flash_read_page(unsigned long addr, unsigned long len,
 	irq_restore(r);
 }
 
+#if (FIRMWARES_SIGNATURE_ENABLE)
+/***********************************
+ * @brief	  MAC id. Before reading UID of flash, you must read MID of flash. and then you can
+ *            look up the related table to select the idcmd and read UID of flash
+ * @param[in] buf - store MID of flash
+ * @return    none.
+ */
+_attribute_ram_code_ void flash_read_mid(unsigned char *buf){
+	unsigned char j = 0;
+	unsigned char r = irq_disable();
+	flash_send_cmd(FLASH_GET_JEDEC_ID);
+	mspi_write(0x00);		/* dummy,  to issue clock */
+	mspi_wait();
+	mspi_ctrl_write(0x0a);	/* auto mode */
+	mspi_wait();
 
+	for(j = 0; j < 3; ++j){
+		*buf++ = mspi_get();
+		mspi_wait();
+	}
+	mspi_high();
+
+	irq_restore(r);
+}
+/***********************************
+ * @brief	  UID. Before reading UID of flash, you must read MID of flash. and then you can
+ *            look up the related table to select the idcmd and read UID of flash
+ * @param[in] idcmd - get this value to look up the table based on MID of flash
+ * @param[in] buf   - store UID of flash
+ * @return    none.
+ */
+_attribute_ram_code_ void flash_read_uid(unsigned char idcmd,unsigned char *buf)
+{
+	unsigned char j = 0;
+	unsigned char r = irq_disable();
+	flash_send_cmd(idcmd);
+	if(idcmd==0x4b)				//< GD/puya
+	{
+		flash_send_addr(0x00);
+		mspi_write(0x00);		/* dummy,  to issue clock */
+		mspi_wait();
+	}
+	else if (idcmd==0x5a)		//< XTX
+	{
+		flash_send_addr(0x80);
+		mspi_write(0x00);		/* dummy,  to issue clock */
+		mspi_wait();
+
+	}
+	mspi_write(0x00);			/* dummy,  to issue clock */
+	mspi_wait();
+	mspi_ctrl_write(0x0a);		/* auto mode */
+	mspi_wait();
+
+	for(j = 0; j < 16; ++j){
+		*buf++ = mspi_get();
+		mspi_wait();
+	}
+	mspi_high();
+	irq_restore(r);
+}
+
+/**
+ * @brief 		 This function serves to read flash mid and uid,and check the correctness of mid and uid.
+ * @param[out]   flash_mid - Flash Manufacturer ID
+ * @param[out]   flash_uid - Flash Unique ID
+ * @return       0:error 1:ok
+ */
+_attribute_ram_code_ int flash_read_mid_uid_with_check( unsigned int *flash_mid ,unsigned char *flash_uid)
+{
+	 unsigned char no_uid[16]={0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01};
+	 int i,f_cnt=0;
+	 unsigned int mid;
+	 flash_read_mid((unsigned char*)&mid);
+	 mid = mid&0xffff;
+	 *flash_mid  = mid;
+	 //  ÐÍºÅ   	  		 CMD        MID
+	 //  GD25D10BW 		 0x4b     0x40c8
+	 //  MD25D40DGIG	 0x4b     0x4051
+	 //  P25D40HDWF  	 0x4b     0x6085
+	 if( (mid == 0x40C8) || (mid == 0x6085) ||(mid == 0x4051)){
+		 flash_read_uid(FLASH_READ_UID_CMD,(unsigned char *)flash_uid);
+		  }else{
+			  return 0;
+		  }
+		  for(i=0;i<16;i++){
+			if(flash_uid[i]==no_uid[i]){
+				f_cnt++;
+			}
+		  }
+		  if(f_cnt==16){//no uid flash
+				  return 0;
+
+		  }else{
+			  return  1;
+		  }
+}
+#endif
 #if 0
 /**
  * @brief This function reads the status of flash.

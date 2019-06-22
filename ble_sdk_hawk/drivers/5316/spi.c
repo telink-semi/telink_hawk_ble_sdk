@@ -264,3 +264,14 @@ void spi_slave_set_pin(SPI_GPIO_GroupTypeDef PinGrp)
 	gpio_set_data_strength(sdi,0);
 	gpio_set_data_strength(sclk,0);
 }
+
+/***
+ * brief: this function can enable spi module interrupt.
+ */
+void spi_irq_enable(void){
+	reg_clk_en0  |= FLD_CLK0_HOSTIRQ_EN;  // host irq enable; i2c and spi need to set this bit.
+	reg_irq_mask |= FLD_IRQ_HOST_CMD_EN;  // i2c and spi need to set this bit
+
+	irq_enable();  // enable IRQ
+}
+

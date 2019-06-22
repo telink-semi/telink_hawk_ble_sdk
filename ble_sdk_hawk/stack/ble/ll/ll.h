@@ -209,8 +209,10 @@ typedef struct {
 	u16		supportedMaxRxOctets;
 	u16		supportedMaxTxOctets;
 
-	u16 	connInitialMaxTxOctets;
+	u8  	connInitialMaxTxOctets; //u8 is enough
 	u8		connMaxTxRxOctets_req;
+	u8		connRxDiff100;
+	u8		connTxDiff100;
 }ll_data_extension_t;
 
 ll_data_extension_t  bltData;
@@ -240,10 +242,9 @@ typedef void (*blt_event_callback_t)(u8 e, u8 *p, int n);
 #define			BLT_EV_FLAG_CONN_PARA_UPDATE		13
 #define			BLT_EV_FLAG_SUSPEND_ENTER			14
 #define			BLT_EV_FLAG_SUSPEND_EXIT			15
-#define			BLT_EV_FLAG_READ_P256_KEY			16
-#define			BLT_EV_FLAG_GENERATE_DHKEY			17
-#define			BLT_EV_FLAG_SMP_PINCODE_PROCESS	    18
-#define         BLT_EV_FLAG_SMP_KEY_MISSING         19//add for UTB2
+#define			BLT_EV_FLAG_RX_DATA_ABANDOM			16
+#define			BLT_EV_FLAG_SMP_PINCODE_PROCESS	    17
+#define         BLT_EV_FLAG_SMP_KEY_MISSING         18//add for UTB2
 
 
 
@@ -255,8 +256,7 @@ typedef void (*blt_event_callback_t)(u8 e, u8 *p, int n);
 #define			EVENT_MASK_CONN_PARA_REQ			BIT(BLT_EV_FLAG_CONN_PARA_REQ)
 #define			EVENT_MASK_CHN_MAP_UPDATE			BIT(BLT_EV_FLAG_CHN_MAP_UPDATE)
 #define			EVENT_MASK_CONN_PARA_UPDATE			BIT(BLT_EV_FLAG_CONN_PARA_UPDATE)
-#define			EVENT_MASK_READ_P256_KEY			BIT(BLT_EV_FLAG_READ_P256_KEY)
-#define			EVENT_MASK_GENERATE_DHKEY			BIT(BLT_EV_FLAG_GENERATE_DHKEY)
+#define			EVENT_MASK_RX_DATA_ABANDOM			BIT(BLT_EV_FLAG_RX_DATA_ABANDOM)
 
 
 
@@ -405,7 +405,7 @@ note: type(1B):llid(2bit) nesn(1bit) sn(1bit) md(1bit),实际向RF 硬件FIFO中压数据
 *******************************************************************************************************************************************************************************/
 
 
-#define		FIX_HW_CRC_EN							0
+#define		FIX_HW_CRC24_EN							1
 
 typedef struct {
 	u8		save_flg;

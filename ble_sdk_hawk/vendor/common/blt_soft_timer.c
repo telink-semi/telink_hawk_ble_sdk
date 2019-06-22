@@ -22,7 +22,7 @@
 
 #include <stack/ble/ll/ll.h>
 #include "tl_common.h"
-#include "../common/blt_soft_timer.h"
+#include "blt_soft_timer.h"
 
 
 #if (BLT_SOFTWARE_TIMER_ENABLE)
@@ -34,6 +34,9 @@ blt_soft_timer_t	blt_timer;
 
 
 //按照定时时间将timer排序，便于process时 依次触发timer
+/***
+ * sort soft timer according to the period of per soft timer. thus it is easier for processing.
+ */
 int  blt_soft_timer_sort(void)
 {
 	if(blt_timer.currentNum < 1 || blt_timer.currentNum > MAX_TIMER_NUM){
@@ -41,7 +44,7 @@ int  blt_soft_timer_sort(void)
 		return 0;
 	}
 	else{
-		// 冒泡排序  BubbleSort
+		//BubbleSort
 		int n = blt_timer.currentNum;
 		u8 temp[sizeof(blt_time_event_t)];
 
@@ -68,7 +71,6 @@ int  blt_soft_timer_sort(void)
 //user add timer
 int blt_soft_timer_add(blt_timer_callback_t func, u32 interval_us)
 {
-	int i;
 	u32 now = clock_time();
 
 	if(blt_timer.currentNum >= MAX_TIMER_NUM){  //timer full
@@ -86,7 +88,10 @@ int blt_soft_timer_add(blt_timer_callback_t func, u32 interval_us)
 }
 
 
-//timer 本来就是有序的，删除的时候，采用往前覆盖，所以不会破坏顺序，不需要重新排序
+/**
+ * when delete one soft timer, move forward the post soft timer.
+ * thus, we not need to re-sort.
+ */
 int  blt_soft_timer_delete_by_index(u8 index)
 {
 	if(index >= blt_timer.currentNum){
@@ -111,7 +116,7 @@ int 	blt_soft_timer_delete(blt_timer_callback_t func)
 		if(blt_timer.timer[i].cb == func){
 			blt_soft_timer_delete_by_index(i);
 
-			if(i == 0){  //删除的是最近的timer，需要更新时间
+			if(i == 0){  //when delete the latest soft timer, need to update time
 
 				if( (u32)(blt_timer.timer[0].t - clock_time()) < 3000 *  CLOCK_16M_SYS_TIMER_CLK_1MS){
 					bls_pm_setAppWakeupLowPower(blt_timer.timer[0].t,  1);

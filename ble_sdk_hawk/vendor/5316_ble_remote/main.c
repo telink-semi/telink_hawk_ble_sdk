@@ -24,6 +24,7 @@
 #include "drivers.h"
 #include "stack/ble/ble.h"
 #include "../common/user_config.h"
+#include "../common/blt_fw_sign.h"
 
 #if(REMOTE_IR_ENABLE)
 	extern void rc_ir_irq_prc(void);
@@ -69,6 +70,10 @@ int main(void){
 	#endif
 
 	rf_drv_init(RF_MODE_BLE_1M);
+
+	#if FIRMWARES_SIGNATURE_ENABLE
+		blt_firmware_signature_check();
+	#endif
 
 	user_init ();
 

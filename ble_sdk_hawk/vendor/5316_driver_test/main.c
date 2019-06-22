@@ -57,9 +57,9 @@ int main(void){
 
 	blc_pm_select_internal_32k_crystal();
 
-	cpu_wakeup_init(); ///Checked and modify
+	cpu_wakeup_init();
 
-	clock_init(SYS_CLK_16M_Crystal); ///checked and modify
+	clock_init(SYS_CLK_16M_Crystal);
 
 
 	gpio_init();

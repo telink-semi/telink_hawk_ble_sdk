@@ -25,11 +25,14 @@
 
 #if(__PROJECT_5316_BLE_REMOTE__)
 	#include "../5316_ble_remote/app_config.h"
+#elif(__PROJECT_5316_HCI__)
+	#include "../5316_hci/app_config.h"
+#elif(__PROJECT_5316_MODULE__)
+	#include "../5316_module/app_config.h"
 #elif(__PROJECT_5316_DRIVER_TEST__)
 	#include "../5316_driver_test/app_config.h"
-#elif(__PROJECT_5317_FEATURE_TEST__)
-	#include "vendor/5316_feature_test/app_config.h"
-
+#elif(__PROJECT_5316_FEATURE_TEST__)
+	#include "../5316_feature_test/app_config.h"
 #else
 	#include "../common/default_config.h"
 #endif

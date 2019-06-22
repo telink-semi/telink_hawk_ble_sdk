@@ -47,8 +47,9 @@ void app_spi_test_init(void){
 	#else ///SPI_SLAVE_DEVICE //slave
 		spi_slave_init((unsigned char)(CLOCK_SYS_CLOCK_HZ/(2*500000)-1),SPI_MODE0);           //slave mode init
 		spi_slave_set_pin(SPI_GPIO_GROUP_C2C3C4C5);      //slave mode spi pin set
-		reg_irq_mask |= FLD_IRQ_HOST_CMD_EN;
-		irq_enable();
+
+		spi_irq_enable();
+
 	#endif
 }
 

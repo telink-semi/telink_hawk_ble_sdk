@@ -150,9 +150,10 @@ void i2c_map_write_buff(unsigned char * dataBuf, int dataLen);
 void i2c_map_read_buff(unsigned char * dataBuf, int dataLen);
 
 
-static inline void i2c_set_interrupt(void){
-	reg_irq_mask |= FLD_IRQ_HOST_CMD_EN;  // i2c interrupt
-}
+/***
+ * brief: this function can enable i2c module interrupt.
+ */
+void i2c_irq_enable(void);
 
 
 typedef enum{

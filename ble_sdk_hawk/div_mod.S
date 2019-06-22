@@ -322,7 +322,7 @@ MZ_MUL2_END:
 
 
 
-#if 0
+#if 1
 
 ///////// asm crc24 function 2
 	.section	.ram_code,"ax" //in ram code

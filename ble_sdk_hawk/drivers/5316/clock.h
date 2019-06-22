@@ -77,6 +77,8 @@ static inline unsigned int clock_time(void)
 
 unsigned int clock_time_exceed(unsigned int ref, unsigned int span_us);
 
+void pwm_kick_32k_pad(void);
+
 void sleep_us (unsigned int microsec);		//  use register counter to delay
 
 void MCU_24M_RC_ClockCalibrate(void);

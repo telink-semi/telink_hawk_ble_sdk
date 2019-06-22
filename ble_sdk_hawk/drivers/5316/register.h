@@ -20,6 +20,8 @@
  *
  *******************************************************************************************************/
 
+#if(__TL_LIB_5316__ || MCU_CORE_TYPE == MCU_CORE_5316)
+
 #pragma once
 
 #include "bsp.h"
@@ -482,6 +484,7 @@ enum{
 	FLD_UART_RBCNT 	     =  BIT_RNG(0,2),
 	FLD_UART_IRQ_FLAG    =  BIT(3),
 	FLD_UART_WBCNT 	     =  BIT_RNG(4,6),
+	FLD_UART_RX_ERR_CLR  =  BIT(6),
 	FLD_UART_RX_ERR_FLAG =  BIT(7),
 };
 
@@ -534,7 +537,7 @@ enum
 #define reg_ana_addr			REG_ADDR8(0xb8)
 #define reg_ana_data			REG_ADDR8(0xb9)
 #define reg_ana_ctrl			REG_ADDR8(0xba)
-enum // 文档不正确，请使用以下定义.Use for "reg_ana_ctrl"
+enum // datasheet is not right. please use the following define.Use for "reg_ana_ctrl"
 {
 	FLD_ANA_BUSY  = BIT(0),
 	FLD_ANA_RSV	  =	BIT(4),
@@ -1418,4 +1421,4 @@ static inline void config_timer_interrupt (unsigned int tick) {
 }
 #endif
 
-
+#endif

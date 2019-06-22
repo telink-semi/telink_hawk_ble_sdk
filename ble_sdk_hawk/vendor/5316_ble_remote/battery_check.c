@@ -109,7 +109,7 @@ void battery_power_check(int minVol_mV)
 	// 			 =  adc_result   *   1160     * 8        /        0x2000
 	//           =  adc_result * 4680 >>12
 	//           =  adc_result * 295 >>8
-	//	u16 vol = (adcValueAvg * 1180 * 8)>>13;//Unit:mV; 由于参考电压不准，实际的参考电压为1.18V(Vref = 1.2V);*8 indicate 1/8 scaler
+	//	u16 vol = (adcValueAvg * 1180 * 8)>>13;//Unit:mV; cause reference voltage is not accurate and the real value is 1.18v(Vref = 1.2V);*8 indicate 1/8 scaler
 	u16 vol;
 	if((adc_cal_value!=0xffff)&&(adc_cal_value != 0x0000))  //Already calibrated
 	{
@@ -117,7 +117,7 @@ void battery_power_check(int minVol_mV)
 	}
 	else
 	{
-		vol  = (adcValueAvg * 295)>>8; ////vol = (adcValueAvg * 1180 * 8)>>13;//Unit:mV; 由于参考电压不准，实际的参考电压为1.18V(Vref = 1.2V);*8 indicate 1/8 scaler
+		vol  = (adcValueAvg * 295)>>8; ////vol = (adcValueAvg * 1180 * 8)>>13;
 	}
 
 	/* Low voltage processing. Enter deep sleep. */

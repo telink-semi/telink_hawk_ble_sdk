@@ -26,7 +26,6 @@
 #include "timer.h"
 #include "gpio_default.h"
 #include "register.h"
-
 /**
  * @brief     initiate GPIO for gpio trigger and gpio width mode of timer0.
  * @param[in] pin - select pin for timer0.

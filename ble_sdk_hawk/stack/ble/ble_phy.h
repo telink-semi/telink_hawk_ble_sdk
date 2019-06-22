@@ -62,6 +62,7 @@
 #define 		PKT_TYPE_PRBS9 							0
 #define 		PKT_TYPE_0X0F 							1
 #define 		PKT_TYPE_0X55 							2
+#define 		PKT_TYPE_0XFF 							3
 
 enum{
 	PHY_EVENT_STATUS	 = 0,

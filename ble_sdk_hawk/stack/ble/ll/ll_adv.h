@@ -94,6 +94,7 @@ ble_sts_t	bls_ll_setAdvData(u8 *data, u8 len);
 ble_sts_t 	bls_ll_setScanRspData(u8 *data, u8 len);
 ble_sts_t   bls_ll_setAdvEnable(int adv_enable);
 
+u8 			blt_set_adv_direct_init_addrtype(u8* cmdPara);
 
 ble_sts_t   bls_ll_setAdvParam( u16 intervalMin, u16 intervalMax, u8 advType, 	   u8 ownAddrType,  \
 							     u8 peerAddrType, u8 *peerAddr,   u8 adv_channelMap, u8 advFilterPolicy);
@@ -121,7 +122,8 @@ ble_sts_t 	bls_hci_le_setAdvParam(adv_para_t *para);
 ble_sts_t 	bls_hci_le_readChannelMap(u16 connHandle, u8 *returnChannelMap);
 
 
-
+ble_sts_t   bls_ll_setAdvType(u8 advType);
+ble_sts_t 	blt_set_adv_addrtype(u8* cmdPara);
 
 
 

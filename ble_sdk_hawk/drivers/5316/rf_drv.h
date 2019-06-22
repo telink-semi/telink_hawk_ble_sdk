@@ -295,6 +295,18 @@ static inline void rf_reset_sn (void)
 	write_reg8  (0x800f01, 0x00);
 }
 
+static inline unsigned char is_rf_receiving_pkt(void)
+{
+	//if the value of [3:0] of the reg_0x443 is 0b1010 or 0b1011 or 0b1100, it means that the RF is in the receiving packet phase.(confirmed by junwen)
+//	return (((read_reg8(0x443)>>3)& 1) == 1); ///the bit3=1 not indicate rx
+	unsigned char tmp_val = 0;
+	tmp_val = (read_reg8(0x443)&0x0f);
+	if( (tmp_val== 10) || (tmp_val == 11) || (tmp_val == 12)){
+		return 1;
+	}
+	return 0;
+}
+
 static inline void reset_sn_nesn(void)
 {
 	REG_ADDR8(0xf01) =  0x01;

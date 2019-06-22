@@ -37,6 +37,10 @@
 	#ifndef		CUST_TP_INFO_ADDR
 	#define		CUST_TP_INFO_ADDR				0x77040
 	#endif
+
+	#ifndef		CUST_FIRMWARE_SIGNKEY_ADDR
+	#define		CUST_FIRMWARE_SIGNKEY_ADDR		0x77180
+	#endif
 #else
 	#ifndef		CFG_ADR_MAC
 	#define		CFG_ADR_MAC						0x1F000
@@ -50,6 +54,10 @@
 	#define		CUST_TP_INFO_ADDR				0x1E040
 	#endif
 
+	#ifndef		CUST_FIRMWARE_SIGNKEY_ADDR
+	#define		CUST_FIRMWARE_SIGNKEY_ADDR		0x1E180
+	#endif
+
 #endif
 
 
@@ -61,6 +69,7 @@ enum{
 	FLASH_READ_STATUS_CMD	=	0x05,
 	FLASH_WRITE_ENABLE_CMD 	= 	0x06,
 	FLASH_SECT_ERASE_CMD	=	0x20,
+	FLASH_READ_UID_CMD		=	0x4B,	//Flash Type = GD/PUYA
 	FLASH_32KBLK_ERASE_CMD	=	0x52,
 	FLASH_CHIP_ERASE_CMD	=	0x60,   //or 0xc7
 	FLASH_PAGE_ERASE_CMD	=	0x81,   //caution: only P25Q40L support this function
@@ -91,6 +100,12 @@ _attribute_ram_code_ void flash_write_page(unsigned long addr, unsigned long len
  * @return none
  */
 _attribute_ram_code_ void flash_read_page(unsigned long addr, unsigned long len, unsigned char *buf);
+
+
+_attribute_ram_code_ void flash_read_mid(unsigned char *buf);
+_attribute_ram_code_ void flash_read_uid(unsigned char idcmd,unsigned char *buf);
+_attribute_ram_code_ int flash_read_mid_uid_with_check( unsigned int *flash_mid ,unsigned char *flash_uid);
+
 
 #if 0
 /**

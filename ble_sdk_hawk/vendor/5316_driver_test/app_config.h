@@ -41,7 +41,7 @@ extern "C" {
 #define TEST_RF_EMI                     80
 
 
-#define DRIVER_TEST_MODE                TEST_GPIO_IRQ
+#define DRIVER_TEST_MODE                TEST_IIC
 
 
 

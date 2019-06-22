@@ -66,7 +66,51 @@ void clock_init(SYS_CLK_TYPEDEF SYS_CLK)
 	reg_tmr_ctrl8 |= FLD_TMR0_EN;  //Enable Timer0
 }
 
+/**
+ * @brief       This function is to accelerate the oscillation process by using PWM
+ * @param[in]   none
+ * @return      none
+ */
+void pwm_kick_32k_pad(void)
+{
+	unsigned char reg_66 = READ_REG8(0x66);
+	WRITE_REG8(0x66,0x43);  ///select 16M system clock.
 
+	//1.set pb6, pb7 as pwm output
+	unsigned char reg_58e = READ_REG8(0x58e);
+	WRITE_REG8(0x58e,reg_58e&0x3f);
+	unsigned char reg_5ab = READ_REG8(0x5ab);
+	WRITE_REG8(0x5ab,reg_5ab&0x0f);
+	WRITE_REG8(0x781,0xf3);//pwm clk div
+
+	unsigned short reg_794 = READ_REG16(0x794);
+	WRITE_REG16(0x794,0x01);//pwm0's high time or low time
+	unsigned short reg_796 = READ_REG16(0x796);
+	WRITE_REG16(0x796,0x02);//pwm0's cycle time
+	WRITE_REG8(0x780,0x01);//enable pwm0
+	WaitMs(25);
+	unsigned short reg_798 = READ_REG16(0x798);
+	WRITE_REG16(0x798,0x01);//pwm1's high time or low time
+	unsigned short reg_79a = READ_REG16(0x79a);
+	WRITE_REG16(0x79a,0x02);//pwm1's cycle time
+	WRITE_REG8(0x780,0x03);//enable pwm1
+
+	//2.wait for pwm wake up xtal
+	WaitMs(25);
+	//3.recover pb6, pb7 as xtal pin
+	WRITE_REG8(0x780,0x02);
+	WRITE_REG16(0x794,reg_794);
+	WRITE_REG16(0x796,reg_796);
+	WRITE_REG8(0x780,0x00);
+	WRITE_REG16(0x798,reg_798);
+	WRITE_REG16(0x79a,reg_79a);
+
+	WRITE_REG8(0x781,0x00);
+	WRITE_REG8(0x66,reg_66);
+	WRITE_REG8(0x58a,READ_REG8(0x58a)|0xc0);
+	WRITE_REG8(0x58e,reg_58e|0xc0);
+
+}
 
 unsigned int clock_time_exceed(unsigned int ref, unsigned int span_us)
 {

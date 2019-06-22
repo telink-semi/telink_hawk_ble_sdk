@@ -139,5 +139,10 @@ extern void spi_slave_init(unsigned char DivClock, SPI_ModeTypeDef Mode);
  */
 extern void spi_slave_set_pin(SPI_GPIO_GroupTypeDef PinGrp);
 
+/***
+ * brief: this function can enable spi module interrupt.
+ */
+void spi_irq_enable(void);
+
 #endif /* End of SPI_H */
 

@@ -31,7 +31,7 @@
 #define  MAX_DEV_NAME_LEN 				18
 
 #ifndef DEV_NAME
-#define DEV_NAME                        "tModule"
+#define DEV_NAME                        "hModule"
 #endif
 
 
@@ -116,35 +116,8 @@ static inline void blc_app_loadCustomizedParameters(void)
 
 
 
-
-
-
-
-
-
-
-
-
-//when rf dma & uart dma work together
-#ifndef		BLS_DMA_DATA_LOSS_DETECT_AND_SOLVE_ENABLE
-#define		BLS_DMA_DATA_LOSS_DETECT_AND_SOLVE_ENABLE		0
-#endif
-
-#ifndef		BLS_SEND_TLK_MODULE_EVENT_ENABLE
-#define 	BLS_SEND_TLK_MODULE_EVENT_ENABLE				0
-#endif
-
-
-
 #ifndef		BLS_ADV_INTERVAL_CHECK_ENABLE
 #define		BLS_ADV_INTERVAL_CHECK_ENABLE					0 ////1 according to sihui's advise, disable interval check.
-#endif
-
-
-
-
-#ifndef		BLS_BT_STD_SCAN_MODE_ENABLE
-#define		BLS_BT_STD_SCAN_MODE_ENABLE					1
 #endif
 
 

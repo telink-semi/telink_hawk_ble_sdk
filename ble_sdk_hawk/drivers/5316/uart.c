@@ -343,7 +343,7 @@ unsigned char uart_is_parity_error(void)
  */
 void uart_clear_parity_error(void)
 {
-	reg_uart_status0|= FLD_UART_RX_ERR_FLAG; //write 1 to clear
+	reg_uart_status0|= FLD_UART_RX_ERR_CLR; //write 1 to clear
 }
 
 

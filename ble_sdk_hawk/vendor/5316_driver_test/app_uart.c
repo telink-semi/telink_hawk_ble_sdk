@@ -30,7 +30,7 @@
 
 #define UART_DMA      1
 #define UART_NDMA     2
-#define UART_MODE     UART_NDMA
+#define UART_MODE     UART_DMA
 
 #if (UART_MODE == UART_NDMA)
 	#define NORMAL	   		1

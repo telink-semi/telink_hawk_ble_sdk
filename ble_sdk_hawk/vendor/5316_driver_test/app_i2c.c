@@ -33,7 +33,7 @@
 //////I2C slave mode selection ///////
 #define I2C_SLAVE_DMA_MODE          0
 #define I2C_SLAVE_MAP_MODE          1
-#define I2C_SLAVE_MODE              I2C_SLAVE_MAP_MODE
+#define I2C_SLAVE_MODE              I2C_SLAVE_DMA_MODE
 
 #if (!I2C_DEVICE_MASTER)
 	#if (I2C_SLAVE_MODE == I2C_SLAVE_MAP_MODE)
@@ -51,6 +51,7 @@ volatile unsigned char i2c_rx_buff[BUFF_DATA_LEN] = {0};
 
 
 void app_i2c_test_init(void){
+
 	#if (I2C_DEVICE_MASTER)
 		i2c_set_pin(I2C_GPIO_GROUP_M_A3A4);  	// SDA/CK : C0/C1
 		i2c_master_init(0x5C, (unsigned char)(CLOCK_SYS_CLOCK_HZ/(4*I2C_CLK_SPEED)) ); // 200KHz
@@ -62,8 +63,8 @@ void app_i2c_test_init(void){
 		#else
 			i2c_slave_init(0x5C, I2C_SLAVE_MAP, (unsigned char *)i2c_slave_mapping_buff+64);
 		#endif
-			reg_irq_mask |= FLD_IRQ_HOST_CMD_EN;  // i2c interrupt
-			irq_enable();
+
+			i2c_irq_enable();
 	#endif
 }
 

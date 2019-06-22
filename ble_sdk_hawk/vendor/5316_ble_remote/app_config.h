@@ -42,6 +42,9 @@ extern "C" {
 
 #define FLASH_SIZE_OPTION               FLASH_SIZE_OPTION_512K
 
+/***firmware check***/
+#define FIRMWARES_SIGNATURE_ENABLE      0
+
 /* software timer -----------------------------------------------------------*/
 #define BLT_TEST_SOFT_TIMER_ENABLE			0
 
