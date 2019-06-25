@@ -27,7 +27,6 @@ extern "C" {
 #endif
 
 
-#define BLE_CORE_5P0_ENABEL										0
 
 
 /////////////////////HCI ACCESS OPTIONS/////////////////////

@@ -22,6 +22,7 @@
 #pragma once
 
 #include "tl_common.h"
+#include "blt_config.h"
 /*********************************************************************
  * CONSTANTS
  */
@@ -842,6 +843,16 @@ typedef struct{
 	u8  format;
 	u8  data[1];			// character_handle / property / value_handle / value
 }rf_packet_att_findInfoReq_t;
+
+typedef struct{
+	u32 dma_len;            //won't be a fixed number as previous, should adjust with the mouse package number
+	u8	type;				//RFU(3)_MD(1)_SN(1)_NESN(1)-LLID(2)
+	u8  rf_len;				//LEN(5)_RFU(3)
+	u16	l2capLen;
+	u16	chanId;
+	u8  opcode;
+	u8 flags;
+}rf_packet_att_executeWriteReq_t;
 
 typedef struct{
 	u32 dma_len;            //won't be a fixed number as previous, should adjust with the mouse package number

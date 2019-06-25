@@ -180,6 +180,10 @@ void blc_pm_select_external_32k_crystal(void);
 void blt_pm_ext32k_crystal_init(void);
 
 
+typedef void (*check_32k_clk_handler_t)(void);
+extern  check_32k_clk_handler_t  check_32k_clk_stable;
+
+
 void cpu_set_gpio_wakeup (int pin, int pol, int en);
 void pm_set_filter(u8 en);
 

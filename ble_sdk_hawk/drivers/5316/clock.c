@@ -88,7 +88,7 @@ void pwm_kick_32k_pad(void)
 	unsigned short reg_796 = READ_REG16(0x796);
 	WRITE_REG16(0x796,0x02);//pwm0's cycle time
 	WRITE_REG8(0x780,0x01);//enable pwm0
-	WaitMs(25);
+	WaitMs(5); //25
 	unsigned short reg_798 = READ_REG16(0x798);
 	WRITE_REG16(0x798,0x01);//pwm1's high time or low time
 	unsigned short reg_79a = READ_REG16(0x79a);
@@ -96,7 +96,7 @@ void pwm_kick_32k_pad(void)
 	WRITE_REG8(0x780,0x03);//enable pwm1
 
 	//2.wait for pwm wake up xtal
-	WaitMs(25);
+	WaitMs(5); //25
 	//3.recover pb6, pb7 as xtal pin
 	WRITE_REG8(0x780,0x02);
 	WRITE_REG16(0x794,reg_794);
