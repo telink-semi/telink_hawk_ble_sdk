@@ -122,7 +122,7 @@ const led_cfg_t led_cfg[] = {
 /*----------------------------------------------------------------------------*/
 /*------------- OTA  Function                                 ----------------*/
 /*----------------------------------------------------------------------------*/
-#if 1 ///(BLE_REMOTE_OTA_ENABLE)
+#if (BLE_REMOTE_OTA_ENABLE)
 volatile u8 	ota_is_working = 0;
 void entry_ota_mode(void)
 {
