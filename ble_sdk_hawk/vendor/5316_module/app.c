@@ -123,7 +123,7 @@ const led_cfg_t led_cfg[] = {
 /*------------- OTA  Function                                 ----------------*/
 /*----------------------------------------------------------------------------*/
 #if 1 ///(BLE_REMOTE_OTA_ENABLE)
-u8 	ota_is_working = 0;
+volatile u8 	ota_is_working = 0;
 void entry_ota_mode(void)
 {
 	ota_is_working = 1;
@@ -152,6 +152,7 @@ void LED_show_ota_result(int result)
 	#endif
 }
 #endif
+
 
 int	module_uart_send_flg;
 u32 module_wakeup_mcu_tick;
@@ -202,6 +203,9 @@ void app_power_management ()
 
 	if (!app_module_busy() && !tick_wakeup)
 	{
+		if(ota_is_working){
+			return ;
+		}
 		//////////////////////////////
 		bls_pm_setSuspendMask(SUSPEND_ADV | SUSPEND_CONN);
 		bls_pm_setWakeupSource(PM_WAKEUP_PAD);  // GPIO_WAKEUP_MODULE needs to be wakened
@@ -224,6 +228,28 @@ void user_init()
 {
 	/* load customized freq_offset CAP value and TP value.*/
 	blc_app_loadCustomizedParameters();
+
+	/***********************************************************************************
+	 * Power Management initialization and gpio wake up source setting.
+	 * Note: These section must be before battery_power_check.
+	 * Because when low battery,chip will entry deep.if placed after battery_power_check,
+	 * it is possible that can not wake up chip.(gpio wakeup setting will be lost in deep mode)
+	 *  *******************************************************************************/
+	#if (BLE_MODULE_PM_ENABLE)
+		blc_ll_initPowerManagement_module();        //pm module:      	 optional
+
+		bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
+
+		gpio_set_wakeup(GPIO_WAKEUP_MODULE,1,1);  	   //drive pin core(gpio) high wakeup suspend
+		//mcu can wake up module from suspend or deepsleep by pulling up GPIO_WAKEUP_MODULE
+		cpu_set_gpio_wakeup (GPIO_WAKEUP_MODULE, GPIO_Level_High, 1);  // pad high wakeup deepsleep
+
+		GPIO_WAKEUP_MODULE_LOW;
+
+		bls_pm_registerFuncBeforeSuspend( &app_suspend_enter );
+	#else
+		bls_pm_setSuspendMask (SUSPEND_DISABLE);
+	#endif
 
 	/*****************************************************************************************
 	 Note: battery check must do before any flash write/erase operation, cause flash write/erase
@@ -291,13 +317,20 @@ void user_init()
 	bls_ll_setAdvEnable(1);  //adv enable
 	rf_set_power_level_index (RF_POWER_7P9dBm);
 
+
 	/*-- SPP initialization --------------------------------------------------*/
 	//note: dma addr must be set first before any other uart initialization! (confirmed by sihui)
 	uart_set_recbuff( (unsigned short *)spp_rx_fifo_b, spp_rx_fifo.size);
 	uart_set_pin(UART_TX_PB4, UART_RX_PB5);  //UART TX/RX pin set
 	uart_reset();                            //will reset UART digital registers from 0x90 ~ 0x9f, so UART setting must set after this reset
 
-	uart_init_baudrate(9, 13,PARITY_NONE, STOP_BIT_ONE); //(9,13:115200;;)Baud rate's setting, please use LUA script tool to calculate.
+	#if (CLOCK_SYS_CLOCK_HZ == 16000000)
+		uart_init_baudrate(9, 13,PARITY_NONE, STOP_BIT_ONE); //(9,13:115200;;)Baud rate's setting, please use LUA script tool to calculate.
+	#elif (CLOCK_SYS_CLOCK_HZ == 32000000)
+		uart_init_baudrate(30, 8,PARITY_NONE, STOP_BIT_ONE); //115200
+	#elif (CLOCK_SYS_CLOCK_HZ == 48000000)
+		uart_init_baudrate(25, 15,PARITY_NONE, STOP_BIT_ONE); //115200
+	#endif
 
 	uart_dma_en(1, 1); 	                                               //UART data in hardware buffer moved by DMA, so we enable them first
 	irq_set_mask(FLD_IRQ_DMA_EN);
@@ -313,22 +346,6 @@ void user_init()
 	blc_hci_registerControllerEventHandler(controller_event_handler);		//register event callback
 	bls_hci_mod_setEventMask_cmd(0xfffff);			//enable all 18 events,event list see ble_ll.h
 
-	/* Power Management initialization */
-#if (BLE_MODULE_PM_ENABLE)
-	blc_ll_initPowerManagement_module();        //pm module:      	 optional
-
-	bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
-
-	//mcu can wake up module from suspend or deepsleep by pulling up GPIO_WAKEUP_MODULE
-	cpu_set_gpio_wakeup (GPIO_WAKEUP_MODULE, GPIO_Level_High, 1);  // pad high wakeup deepsleep
-
-	GPIO_WAKEUP_MODULE_LOW;
-
-	bls_pm_registerFuncBeforeSuspend( &app_suspend_enter );
-#else
-	bls_pm_setSuspendMask (SUSPEND_DISABLE);
-#endif
-	/////
 
 #if (BLE_OTA_ENABLE)
 	// OTA init
