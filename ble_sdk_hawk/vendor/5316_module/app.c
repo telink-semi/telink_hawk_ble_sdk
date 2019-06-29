@@ -122,7 +122,7 @@ const led_cfg_t led_cfg[] = {
 /*----------------------------------------------------------------------------*/
 /*------------- OTA  Function                                 ----------------*/
 /*----------------------------------------------------------------------------*/
-#if (BLE_REMOTE_OTA_ENABLE)
+#if (BLE_MODULE_OTA_ENABLE)
 volatile u8 	ota_is_working = 0;
 void entry_ota_mode(void)
 {
@@ -347,7 +347,7 @@ void user_init()
 	bls_hci_mod_setEventMask_cmd(0xfffff);			//enable all 18 events,event list see ble_ll.h
 
 
-#if (BLE_OTA_ENABLE)
+#if (BLE_MODULE_OTA_ENABLE)
 	// OTA init
 	bls_ota_clearNewFwDataArea(); //must
 	bls_ota_registerStartCmdCb(entry_ota_mode);

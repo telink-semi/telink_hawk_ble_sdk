@@ -41,7 +41,7 @@ extern "C" {
 #define BLE_MODULE_SECURITY_ENABLE      1
 
 /////////////////// MODULE /////////////////////////////////
-#define BLE_OTA_ENABLE						1
+#define BLE_MODULE_OTA_ENABLE				1
 #define TELIK_SPP_SERVICE_ENABLE			1
 #define BLE_MODULE_INDICATE_DATA_TO_MCU		1
 #define BATT_CHECK_ENABLE       			1   //enable or disable battery voltage detection
