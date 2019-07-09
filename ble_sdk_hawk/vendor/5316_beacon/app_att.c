@@ -23,9 +23,8 @@
 
 #include "tl_common.h"
 #include <stack/ble/ble.h>
-//#include"app_config.h"
 
-// don't need this, already do it in project exclude setting
+//already do it in project exclude from build setting
 //#if (__PROJECT_5316_BEACON__)
 
 u8 beacon_resetCharater = 0; //reset Charateristic stored in EEPROM
@@ -72,11 +71,11 @@ const u8 beacon_deviceInf  = CHAR_PROP_READ | CHAR_PROP_NOTIFY;
 extern  telink_beacon_config_t telink_beacon_config;
 extern ibeacon_adv_t ibeacon_tbl_adv;
 extern eddystone_UID_t eddystone_UID_tbl_adv;
-extern eddystone_URL_t eddystone_URL_tbl_adv;
-extern eddystone_TLM_t eddystone_TLM_tbl_adv;
+//extern eddystone_URL_t eddystone_URL_tbl_adv;
+//extern eddystone_TLM_t eddystone_TLM_tbl_adv;
 
 extern int setTxPowerMode(void* p);
-extern int setAdvTxLevel(void* p);
+//extern int setAdvTxLevel(void* p);
 extern int setBeaconPeriod(void* p);
 extern int setIbeaconProximityUUID(void* p);
 extern int setBeaconMajor(void* p);

@@ -28,8 +28,6 @@
 #include "../common/blt_soft_timer.h"
 #include "../common/blt_common.h"
 
-//#include "battery_check.h"
-//#include "rc_ir.h"
 
 #define CLOCK_SYS_CLOCK_100MS   CLOCK_SYS_CLOCK_1MS*100
 
@@ -79,8 +77,8 @@ const u8 telink_uuid4beacon[16]= {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0
 
 
 /*Default Eddyston encoded URL, "http://www.telink-semi.com",note it should be set as big-endian mode*/
-//const u8 telink_defaultURL4beacon[]={0x00, 't', 'e', 'l', 'i','n','k','-','s','e','m','i',0x07};
-const u8 telink_defaultURL4beacon[]={0x00, 0xAA, 0x55, 0xAA, 0x55,'n','k','-','s','e','m','i',0x07};
+const u8 telink_defaultURL4beacon[]={0x00, 't', 'e', 'l', 'i','n','k','-','s','e','m','i',0x07};
+//const u8 telink_defaultURL4beacon[]={0x00, 01, 2, 3, 4,5,6,7,8,9,10,11,12};// 0x00 for http:
 
 
 /*Different beacon tx power level*/
@@ -139,7 +137,6 @@ int  blt_send_beacon_adv( int adv_mask, u8* adv_pkt)
 		rf_set_ble_crc_adv ();
 		u32  t_us = (adv_rf_len + 10) * 8 + 370;
 
-
 		for (int i=0; i<3; i++) // CH 0x25 0x26 0x27
 		{
 		    if (adv_mask & BIT(i))
@@ -158,13 +155,13 @@ int  blt_send_beacon_adv( int adv_mask, u8* adv_pkt)
 			}
 		}
 
-		// can have crash here
+		//beacon sent
 		//blt_p_event_callback (BLT_EV_FLAG_BEACON_DONE, 0, 0);
 
 		//clear stx2rx stateMachine status
 		STOP_RF_STATE_MACHINE;
 
-		// TODO
+		//
 		//PHY_POWER_DOWN;
 		//POWER_DOWN_64MHZ_CLK;
 	}
@@ -186,10 +183,8 @@ int  blt_send_beacon_adv( int adv_mask, u8* adv_pkt)
 #endif
 #if EDDYSTONE_TLM_ENABLE
 #define BEACON_SEC_CNT_ENABLE  1// To enable sec counter for Eddystone TLM Beacon, need about 14us for each interval
-#define BEACON_ADV_CNT_ENABLE  1//To enable adv counter for Eddystone TLM Beacon
 #else
 #define BEACON_SEC_CNT_ENABLE  0// To enable sec counter for Eddystone TLM Beacon, need about 14us for each interval
-#define BEACON_ADV_CNT_ENABLE  1//To enable adv counter for Eddystone TLM Beacon
 #endif
 
 #define TX_POWERMODE_MAX  3 //tx_powerMode, 0, 1, 2, 3
@@ -233,26 +228,26 @@ void check_state( ){
     }
 #endif
 
-    //Already in Beacon state, continue sending beacon (non connectable adv)
+    //Already in Beacon state, continue sending beacon (non connec-table ADV)
 	if(current_state == MODULE_STATE_BEACON){
 		return;
 	}
 	//Connection terminated meaning configuration finished, start sending beacon
 	else if(current_state == MODULE_STATE_TERMINATED){
-		//config finished . to save data
+		//configure finished , go save data
 		beacon_save_paramter();
 		current_state = MODULE_STATE_BEACON;
 		beacon_init();
 	}
-	//System boot, start connectable advertising waiting conn_req from master
+	//System boot, start connec-table advertising waiting conn_req from master
 	else if(current_state == BEACON_INVALIAD_STAUS){
 		current_state = MODULE_STATE_CONFIGURE;
 		system_boot_time = clock_time();
 
-		/*Used for Eddystone TLM Sec Counter*/
+		/*Used for EDDYSTONE TLM SEC Counter*/
 		#if BEACON_SEC_CNT_ENABLE
-		beacon_lastClockTime = clock_time();
-		beacon_TLMSecCounter = 0;
+		    beacon_lastClockTime = clock_time();
+		    beacon_TLMSecCounter = 0;
 		#endif
 		return;
 	}
@@ -273,16 +268,6 @@ void check_state( ){
 
 }
 
-void check_battery()
-{
-    static int loop =0;
-    if((loop++ %300) ==0)
-    {
-        // around 50mv offset
-        //printf("sv %d \n", adc_BatteryValueGet()/4 );// below 2.2V low valotage
-    }
-
-}
 
 
 /////////////////////////////////////////////////////////////////////
@@ -354,7 +339,6 @@ void beacon_nextBeacon(u8 e,u8 *p, int n){
 	/*For Eddystone TLM, should update adv data every time, ex: adv_cnt, sec_cnt, temp, voltage, etc*/
 	#if EDDYSTONE_TLM_ENABLE
 		if(firstAdvType == TELINK_EDDYSTONE_TLM_MODE){
-			//u8* eddystoneTLM_p = (u8*)(beacon_advPDUAddrBuf[firstAdvType]);
 			eddystone_TLM_t* eddystoneTLM_p = (eddystone_TLM_t*)(beacon_advPDUAddrBuf[firstAdvType]);
 			eddystoneTLM_p->adv_cnt = beacon_adv_couter;
 			eddystoneTLM_p->sec_cnt = beacon_TLMSecCounter;
@@ -367,11 +351,8 @@ void beacon_nextBeacon(u8 e,u8 *p, int n){
 
 void blt_system_power_optimize(void)  //to lower system power
 {
-	// TODO : power optimize
+	//power optimize
 	//disable_unnecessary_module_clock
-	//reg_rst_clk0 &= ~FLD_RST_SPI;  //spi not use
-	//reg_rst_clk0 &= ~FLD_RST_I2C;  //iic not use
-
 	reg_clk_en0 &= ~FLD_CLK0_SPI_EN;
 	reg_clk_en0 &= ~FLD_CLK0_I2C_EN;
 
@@ -386,7 +367,6 @@ void blt_system_power_optimize(void)  //to lower system power
 
 void system_recover_after_suspend(){
     //enable back IO pins
-    //------- LED GPIO ------------------------------------------
     gpio_set_func(LED_R, AS_GPIO);
     gpio_set_output_en(LED_R, TRUE);
     gpio_set_input_en(LED_R, FALSE);
@@ -403,6 +383,8 @@ void system_recover_after_suspend(){
     gpio_set_output_en(LED_W, TRUE);
     gpio_set_input_en(LED_W, FALSE);
 
+    //SWS pins
+    //...
 
 }
 void system_setting_before_deep(){
@@ -464,13 +446,6 @@ void system_setting_before_deep(){
 
 u32 tick_loop = 0;
 u32 tick_battery = 0;
-
-//deep sleep test
-void main_loop_deep ()
-{
-    cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_TIMER,clock_time() + 2 * CLOCK_16M_SYS_TIMER_CLK_1S);
-
-}
 void main_loop ()
 {
 	tick_loop ++;
@@ -478,41 +453,47 @@ void main_loop ()
 	//if connection for configuration needed, enable blt_sdk_main_loop()
 	//blt_sdk_main_loop();
 
-	//TODO : enter state directly
 	check_state(); // will do beacon_init
 
 	if(current_state == MODULE_STATE_BEACON){
 
-#if BEACON_ADV_CNT_ENABLE
+#if EDDYSTONE_TLM_ENABLE
         beacon_adv_couter++; //Used for Eddystone TLM ADV Counter
 #endif
 
-
-
+        ibeacon_tbl_adv.measured_power = beacon_adv_couter;
+        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[0]); //ibeacon
         blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
 
-        //switch pointer manually
-//        beacon_nextBeacon(0,0, 0);
-//        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
-//
-//        beacon_nextBeacon(0, 0, 0);
-//        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
-//
-//        beacon_nextBeacon(0, 0, 0);
-//        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
+        eddystone_UID_tbl_adv.reserved_bytes = beacon_adv_couter;
+        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[1]); //UID
+        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
+
+        eddystone_URL_tbl_adv.scheme_URL = beacon_adv_couter;
+        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[2]); //URL
+        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
+
+        eddystone_TLM_tbl_adv.sec_cnt = beacon_adv_couter;
+        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[3]); //TLM
+        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
+
 
 
         // led indicator for development stage only.
         // disable for power save
         //gpio_write(LED_G, TRUE);
-        WaitMs(100);
+        //WaitMs(100);
         //gpio_write(LED_G, FALSE);
 
-        system_setting_before_deep();
-        // 2.2uA without external xOSC, 3.1uA with external xOSC
-        //cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_TIMER,clock_time() + 500 * CLOCK_16M_SYS_TIMER_CLK_1MS);
 
-        // 1.0uA without external xOSC, 1.8uA with external xOSC
+        system_setting_before_deep();
+
+        // TIMER wake up, 2.2uA without external xOSC, 3.1uA with external xOSC
+        cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_TIMER,clock_time() + 3000 * CLOCK_16M_SYS_TIMER_CLK_1MS);
+        //or
+        //WaitMs(3000); // for test
+
+        // PAD wake up, 1.0uA without external xOSC, 1.8uA with external xOSC
         //cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD,NULL);
 
         //7.6uA
@@ -520,7 +501,8 @@ void main_loop ()
 
         //7.6 uA
         //cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER,clock_time() + 3 * CLOCK_16M_SYS_TIMER_CLK_1S );
-        system_recover_after_suspend();
+
+        system_recover_after_suspend(); // for suspend
 	}
 
 
@@ -531,7 +513,6 @@ void main_loop ()
         //battery_power_check();
     }
 #endif
-
 
 	// TODO : only connection mode need app_pm()
 	//app_power_management ();
@@ -544,7 +525,6 @@ void user_init() // remote
 {
     /* load customized freq_offset CAP value and TP value.*/
     blc_app_loadCustomizedParameters();
-
 
     /*****************************************************************************************
      Note: battery check must do before any flash write/erase operation, cause flash write/erase
@@ -663,7 +643,7 @@ void user_init() // remote
     //Load para from Flash or not
     beacon_para_init();
 
-    //------- LED GPIO ------------------------------------------
+    //------- EVK LED GPIO ------------------------------------------
     gpio_set_func(LED_R, AS_GPIO);
     gpio_set_output_en(LED_R, TRUE);
     gpio_set_input_en(LED_R, FALSE);

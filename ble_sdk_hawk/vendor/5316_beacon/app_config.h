@@ -48,14 +48,6 @@ extern "C" {
 #define	DEV_NAME_MLEN			18
 #define	ADV_DATA_MLEN			16
 
-//#if		(__PROJECT_BEACON_8261__)
-//	#define CHIP_TYPE				CHIP_TYPE_8261
-//#elif   (__PROJECT_BEACON_8267__)
-//	#define CHIP_TYPE				CHIP_TYPE_8267
-//#elif   (__PROJECT_5316_BEACON__)
-//    #define CHIP_TYPE               CHIP_TYPE_5316
-//#endif
-
 
 #define APPLICATION_DONGLE		0					// or else APPLICATION_DEVICE
 #define	FLOW_NO_OS				1
