@@ -260,6 +260,7 @@ void check_state( ){
 
 	// connect able advertising exceed 30s without been connected by master, stop conn_adv, start sending beacon (non connectable adv)*/
 	else if(system_boot_time && (clock_time()-system_boot_time>BEACON_MODE_WAIT_TIME)){
+	    bls_ll_setAdvEnable(0);  //ADV disable
 		current_state = MODULE_STATE_BEACON;
 		beacon_init();
 		system_boot_time = 0;
@@ -460,54 +461,53 @@ void main_loop ()
 
 	    beacon_count++;
 #if EDDYSTONE_TLM_ENABLE
-        beacon_adv_couter++; //Used for Eddystone TLM ADV Counter
+        beacon_adv_couter++; //Used for EDDYSTONE TLM ADV Counter
 #endif
 
         //TODO:
-        //can see packet loss from time to time when TX more than 2 format beacons at a time
+        //can see beacon loss from time to time
 #if IBEACON_ADV_ENABLE
-        ibeacon_tbl_adv.measured_power = beacon_count; // for debug
+        ibeacon_tbl_adv.measured_power = beacon_count; // for test packet drop
         updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[TELINK_IBEACON_MODE]);
         //beacon_nextBeacon(0,0,0);
-        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
+        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt);
 #endif
 
 #if EDDYSTONE_UID_ENABLE
-        //eddystone_UID_tbl_adv.reserved_bytes = beacon_count;// for debug
+        //eddystone_UID_tbl_adv.reserved_bytes = beacon_count;// for test packet drop
         updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[TELINK_EDDYSTONE_UID_MODE]);
         //beacon_nextBeacon(0,0,0);
-        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
+        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt);
 #endif
 
-
 #if EDDYSTONE_URL_ENABLE
-        //eddystone_URL_tbl_adv.scheme_URL = beacon_count;// for debug
+        //eddystone_URL_tbl_adv.scheme_URL = beacon_count;// for test packet drop
         updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[TELINK_EDDYSTONE_URL_MODE]);
         //beacon_nextBeacon(0,0,0);
-        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
+        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt);
 #endif
 
 #if EDDYSTONE_TLM_ENABLE
-        //eddystone_TLM_tbl_adv.sec_cnt = beacon_count;// for debug
+        //eddystone_TLM_tbl_adv.sec_cnt = beacon_count;// for test packet drop
         updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[TELINK_EDDYSTONE_TLM_MODE]);
         //beacon_nextBeacon(0,0,0);
-        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
+        blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt);
 #endif
 
 
 
-        //led indicator, disable for power save
-        //gpio_write(LED_G, TRUE);
-        //WaitMs(100);
-        //gpio_write(LED_G, FALSE);
+#if 0   // for test packet drop, no sleep
 
+        WaitMs(telink_beacon_config.beacon_period);
 
+#else
+        u16 b_period = telink_beacon_config.beacon_period;
         //system_setting_before_deep();
 
-        // TIMER wake up, 2.2uA without external xOSC, 3.1uA with external xOSC
-        //cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_TIMER,clock_time() + 3000 * CLOCK_16M_SYS_TIMER_CLK_1MS);
-        //or
-        WaitMs(300); // for test
+        //will wait BEACON_MODE_WAIT_TIME + b_period time
+        //TIMER wake up, 2.2uA without external xOSC, 3.1uA with external xOSC
+        cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_TIMER,clock_time() + b_period * CLOCK_16M_SYS_TIMER_CLK_1MS);
+
 
         // PAD wake up, 1.0uA without external xOSC, 1.8uA with external xOSC
         //cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD,NULL);
@@ -516,9 +516,10 @@ void main_loop ()
         //cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_PAD, NULL );
 
         //7.6 uA
-        //cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER,clock_time() + 3 * CLOCK_16M_SYS_TIMER_CLK_1S );
+        //cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER,clock_time() + b_period * CLOCK_16M_SYS_TIMER_CLK_1MS );
 
         //system_recover_after_suspend(); // for suspend
+#endif
 	}
 
 
