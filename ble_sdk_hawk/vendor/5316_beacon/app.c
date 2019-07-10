@@ -27,6 +27,7 @@
 #include "../common/keyboard.h"
 #include "../common/blt_soft_timer.h"
 #include "../common/blt_common.h"
+#include "battery_check.h"
 
 
 #define CLOCK_SYS_CLOCK_100MS   CLOCK_SYS_CLOCK_1MS*100
@@ -121,7 +122,6 @@ extern u32 blt_advExpectTime;
 //extern blt_event_callback_t		blt_p_event_callback ;
 extern st_ll_adv_t  blta;
 u8 beacon_adv_send[48] = {0};
-u8 beacon_count =0;
 
 int  blt_send_beacon_adv( int adv_mask, u8* adv_pkt)
 {
@@ -132,7 +132,6 @@ int  blt_send_beacon_adv( int adv_mask, u8* adv_pkt)
 	//if(bltParam.adv_en)
 	if(1)
 	{
-	    beacon_count++;
 		rf_set_ble_access_code_adv ();
 		rf_set_ble_crc_adv ();
 		u32  t_us = (adv_rf_len + 10) * 8 + 370;
@@ -446,6 +445,8 @@ void system_setting_before_deep(){
 
 u32 tick_loop = 0;
 u32 tick_battery = 0;
+u16 beacon_count = 0;
+
 void main_loop ()
 {
 	tick_loop ++;
@@ -457,41 +458,56 @@ void main_loop ()
 
 	if(current_state == MODULE_STATE_BEACON){
 
+	    beacon_count++;
 #if EDDYSTONE_TLM_ENABLE
         beacon_adv_couter++; //Used for Eddystone TLM ADV Counter
 #endif
 
-        ibeacon_tbl_adv.measured_power = beacon_adv_couter;
-        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[0]); //ibeacon
+        //TODO:
+        //can see packet loss from time to time when TX more than 2 format beacons at a time
+#if IBEACON_ADV_ENABLE
+        ibeacon_tbl_adv.measured_power = beacon_count; // for debug
+        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[TELINK_IBEACON_MODE]);
+        //beacon_nextBeacon(0,0,0);
         blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
+#endif
 
-        eddystone_UID_tbl_adv.reserved_bytes = beacon_adv_couter;
-        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[1]); //UID
+#if EDDYSTONE_UID_ENABLE
+        //eddystone_UID_tbl_adv.reserved_bytes = beacon_count;// for debug
+        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[TELINK_EDDYSTONE_UID_MODE]);
+        //beacon_nextBeacon(0,0,0);
         blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
+#endif
 
-        eddystone_URL_tbl_adv.scheme_URL = beacon_adv_couter;
-        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[2]); //URL
+
+#if EDDYSTONE_URL_ENABLE
+        //eddystone_URL_tbl_adv.scheme_URL = beacon_count;// for debug
+        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[TELINK_EDDYSTONE_URL_MODE]);
+        //beacon_nextBeacon(0,0,0);
         blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
+#endif
 
-        eddystone_TLM_tbl_adv.sec_cnt = beacon_adv_couter;
-        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[3]); //TLM
+#if EDDYSTONE_TLM_ENABLE
+        //eddystone_TLM_tbl_adv.sec_cnt = beacon_count;// for debug
+        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[TELINK_EDDYSTONE_TLM_MODE]);
+        //beacon_nextBeacon(0,0,0);
         blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt); //beacon_advPDUAddrBuf[firstAdvType]);
+#endif
 
 
 
-        // led indicator for development stage only.
-        // disable for power save
+        //led indicator, disable for power save
         //gpio_write(LED_G, TRUE);
         //WaitMs(100);
         //gpio_write(LED_G, FALSE);
 
 
-        system_setting_before_deep();
+        //system_setting_before_deep();
 
         // TIMER wake up, 2.2uA without external xOSC, 3.1uA with external xOSC
-        cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_TIMER,clock_time() + 3000 * CLOCK_16M_SYS_TIMER_CLK_1MS);
+        //cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_TIMER,clock_time() + 3000 * CLOCK_16M_SYS_TIMER_CLK_1MS);
         //or
-        //WaitMs(3000); // for test
+        WaitMs(300); // for test
 
         // PAD wake up, 1.0uA without external xOSC, 1.8uA with external xOSC
         //cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD,NULL);
@@ -502,7 +518,7 @@ void main_loop ()
         //7.6 uA
         //cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER,clock_time() + 3 * CLOCK_16M_SYS_TIMER_CLK_1S );
 
-        system_recover_after_suspend(); // for suspend
+        //system_recover_after_suspend(); // for suspend
 	}
 
 
@@ -510,7 +526,7 @@ void main_loop ()
 #if(BATT_CHECK_ENABLE)
     if (clock_time_exceed(tick_battery, 2 * 1000 * 1000)) { // 2 SEC
         tick_battery = clock_time();
-        //battery_power_check();
+        battery_power_check(BATTERY_VOL_MIN);
     }
 #endif
 
@@ -535,18 +551,18 @@ void user_init() // remote
                 So these initialization must be done after  battery check
     *****************************************************************************************/
     #if(BATT_CHECK_ENABLE)
-//        if(analog_read(DEEP_ANA_REG2) == BATTERY_VOL_LOW){
-//            battery_power_check(BATTERY_VOL_MIN + 200);//2.2V
-//        }
-//        else{
-//            battery_power_check(BATTERY_VOL_MIN);//2.0 V
-//        }
+        if(analog_read(DEEP_ANA_REG2) == BATTERY_VOL_LOW){
+            battery_power_check(BATTERY_VOL_MIN + 200);//2.2V
+        }
+        else{
+            battery_power_check(BATTERY_VOL_MIN);//2.0 V
+        }
     #endif
 
     /*-- BLE stack initialization --------------------------------------------*/
     u8  mac_public[6]={0x11,0x11,0x11,0x11,0x11,0x11};
-    //u8  mac_random_static[6];
-    //blc_initMacAddress(CFG_ADR_MAC, mac_public, mac_random_static);
+    u8  mac_random_static[6];
+    blc_initMacAddress(CFG_ADR_MAC, mac_public, mac_random_static);
 
     #if(BLE_DEVICE_ADDRESS_TYPE == BLE_DEVICE_ADDRESS_PUBLIC)
         app_own_address_type = OWN_ADDRESS_PUBLIC;
@@ -583,6 +599,7 @@ void user_init() // remote
     bls_ll_setScanRspData( (u8 *)tbl_scanRsp, sizeof(tbl_scanRsp));
 
 
+    // TODO : if want to use boot up connection , enable below
     //Configure ADV packet
 //    //set indirect ADV
 //    u8 status = bls_ll_setAdvParam(MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
@@ -602,7 +619,7 @@ void user_init() // remote
     //bls_app_registerEventCallback (BLT_EV_FLAG_CONNECT, &task_connect);
     //bls_app_registerEventCallback (BLT_EV_FLAG_TERMINATE, &ble_remote_terminate);
 
-    //TODO : tune power consumption
+    //TODO : no beacon out when enable
     //blt_system_power_optimize();
 
     /* Power Management initialization */
@@ -651,6 +668,8 @@ void user_init() // remote
     gpio_set_func(LED_G, AS_GPIO);
     gpio_set_output_en(LED_G, TRUE);
     gpio_set_input_en(LED_G, FALSE);
+    //TODO : no beacon out when off led G
+    //gpio_write(LED_G, FALSE);
 
     gpio_set_func(LED_B, AS_GPIO);
     gpio_set_output_en(LED_B, TRUE);

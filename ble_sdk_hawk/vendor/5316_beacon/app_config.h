@@ -86,9 +86,9 @@ extern "C" {
 
 /*TODO: Define beacon type supported by this firmware*/
 #define IBEACON_ADV_ENABLE    1
-#define EDDYSTONE_UID_ENABLE  1//1
-#define EDDYSTONE_URL_ENABLE  1//1
-#define EDDYSTONE_TLM_ENABLE  1//1
+#define EDDYSTONE_UID_ENABLE  0//1
+#define EDDYSTONE_URL_ENABLE  0//1
+#define EDDYSTONE_TLM_ENABLE  0//1
 
 /*TODO: Define beacon parameter save address of flash*/
 #define 			ADV_STORE_IN_FLASH_EN  			0//ADV data store flash

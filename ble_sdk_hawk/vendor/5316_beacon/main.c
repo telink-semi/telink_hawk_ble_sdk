@@ -60,7 +60,6 @@ int main (void) {
 		wd_clear(); //clear watch dog
 	#endif
 
-		//main_loop_deep();
 		main_loop ();
 	}
 }
