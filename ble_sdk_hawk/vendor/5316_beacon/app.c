@@ -79,7 +79,6 @@ const u8 telink_uuid4beacon[16]= {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0
 
 /*Default Eddyston encoded URL, "http://www.telink-semi.com",note it should be set as big-endian mode*/
 const u8 telink_defaultURL4beacon[]={0x00, 't', 'e', 'l', 'i','n','k','-','s','e','m','i',0x07};
-//const u8 telink_defaultURL4beacon[]={0x00, 01, 2, 3, 4,5,6,7,8,9,10,11,12};// 0x00 for http:
 
 
 /*Different beacon tx power level*/
@@ -137,6 +136,7 @@ int  blt_send_beacon_adv( int adv_mask, u8* adv_pkt)
 		u32  t_us = (adv_rf_len + 10) * 8 + 370;
 
 		for (int i=0; i<3; i++) // CH 0x25 0x26 0x27
+		//int i=0;//single ch
 		{
 		    if (adv_mask & BIT(i))
 			{
@@ -467,7 +467,7 @@ void main_loop ()
         //TODO:
         //can see beacon loss from time to time
 #if IBEACON_ADV_ENABLE
-        ibeacon_tbl_adv.measured_power = beacon_count; // for test packet drop
+        //ibeacon_tbl_adv.minor = beacon_count; // for test packet drop
         updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[TELINK_IBEACON_MODE]);
         //beacon_nextBeacon(0,0,0);
         blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt);
@@ -489,8 +489,10 @@ void main_loop ()
 
 #if EDDYSTONE_TLM_ENABLE
         //eddystone_TLM_tbl_adv.sec_cnt = beacon_count;// for test packet drop
-        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[TELINK_EDDYSTONE_TLM_MODE]);
         //beacon_nextBeacon(0,0,0);
+        eddystone_TLM_tbl_adv.adv_cnt = beacon_adv_couter;
+        eddystone_TLM_tbl_adv.sec_cnt = beacon_TLMSecCounter;
+        updateAdvDataPointer((u8*) beacon_advPDUAddrBuf[TELINK_EDDYSTONE_TLM_MODE]);
         blt_send_beacon_adv(BEACON_ADV_CHANNEL, beacon_p_pkt);
 #endif
 
@@ -614,7 +616,7 @@ void user_init() // remote
 //    }
 //    bls_ll_setAdvEnable(1);  //adv enable
 
-    rf_set_power_level_index (RF_POWER_7P9dBm);//OK
+    rf_set_power_level_index (RF_POWER_0dBm);//OK
 
     //ble event call back
     //bls_app_registerEventCallback (BLT_EV_FLAG_CONNECT, &task_connect);

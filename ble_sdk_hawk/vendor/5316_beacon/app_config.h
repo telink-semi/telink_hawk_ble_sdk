@@ -80,7 +80,7 @@ extern "C" {
 
 /******************************To be configured by developer**********************************************/
 /*TODO: define beacon configuration parameter:Period / TX_Power  /  PM mode enable / connectible mode duration time  */
-#define BEACON_PERIOD_DEFAULT		200 //default beacon period 1000ms, at least 200ms
+#define BEACON_PERIOD_DEFAULT		300 //default beacon period 1000ms, at least 200ms
 #define BEACON_TX_POWER_DEFAULT 	1 //default tx power, level 1, 0 dbm
 #define BEACON_MODE_WAIT_TIME		(200*CLOCK_16M_SYS_TIMER_CLK_1MS)//(1*CLOCK_16M_SYS_TIMER_CLK_1S) //wait 1 seconds before switch to the beacon mode, maximum 60s//test Eason
 
