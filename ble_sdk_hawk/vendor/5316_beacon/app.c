@@ -504,7 +504,7 @@ void main_loop ()
 
 #else
         u16 b_period = telink_beacon_config.beacon_period;
-        //system_setting_before_deep();
+        system_setting_before_deep();
 
         //will wait BEACON_MODE_WAIT_TIME + b_period time
         //TIMER wake up, 2.2uA without external xOSC, 3.1uA with external xOSC
@@ -520,7 +520,7 @@ void main_loop ()
         //7.6 uA
         //cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER,clock_time() + b_period * CLOCK_16M_SYS_TIMER_CLK_1MS );
 
-        //system_recover_after_suspend(); // for suspend
+        system_recover_after_suspend(); // for suspend
 #endif
 	}
 
