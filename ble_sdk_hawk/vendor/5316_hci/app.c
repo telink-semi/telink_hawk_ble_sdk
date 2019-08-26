@@ -169,17 +169,18 @@ void app_power_management ()
 /////////////////////////////////////blc_register_hci_handler for spp////////////////////////////
 int rx_from_uart_cb (void)//UART data send to Master,we will handler the data as CMD or DATA
 {
-	if(my_fifo_get(&hci_rx_fifo) == 0)
-	{
+	u8 *p = my_fifo_get(&hci_rx_fifo);
+	if(p == NULL){
 		return 0;
 	}
 
-	u8* p = my_fifo_get(&hci_rx_fifo);
+	//u8* p = my_fifo_get(&hci_rx_fifo);
 	u32 rx_len = p[0]; //usually <= 255 so 1 byte should be sufficient
 
 	if (rx_len)
 	{
-		blc_hci_handler(&p[4], rx_len - 4);
+		blc_hci_handler(&p[4], rx_len - 4);//
+		*((u32*)p) = 0;//Clear DMA length field for distributing HCI Rx buffer of interrupt
 		my_fifo_pop(&hci_rx_fifo);
 	}
 
@@ -207,9 +208,6 @@ int tx_to_uart_cb (void)
 
 void user_init()
 {
-	/* load customized freq_offset CAP value and TP value.*/
-	blc_app_loadCustomizedParameters();
-
 	/*-- BLE stack initialization --------------------------------------------*/
 	u8  mac_public[6];
 	u8  mac_random_static[6];

@@ -31,32 +31,46 @@
 
 void user_init(void)
 {
-#if (FEATURE_TEST_MODE == TEST_ADVERTISING_ONLY)
+	#if(   FEATURE_TEST_MODE == TEST_ADVERTISING_ONLY \
+		|| FEATURE_TEST_MODE == TEST_ADV_IN_CONN_SLAVE_ROLE \
+		|| FEATURE_TEST_MODE == TEST_SCAN_IN_ADV_AND_CONN_SLAVE_ROLE \
+		|| FEATURE_TEST_MODE == TEST_ADV_SCAN_IN_CONN_SLAVE_ROLE)
 
-	feature_linklayer_state_test_init();
+		feature_linklayer_state_test_init();
 
-#elif (FEATURE_TEST_MODE == TEST_POWER_ADV)
+	#elif(FEATURE_TEST_MODE == TEST_POWER_ADV)
 
-	feature_adv_power_test_init();
+		feature_adv_power_test_init();
 
-#elif (FEATURE_TEST_MODE == TEST_SDATA_LENGTH_EXTENSION)
-	feature_sdle_test_init();
+	#elif(FEATURE_TEST_MODE == TEST_SMP_SECURITY)
 
-#elif (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_TIMER)
+		feature_security_test_init_normal();
 
-	feature_soft_timer_test_init();
+	#elif(FEATURE_TEST_MODE == TEST_GATT_SECURITY)
 
-#elif (FEATURE_TEST_MODE == TEST_WHITELIST)
+		feature_gatt_security_test_init_normal();
 
-	feature_whitelist_test_init();
+	#elif(FEATURE_TEST_MODE == TEST_DATA_LENGTH_EXTENSION)
 
-#elif (FEATURE_TEST_MODE == TEST_BLE_PHY)
+		feature_sdle_test_init();
 
-	feature_phytest_init();
+	#elif(FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_TIMER)
 
-#else
+		feature_soft_timer_test_init();
 
-#endif
+	#elif(FEATURE_TEST_MODE == TEST_WHITELIST)
+
+		feature_whitelist_test_init();
+
+	#elif(FEATURE_TEST_MODE == TEST_BLE_PHY)
+
+		feature_phytest_init();
+
+	#elif(FEATURE_TEST_MODE == TEST_2M_PHY_CONNECTION)
+
+		feature_2m_phy_conn_init();
+
+	#endif
 }
 
 
@@ -68,15 +82,32 @@ void main_loop (void)
 {
 	tick_loop++;
 
-#if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_TIMER)
-	blt_soft_timer_process(MAINLOOP_ENTRY);
-#endif
+	#if(FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_TIMER)
+		blt_soft_timer_process(MAINLOOP_ENTRY);
+		feature_soft_timer_test_mainloop();
+	#endif
 
 	blt_sdk_main_loop();
 
-#if (FEATURE_TEST_MODE == TEST_SDATA_LENGTH_EXTENSION)
-	feature_sdle_test_mainloop();
-#endif
+	#if(FEATURE_TEST_MODE == TEST_SMP_SECURITY)
+		feature_security_test_mainloop();
+
+	#elif(FEATURE_TEST_MODE == TEST_DATA_LENGTH_EXTENSION)
+		feature_sdle_test_mainloop();
+
+	#elif(FEATURE_TEST_MODE == TEST_2M_PHY_CONNECTION)
+		feature_2m_phy_conn_mainloop();
+
+	#elif(FEATURE_TEST_MODE == TEST_ADV_IN_CONN_SLAVE_ROLE)
+		feature_linklayer_state_test_main_loop();
+
+	#elif(FEATURE_TEST_MODE == TEST_POWER_ADV)
+		feature_adv_power_test_mainloop();
+
+	#elif(FEATURE_TEST_MODE == TEST_WHITELIST)
+		feature_whitelist_test_mainloop();
+
+	#endif
 }
 
 /*----------------------------- End of File ----------------------------------*/

@@ -32,8 +32,10 @@
 #include "rc_ir.h"
 
 
-#if (__PROJECT_5316_BLE_REMOTE__ )
+#if(__PROJECT_5316_BLE_REMOTE__ )
+#define BLE_REMOTE_PM_ENABLE	    1
 
+#define RC_DEEP_SLEEP_EN            1
 #define ADV_IDLE_ENTER_DEEP_TIME	60  //60 s
 #define CONN_IDLE_ENTER_DEEP_TIME	60  //60 s
 
@@ -44,17 +46,11 @@
 #define MY_ADV_INTERVAL_MIN			ADV_INTERVAL_30MS
 #define MY_ADV_INTERVAL_MAX			ADV_INTERVAL_35MS
 
-
-
-#define		BLE_DEVICE_ADDRESS_TYPE 			BLE_DEVICE_ADDRESS_PUBLIC
-
-own_addr_type_t 	app_own_address_type = OWN_ADDRESS_PUBLIC;
-
-
+#define	BLE_DEVICE_ADDRESS_TYPE     BLE_DEVICE_ADDRESS_PUBLIC
+own_addr_type_t app_own_address_type = OWN_ADDRESS_PUBLIC;
 
 MYFIFO_INIT(blt_rxfifo, 64, 8);
 MYFIFO_INIT(blt_txfifo, 40, 16);
-
 
 /* ADV Packet, SCAN Response Packet define */
 const u8 tbl_advData[] = {
@@ -205,9 +201,6 @@ void LED_show_ota_result(int result)
 }
 #endif
 
-
-
-
 /*----------------------------------------------------------------------------*/
 /*------------- CallBack function of BLE                      ----------------*/
 /*----------------------------------------------------------------------------*/
@@ -237,13 +230,12 @@ void ble_remote_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 
 	}
 
-#if (BLE_REMOTE_PM_ENABLE)
+  #if(BLE_REMOTE_PM_ENABLE)
 	 //user has push terminate pkt to ble TX buffer before deepsleep
 	if(sendTerminate_before_enterDeep == 1){
 		sendTerminate_before_enterDeep = 2;
 	}
-#endif
-
+  #endif
 
 	advertise_begin_tick = clock_time();
 }
@@ -269,11 +261,11 @@ void deep_wakeup_proc(void)
 {
 #if(DEEPBACK_FAST_KEYSCAN_ENABLE)
 
-#if (REMOTE_IR_ENABLE)
+  #if(REMOTE_IR_ENABLE)
 	if(KEY_MODE_IR == analog_read(DEEP_ANA_REG1)){
 		return ;
 	}
-#endif
+  #endif
 	//if deepsleep wakeup is wakeup by GPIO(key press), we must quickly scan this
 	//press, hold this data to the cache, when connection established OK, send to master
 	//deepsleep_wakeup_fast_keyscan
@@ -291,7 +283,7 @@ void deep_wakeup_proc(void)
 
 void deepback_pre_proc(int *det_key)
 {
-#if (DEEPBACK_FAST_KEYSCAN_ENABLE)
+#if(DEEPBACK_FAST_KEYSCAN_ENABLE)
 	// to handle deepback key cache
 	if(!(*det_key) && deepback_key_state == DEEPBACK_KEY_CACHE
 			&& blc_ll_getCurrentState() == BLS_LINK_STATE_CONN
@@ -313,7 +305,7 @@ void deepback_pre_proc(int *det_key)
 
 void deepback_post_proc(void)
 {
-#if (DEEPBACK_FAST_KEYSCAN_ENABLE)
+#if(DEEPBACK_FAST_KEYSCAN_ENABLE)
 	//manual key release
 	if(deepback_key_state == DEEPBACK_KEY_WAIT_RELEASE && clock_time_exceed(deepback_key_tick,150000)){
 		key_not_released = 0;
@@ -346,7 +338,7 @@ void key_change_proc(void)
 			device_led_setup(led_cfg[LED_SHINE_SLOW + user_key_mode]);
 		}
 
-#if (REMOTE_IR_ENABLE)
+      #if(REMOTE_IR_ENABLE)
 		else if(user_key_mode == KEY_MODE_BLE)
 		{
 			key_value = kb_map_ble[key0];
@@ -376,7 +368,7 @@ void key_change_proc(void)
 		{
 			key_type = IDLE_KEY;
 		}
-#else
+      #else
 		else
 		{
 			key_value = key0;
@@ -392,7 +384,7 @@ void key_change_proc(void)
 				bls_att_pushNotifyData (HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
 			}
 		}
-#endif
+      #endif
 	}
 	else   //kb_event.cnt == 0,  key release
 	{
@@ -408,7 +400,7 @@ void key_change_proc(void)
 			key_buf[2] = 0;
 			bls_att_pushNotifyData (HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
 		}
-#if (REMOTE_IR_ENABLE)
+      #if(REMOTE_IR_ENABLE)
 		else if(key_type == IR_KEY)
 		{
 			if(ir_not_released){
@@ -416,13 +408,11 @@ void key_change_proc(void)
 				ir_dispatch(TYPE_IR_RELEASE, 0, 0);  //release
 			}
 		}
-#endif
+       #endif
 	}
 }
 
-
-
-#define GPIO_WAKEUP_KEYPROC_CNT				3
+#define GPIO_WAKEUP_KEYPROC_CNT		3
 
 void proc_keyboard (u8 e, u8 *p, int n)
 {
@@ -448,22 +438,22 @@ void proc_keyboard (u8 e, u8 *p, int n)
 	kb_event.keycode[0] = 0;
 	int det_key = kb_scan_key (0, 1);
 
-#if(DEEPBACK_FAST_KEYSCAN_ENABLE)
+  #if(DEEPBACK_FAST_KEYSCAN_ENABLE)
 	if(deepback_key_state != DEEPBACK_KEY_IDLE){
 		deepback_pre_proc(&det_key);
 	}
-#endif
+  #endif
 
 	if (det_key){
 		key_change_proc();
 	}
 	
 
-#if(DEEPBACK_FAST_KEYSCAN_ENABLE)
+  #if(DEEPBACK_FAST_KEYSCAN_ENABLE)
 	if(deepback_key_state != DEEPBACK_KEY_IDLE){
 		deepback_post_proc();
 	}
-#endif
+  #endif
 }
 #endif
 
@@ -499,7 +489,7 @@ void blt_pm_proc(void)
 		}
 
 
-	#if 1 //deepsleep
+	#if(RC_DEEP_SLEEP_EN) //deepsleep
 		if(sendTerminate_before_enterDeep == 1){ //sending Terminate and wait for ack before enter deepsleep
 			if(user_task_flg){  //detect key Press again,  can not enter deep now
 				sendTerminate_before_enterDeep = 0;
@@ -542,7 +532,8 @@ void blt_pm_proc(void)
 
 void  ble_remote_set_sleep_wakeup(u8 e, u8 *p, int n)
 {                                                                                                                //3995*16     sys_tick_per_us
-	if( blc_ll_getCurrentState() == BLS_LINK_STATE_CONN && ((u32)(bls_pm_getSystemWakeupTick() - clock_time())) > 80 *CLOCK_16M_SYS_TIMER_CLK_1MS ){  //suspend time > 30ms.add gpio wakeup
+	if( blc_ll_getCurrentState() == BLS_LINK_STATE_CONN
+		&& ((u32)(bls_pm_getSystemWakeupTick() - clock_time())) > 80 *CLOCK_16M_SYS_TIMER_CLK_1MS ){  //suspend time > 30ms.add gpio wakeup
 		bls_pm_setWakeupSource(PM_WAKEUP_CORE);  //gpio CORE wakeup suspend
 	}
 }
@@ -608,15 +599,14 @@ int gpio_test3(void)
 
 void user_init()
 {
-	/* load customized freq_offset CAP value and TP value.*/
-	blc_app_loadCustomizedParameters();
+
 
 	/***********************************************************************************
 	 * Keyboard matrix initialization. These section must be before battery_power_check.
 	 * Because when low battery,chip will entry deep.if placed after battery_power_check,
 	 * it is possible that can not wake up chip.
 	 *  *******************************************************************************/
-#if(RC_BTN_ENABLE)
+  #if(RC_BTN_ENABLE)
 	u32 pin[] = KB_DRIVE_PINS;
 	for(int i=0; i<(sizeof (pin)/sizeof(*pin)); i++)
 	{
@@ -625,7 +615,7 @@ void user_init()
 	}
 
 	bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_keyboard);
-#endif
+  #endif
 
 	/*****************************************************************************************
 	 Note: battery check must do before any flash write/erase operation, cause flash write/erase
@@ -635,31 +625,33 @@ void user_init()
 				SMP initialization, ..
 				So these initialization must be done after  battery check
 	*****************************************************************************************/
-	#if(BATT_CHECK_ENABLE)
-		if(analog_read(DEEP_ANA_REG2) == BATTERY_VOL_LOW){
-			battery_power_check(BATTERY_VOL_MIN + 200);//2.2V
-		}
-		else{
-			battery_power_check(BATTERY_VOL_MIN);//2.0 V
-		}
-	#endif
+  #if(BATT_CHECK_ENABLE)
+	if(analog_read(DEEP_ANA_REG2) == BATTERY_VOL_LOW){
+		battery_power_check(BATTERY_VOL_MIN + 200);//2.2V
+	}
+	else{
+		battery_power_check(BATTERY_VOL_MIN);//2.0 V
+	}
+  #endif
 
 	/*-- BLE stack initialization --------------------------------------------*/
 	u8  mac_public[6];
 	u8  mac_random_static[6];
 	blc_initMacAddress(CFG_ADR_MAC, mac_public, mac_random_static);
 
-	#if(BLE_DEVICE_ADDRESS_TYPE == BLE_DEVICE_ADDRESS_PUBLIC)
-		app_own_address_type = OWN_ADDRESS_PUBLIC;
-	#elif(BLE_DEVICE_ADDRESS_TYPE == BLE_DEVICE_ADDRESS_RANDOM_STATIC)
-		app_own_address_type = OWN_ADDRESS_RANDOM;
-		blc_ll_setRandomAddr(mac_random_static);
-	#endif
+  #if(BLE_DEVICE_ADDRESS_TYPE == BLE_DEVICE_ADDRESS_PUBLIC)
+	app_own_address_type = OWN_ADDRESS_PUBLIC;
+  #elif(BLE_DEVICE_ADDRESS_TYPE == BLE_DEVICE_ADDRESS_RANDOM_STATIC)
+	app_own_address_type = OWN_ADDRESS_RANDOM;
+	blc_ll_setRandomAddr(mac_random_static);
+  #endif
 
 	/*-- BLE Controller initialization ---------------------------------------*/
 	blc_ll_initBasicMCU(mac_public);//mandatory
 	blc_ll_initAdvertising_module(mac_public);//adv module: mandatory for BLE slave,
 	blc_ll_initSlaveRole_module();//slave module: mandatory for BLE slave,
+
+	//blc_ll_init2MPhy_feature();//Debug
 
 	/*-- BLE Host initialization ---------------------------------------------*/
 	extern void my_att_init(void);
@@ -669,13 +661,15 @@ void user_init()
 	blc_l2cap_register_handler(blc_l2cap_packet_receive);
 
 	/*-- BLE SMP initialization ----------------------------------------------*/
-#if (BLE_REMOTE_SECURITY_ENABLE)
+  #if(BLE_REMOTE_SECURITY_ENABLE)
 	blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
 													//and this func must call before bls_smp_enableParing
 	bls_smp_enableParing (SMP_PARING_CONN_TRRIGER );
-#else
+	//blc_smp_enableScFlag (1);    //support smp4.2
+	//blc_smp_setEcdhDebugMode(1); //if support smp4.2, use ecdh-debug mode
+  #else
 	bls_smp_enableParing (SMP_PARING_DISABLE_TRRIGER );
-#endif
+  #endif
 
 	//HID_service_on_android7p0_init();  //hid device on android 7.0/7.1
 
@@ -685,7 +679,7 @@ void user_init()
 
 
 	/* Configure ADV packet */
-#if(BLE_REMOTE_SECURITY_ENABLE)
+  #if(BLE_REMOTE_SECURITY_ENABLE)
 	//get bonded device number
 	u8 bond_number = blc_smp_param_getCurrentBondingDeviceNumber();
 	smp_param_save_t  bondInfo;
@@ -711,7 +705,7 @@ void user_init()
 		bls_app_registerEventCallback (BLT_EV_FLAG_ADV_DURATION_TIMEOUT, &app_switch_to_indirect_adv);
 	}
 	else//set indirect ADV
-#endif
+  #endif
 	{
 		u8 status = bls_ll_setAdvParam(  MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
 										 ADV_TYPE_CONNECTABLE_UNDIRECTED, app_own_address_type,
@@ -723,52 +717,47 @@ void user_init()
 	}
 
 	bls_ll_setAdvEnable(1);  //adv enable
-	rf_set_power_level_index (RF_POWER_7P9dBm);//OK
+	rf_set_power_level_index(RF_POWER_7P9dBm);//OK
 
 	//ble event call back
-	bls_app_registerEventCallback (BLT_EV_FLAG_CONNECT, &task_connect);
-	bls_app_registerEventCallback (BLT_EV_FLAG_TERMINATE, &ble_remote_terminate);
-
+	bls_app_registerEventCallback(BLT_EV_FLAG_CONNECT, &task_connect);
+	bls_app_registerEventCallback(BLT_EV_FLAG_TERMINATE, &ble_remote_terminate);
 
 	/* Power Management initialization */
-#if(BLE_REMOTE_PM_ENABLE)
+  #if(BLE_REMOTE_PM_ENABLE)
 	blc_ll_initPowerManagement_module();        //pm module:      	 optional
-	bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
-	bls_app_registerEventCallback (BLT_EV_FLAG_SUSPEND_ENTER, &ble_remote_set_sleep_wakeup);
-#else
-	bls_pm_setSuspendMask (SUSPEND_DISABLE);
-#endif
-
+	bls_pm_setSuspendMask(SUSPEND_ADV | SUSPEND_CONN);
+	bls_app_registerEventCallback(BLT_EV_FLAG_SUSPEND_ENTER, &ble_remote_set_sleep_wakeup);
+  #else
+	bls_pm_setSuspendMask(SUSPEND_DISABLE);
+  #endif
 
 	/* IR Function initialization */
-#if(REMOTE_IR_ENABLE)
+  #if(REMOTE_IR_ENABLE)
 	user_key_mode = analog_read(DEEP_ANA_REG1);
 	analog_write(DEEP_ANA_REG1, 0x00);
 	rc_ir_init();
-#endif
-
-
+  #endif
 
 	/* OTA Function Initialization  */
-#if(BLE_REMOTE_OTA_ENABLE)
+  #if(BLE_REMOTE_OTA_ENABLE)
 	bls_ota_clearNewFwDataArea(); //must
 	bls_ota_registerStartCmdCb(entry_ota_mode);
 	bls_ota_registerResultIndicateCb(LED_show_ota_result);
-#endif
-
+  #endif
 
 	/* LED Indicator Initialization */
-#if (BLT_APP_LED_ENABLE)
+  #if(BLT_APP_LED_ENABLE)
 	device_led_init(GPIO_LED, 1);
-#endif
+  #endif
 
-#if (BLT_TEST_SOFT_TIMER_ENABLE)
+  #if(BLT_TEST_SOFT_TIMER_ENABLE)
 	blt_soft_timer_init();
 	blt_soft_timer_add(&gpio_test0, 23000);//23ms
 	blt_soft_timer_add(&gpio_test1, 7000); //7ms <-> 17ms
 	blt_soft_timer_add(&gpio_test2, 13000);//13ms
 	blt_soft_timer_add(&gpio_test3, 27000);//27ms
-#endif
+  #endif
 
 	advertise_begin_tick = clock_time();
 }
@@ -781,33 +770,28 @@ void main_loop (void)
 {
 	tick_loop ++;
 
-
 	/* BLE entry -------------------------------------------------------------*/
 	blt_sdk_main_loop();
 
-
 	/* UI entry --------------------------------------------------------------*/
-	#if (BATT_CHECK_ENABLE)
+  #if(BATT_CHECK_ENABLE)
 	if(clock_time_exceed(lowBattDet_tick, 500*1000)){
 		lowBattDet_tick = clock_time();
 		battery_power_check(BATTERY_VOL_MIN);
 	}
-	#endif
+  #endif
 
+  #if(BLT_TEST_SOFT_TIMER_ENABLE)
+	blt_soft_timer_process(MAINLOOP_ENTRY);
+  #endif
 
+  #if(RC_BTN_ENABLE)
+	proc_keyboard(0, 0, 0);
+  #endif
 
-	#if (BLT_TEST_SOFT_TIMER_ENABLE)
-		blt_soft_timer_process(MAINLOOP_ENTRY);
-	#endif
-
-	#if(RC_BTN_ENABLE)
-		proc_keyboard(0, 0, 0);
-	#endif
-
-	#if (BLT_APP_LED_ENABLE)
-		device_led_process();
-	#endif
-
+  #if(BLT_APP_LED_ENABLE)
+	device_led_process();
+  #endif
 
 	/*-- Power Management  -------------------------------------------------------*/
 	blt_pm_proc();

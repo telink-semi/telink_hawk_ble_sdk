@@ -83,6 +83,8 @@ _attribute_ram_code_ static void flash_wait_done()
 _attribute_ram_code_ void flash_erase_sector(unsigned long addr){
 	unsigned char r = irq_disable();
 
+	wd_clear();
+
 	flash_send_cmd(FLASH_WRITE_ENABLE_CMD);
 	flash_send_cmd(FLASH_SECT_ERASE_CMD);
 	flash_send_addr(addr);
@@ -125,7 +127,6 @@ _attribute_ram_code_ void flash_write_page(unsigned long addr, unsigned long len
  */
 _attribute_ram_code_ void flash_read_page(unsigned long addr, unsigned long len, unsigned char *buf){
 	unsigned char r = irq_disable();
-
 
 	flash_send_cmd(FLASH_READ_CMD);
 	flash_send_addr(addr);
@@ -294,6 +295,8 @@ _attribute_ram_code_ void flash_erase_32kblock(unsigned int addr)
 {
 	unsigned char r = irq_disable();
 
+	wd_clear();
+
 	flash_send_cmd(FLASH_WRITE_ENABLE_CMD);
 	flash_send_cmd(FLASH_32KBLK_ERASE_CMD);
 	flash_send_addr(addr);
@@ -310,6 +313,8 @@ _attribute_ram_code_ void flash_erase_32kblock(unsigned int addr)
 _attribute_ram_code_ void flash_erase_64kblock(unsigned int addr)
 {
 	unsigned char r = irq_disable();
+
+	wd_clear();
 
 	flash_send_cmd(FLASH_WRITE_ENABLE_CMD);
 	flash_send_cmd(FLASH_64KBLK_ERASE_CMD);
@@ -385,6 +390,8 @@ _attribute_ram_code_ void flash_erase_page(unsigned int addr)
 _attribute_ram_code_ void flash_erase_chip(void)
 {
 	unsigned char r = irq_disable();
+
+	wd_clear();
 
 	flash_send_cmd(FLASH_WRITE_ENABLE_CMD);
 	flash_send_cmd(FLASH_CHIP_ERASE_CMD);

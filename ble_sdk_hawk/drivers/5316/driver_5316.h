@@ -47,7 +47,7 @@
 #include "drivers/5316/dfifo.h"
 #include "drivers/5316/dma.h"
 #include "drivers/5316/timer.h"
-
+#include "drivers/5316/emi.h"
 
 
 

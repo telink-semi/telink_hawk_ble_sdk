@@ -26,7 +26,7 @@
 #include "compiler.h"
 #include "register.h"
 #include "../../common/config/user_config.h"
-
+#include "watchdog.h"
 
 extern int SYS_TICK_DIV;
 
@@ -72,7 +72,7 @@ void clock_init(SYS_CLK_TYPEDEF SYS_CLK);
 
 static inline unsigned int clock_time(void)
 {
- 		return reg_system_tick;
+ 	return reg_system_tick;
 }
 
 unsigned int clock_time_exceed(unsigned int ref, unsigned int span_us);

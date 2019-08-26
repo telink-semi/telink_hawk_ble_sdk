@@ -22,16 +22,17 @@
 
 #pragma once
 
-int my_printf(const char *fmt, ...);
-int my_sprintf(char* s, const char *fmt, ...);
-
-#ifndef printf
-#define printf	 //my_printf
+#ifdef WIN32
+	#include <stdio.h>
+#else
+	int my_printf(const char *fmt, ...);
+	int my_sprintf(char* s, const char *fmt, ...);
+	void array_printf(unsigned char*data, unsigned int len) ;
+	#define printf	     my_printf
+	#define sprintf	     my_sprintf
+    #define print_array  array_printf
 #endif
 
-#ifndef printf
-#define sprintf	 //my_sprintf
-#endif
 
 
 

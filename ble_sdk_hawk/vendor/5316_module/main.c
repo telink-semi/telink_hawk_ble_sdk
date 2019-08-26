@@ -60,6 +60,11 @@ int main(void){
 
 	blc_pm_select_internal_32k_crystal();
 
+	#if(FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K) ///FLASH_SIZE_OPTION_128K
+		bls_ota_setFirmwareSizeAndOffset(48, 0x10000);///default : ota_firmware_size_k=128;ota_program_bootAddr=0x20000; it is for hawk 128K flash
+		bls_smp_configParingSecurityInfoStorageAddr(0x1C000);
+	#endif
+
 	cpu_wakeup_init();
 
 	#if (CLOCK_SYS_CLOCK_HZ == 16000000)
@@ -71,6 +76,9 @@ int main(void){
 	#endif
 
 	gpio_init();
+
+	/* load customized freq_offset CAP value and TP value.*/
+	blc_app_loadCustomizedParameters();
 
 	rf_drv_init(RF_MODE_BLE_1M);
 

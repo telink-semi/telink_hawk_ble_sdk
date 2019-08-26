@@ -83,8 +83,7 @@
 /** @} End GAP_ATT_PERMISSIONS_BITMAPS */
 
 
-typedef struct
-{
+typedef struct{
   u8 len;                    //!< Length of UUID
   u8 uuid[16];               //!< UUID
 } uuid_t;
@@ -92,8 +91,7 @@ typedef struct
 /**
  * Error Response 
  */
-typedef struct
-{
+typedef struct{
     u8 reqOpcodeInErr; //!< The request that generated this error response
     u8 errCode;   //!< The reason why the request has generated an error response
     u16 attHandleInErr;   //!< The attribute handle that generated this error response
@@ -102,24 +100,21 @@ typedef struct
 /**
  * Exchange MTU Request 
  */
-typedef struct
-{
+typedef struct{
     u16 clientRxMTU; //!< Attribute client receive MTU size 
 } exchangeMTUReq_t;
 
 /**
  * Exchange MTU Response 
  */
-typedef struct
-{
+typedef struct{
     u16 serverRxMTU; //!< Attribute server receive MTU size
 } exchangeMTURsp_t;
 
 /**
  * Find Information Request 
  */
-typedef struct
-{
+typedef struct{
     u16 startingHandle;       //!< First requested handle number
     u16 endingHandle;         //!< Last requested handle number
 } findInformationReq_t;
@@ -127,8 +122,7 @@ typedef struct
 /**
  * Handle(s) and 16-bit Bluetooth UUID(s)
  */
-typedef struct
-{
+typedef struct{
     u16 handle;                //!< Handle
     u8 uuid[ATT_16BIT_UUID_LEN]; //!< 16 bit UUID
 } handleBtUUID_t;
@@ -136,8 +130,7 @@ typedef struct
 /**
  * Handle(s) and 128-bit UUID(s)
  */
-typedef struct
-{
+typedef struct{
     u16 handle;             //!< Handle
     u8 uuid[ATT_128BIT_UUID_LEN]; //!< 128 bit UUID
 } handleUUID_t;
@@ -145,8 +138,7 @@ typedef struct
 /**
  * Find Information Response 
  */
-typedef struct
-{
+typedef struct{
     u8 format;       //!< Format of information
     u8 infoNum;      //!< information num
     u8 info[ATT_MTU_SIZE - 2];      //!< information
@@ -155,8 +147,7 @@ typedef struct
 /**
  * Find By Type Value Request 
  */
-typedef struct
-{
+typedef struct{
   u16  startingHandle;          //!< First requested handle number 
   u16  endingHandle;            //!< Last requested handle number
   u16  uuid;                    //!< UUID to find
@@ -167,8 +158,7 @@ typedef struct
 /**
  * Handles Infomation list element
  */
-typedef struct
-{
+typedef struct{
   u8 handle;         //!< Found attribute handle
   u8 groupEndHandle; //!< Group end handle
 } handleInfo_t;
@@ -176,8 +166,7 @@ typedef struct
 /**
  * Find By Type Value Response 
  */
-typedef struct
-{
+typedef struct{
   u8 handleInfoNum;                                       //!< Number of handles information below
   handleInfo_t handleInfo[1] ; //!< A list of 1 or more Handle Informations
 } findByTypeValueRsp_t;
@@ -185,8 +174,7 @@ typedef struct
 /**
  * Read By Type Request 
  */
-typedef struct
-{
+typedef struct{
   u16 startingHandle; //!< First requested handle number
   u16 endingHandle;   //!< Last requested handle number
   uuid_t attrType;    //!< 2 or 16 octet UUID
@@ -195,8 +183,7 @@ typedef struct
 /**
  * Read By Type Response 
  */
-typedef struct
-{
+typedef struct{
   u8 numData;                  //!< Number of attribute data list item
   u8 len;                      //!< The size of each attribute handle-value pair
   u8 data[ATT_MTU_SIZE-2];     //!< Attribute Data List
@@ -205,16 +192,14 @@ typedef struct
 /**
  * Read Request 
  */
-typedef struct
-{
+typedef struct{
   u16 handle;               //!< The handle of the attribute to be read
 } readReq_t;
 
 /**
  * Read Response 
  */
-typedef struct
-{
+typedef struct{
   u8 len;                   //!< Length of value
   u8 attrValue[ATT_MTU_SIZE - 1];          //!< Value of the attribute with the handle given
 } readRsp_t;
@@ -222,8 +207,7 @@ typedef struct
 /**
  * Read Blob Req 
  */
-typedef struct
-{
+typedef struct{
   u16 handle; //!< The handle of the attribute to be read
   u16 offset; //!< The offset of the first octet to be read
 } readBlobReq_t;
@@ -231,8 +215,7 @@ typedef struct
 /**
  * Read Blob Response 
  */
-typedef struct
-{
+typedef struct{
   u8 len;      //!< Length of value
   u8 attrValue[ATT_MTU_SIZE - 1]; //!< Part of the value of the attribute with the handle given
 } readBlobRsp_t;
@@ -240,8 +223,7 @@ typedef struct
 /**
  * Read Multiple Request
  */
-typedef struct
-{
+typedef struct{
   u8  numHandles; //!< Number of attribute handles
   u16 handle[1];  //!< A set of two or more attribute handles
 } readMultipleReq_t;
@@ -249,8 +231,7 @@ typedef struct
 /**
  * Read Multiple Response 
  */
-typedef struct
-{
+typedef struct{
   u8 len;       //!< Length of values
   u8 values[ATT_MTU_SIZE - 1]; //!< A set of two or more values
 } readMultiRsp_t;
@@ -258,8 +239,7 @@ typedef struct
 /**
  * Read By Group Type Request 
  */
-typedef struct
-{
+typedef struct{
   u16 startingHandle; //!< First requested handle number (must be first field)
   u16 endingHandle;   //!< Last requested handle number
   uuid_t attrType;     //!< 2 or 16 octet UUID
@@ -268,8 +248,7 @@ typedef struct
 /**
  * Read By Group Type Response 
  */
-typedef struct
-{
+typedef struct{
   u8 grpNum;                  //!< The number of attributes in this group
   u8 len;                      //!< Length of each attribute handle
   u8 data[ATT_MTU_SIZE - 2];                 //!< Attribute Data
@@ -278,8 +257,7 @@ typedef struct
 /**
  * Write Request 
  */
-typedef struct
-{
+typedef struct{
   u16 handle;                            //!< The handle of the attribute to be written (must be first field)
   u8 len;                                //!< Length of value
   u8 value[ATT_MTU_SIZE - 3];            //!< The value to be written to the attribute
@@ -288,8 +266,7 @@ typedef struct
 /**
  * Write Command 
  */
-typedef struct
-{
+typedef struct{
   u16 handle;                         //!< The handle of the attribute to be written (must be first field)
   u8 len;                             //!< Length of value
   u8 value[ATT_MTU_SIZE - 3];         //!< The value to be written to the attribute
@@ -299,8 +276,7 @@ typedef struct
 /**
  * Prepare Write Request 
  */
-typedef struct
-{
+typedef struct{
   u16 handle;                 //!< Handle of the attribute to be written (must be first field)
   u16 offset;                 //!< Offset of the first octet to be written
   u8 len;                     //!< Length of value
@@ -310,8 +286,7 @@ typedef struct
 /**
  * Prepare Write Response 
  */
-typedef struct
-{
+typedef struct{
   u16 handle;                       //!< The handle of the attribute to be written
   u16 offset;                       //!< The offset of the first octet to be written
   u8 len;                           //!< Length of value
@@ -321,16 +296,14 @@ typedef struct
 /**
  * Execute Write Request 
  */
-typedef struct
-{
+typedef struct{
   u8 flags;   //!< 0x00 - cancel all prepared writes 0x01 - immediately write all pending prepared values
 } executeWriteReq_t;
 
 /**
  * Handle Value Notification 
  */
-typedef struct
-{
+typedef struct{
   u16 handle;               //!< The handle of the attribute
   u8 len;                   //!< Length of value
   u8 value[ATT_MTU_SIZE - 3];              //!< The current value of the attribute 
@@ -339,8 +312,7 @@ typedef struct
 /**
  * Handle Value Indication 
  */
-typedef struct
-{
+typedef struct{
   u16 handle;               //!< The handle of the attribute
   u8 len;                   //!< Length of value
   u8 value[ATT_MTU_SIZE - 3];              //!< The current value of the attribute 
@@ -433,78 +405,71 @@ typedef struct attProtocolRspPdu{
 /** @} end of group GATT_Char_Cfg_Bit_length */
 
 
-
-typedef int (*att_mtuSizeExchange_callback_t)(u16, u16);
 typedef int (*att_handleValueConfirm_callback_t)(void);
 typedef int (*att_readwrite_callback_t)(void* p);
+typedef void (*attRxMtuSizeExchangeCommpleteCb)(u16 connHandle, u16 remoteMtuSize, u16 effectMtuSize);
 
 typedef struct attribute
 {
-  u16  attNum;
-  u8   perm;
-  u8   uuidLen;
-  u32  attrLen;    //4 bytes aligned
+  u16 attNum;
+  u8  perm;
+  u8  uuidLen;
+  u32 attrLen;    //4 bytes aligned
   u8* uuid;
   u8* pAttrValue;
   att_readwrite_callback_t w;
   att_readwrite_callback_t r;
 } attribute_t;
 
+typedef struct{
+    u16 init_MTU;
+    u16 effective_MTU;
+    u8 Data_pending_time; //10ms unit
+    u8 Data_permission_check;
+} att_para_t;
+extern att_para_t bltAtt;
 
-
-
-
-
-extern u8	blt_indicate_handle;
-
-
-
+extern u8 blt_indicate_handle;
 
 /******************************* User Interface  ************************************/
-ble_sts_t	bls_att_pushNotifyData (u16 attHandle, u8 *p, int len);
-ble_sts_t	bls_att_pushIndicateData (u16 attHandle, u8 *p, int len);
-void		bls_att_setAttributeTable (u8 *p);
+//GATT server table
+void bls_att_setAttributeTable(u8 *p);
 
-void 		bls_att_registerHandleValueConfirmCb (att_handleValueConfirm_callback_t cb);
+//ATT notification
+ble_sts_t bls_att_pushNotifyData(u16 attHandle, u8 *p, int len);
 
+//ATT indicator/confirm
+ble_sts_t bls_att_pushIndicateData(u16 attHandle, u8 *p, int len);
 
-//mtu size
-ble_sts_t   blc_att_setRxMtuSize(u16 mtu_size);
-void        blc_att_registerMtuSizeExchangeCb (att_mtuSizeExchange_callback_t cb);
-ble_sts_t	blc_att_requestMtuSizeExchange (u16 connHandle, u16 mtu_size);
+void bls_att_registerHandleValueConfirmCb(att_handleValueConfirm_callback_t cb);
 
+//MTU size
+ble_sts_t blc_att_setRxMtuSize(u16 mtu_size);
+ble_sts_t blc_att_requestMtuSizeExchange(u16 connHandle, u16 mtu_size);
+void blc_att_registerMtuSizeExchangeCb(attRxMtuSizeExchangeCommpleteCb cb);
+void blt_att_resetMtuSizeToDefault(void);
 
+// 0x04: ATT_OP_FIND_INFO_REQ
+void att_req_find_info(u8 *dat, u16 start_attHandle, u16 end_attHandle);
+// 0x06: ATT_OP_FIND_BY_TYPE_VALUE_REQ
+void att_req_find_by_type (u8 *dat, u16 start_attHandle, u16 end_attHandle, u8 *uuid, u8* attr_value, int len);
+// 0x08: ATT_OP_READ_BY_TYPE_REQ
+void att_req_read_by_type (u8 *dat, u16 start_attHandle, u16 end_attHandle, u8 *uuid, int uuid_len);
+// 0x0a: ATT_OP_READ_REQ
+void att_req_read (u8 *dat, u16 attHandle);
+// 0x0c: ATT_OP_READ_BLOB_REQ
+void att_req_read_blob (u8 *dat, u16 attHandle, u16 offset);
+// 0x10: ATT_OP_READ_BY_GROUP_TYPE_REQ
+void att_req_read_by_group_type (u8 *dat, u16 start_attHandle, u16 end_attHandle, u8 *uuid, int uuid_len);
+// 0x12: ATT_OP_WRITE_REQ
+void att_req_write (u8 *dat, u16 attHandle, u8 *buf, int len);
+// 0x52: ATT_OP_WRITE_CMD
+void att_req_write_cmd (u8 *dat, u16 attHandle, u8 *buf, int len);
 
+ble_sts_t bls_att_setDeviceName(u8* pName,u8 len);  //only module/mesh/hci use
 
-		// 0x04: ATT_OP_FIND_INFO_REQ
-void 	att_req_find_info(u8 *dat, u16 start_attHandle, u16 end_attHandle);
-		// 0x06: ATT_OP_FIND_BY_TYPE_VALUE_REQ
-void 	att_req_find_by_type (u8 *dat, u16 start_attHandle, u16 end_attHandle, u8 *uuid, u8* attr_value, int len);
-		// 0x08: ATT_OP_READ_BY_TYPE_REQ
-void 	att_req_read_by_type (u8 *dat, u16 start_attHandle, u16 end_attHandle, u8 *uuid, int uuid_len);
-		// 0x0a: ATT_OP_READ_REQ
-void 	att_req_read (u8 *dat, u16 attHandle);
-		// 0x0c: ATT_OP_READ_BLOB_REQ
-void 	att_req_read_blob (u8 *dat, u16 attHandle, u16 offset);
-		// 0x10: ATT_OP_READ_BY_GROUP_TYPE_REQ
-void 	att_req_read_by_group_type (u8 *dat, u16 start_attHandle, u16 end_attHandle, u8 *uuid, int uuid_len);
-		// 0x12: ATT_OP_WRITE_REQ
-void 	att_req_write (u8 *dat, u16 attHandle, u8 *buf, int len);
-		// 0x52: ATT_OP_WRITE_CMD
-void 	att_req_write_cmd (u8 *dat, u16 attHandle, u8 *buf, int len);
-
-
-
-
-ble_sts_t 	bls_att_setDeviceName(u8* pName,u8 len);  //only module/mesh/hci use
-
-
-int 		att_register_idle_func (void *p);
-int 		l2cap_att_client_handler (u16 conn, u8 *p);
-
-
-
-
-
+int att_register_idle_func (void *p);
+int l2cap_att_client_handler (u16 conn, u8 *p);
 
 /************************* Stack Interface, user can not use!!! ***************************/
+void blt_att_procHoldAttributeCommand(void);

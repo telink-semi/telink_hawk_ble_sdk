@@ -19,24 +19,17 @@
  *			 file under Mutual Non-Disclosure Agreement. NO WARRENTY of ANY KIND is provided. 
  *           
  *******************************************************************************************************/
-/*
- * hci_const.h
- *
- *  Created on: 2016-9-20
- *      Author: Administrator
- */
-
 #ifndef HCI_CONST_H_
 #define HCI_CONST_H_
 
 /****HCI INFO****/
-#define HCI_VERSION 0x06       //Bluetooth Core Specification 4.0
-#define HCI_REVISION 0x0002     //Revision of the Current HCI in the BR/EDR Controller
-#define HCI_LMP_VERSION 0x06  //Version of the Current LMP or PAL in the Controller, Bluetooth Core Specification 4.0
-#define HCI_MANUFACTURER_NAME 		VENDOR_ID //Manufacturer Name of the BR/EDR Controller
-#define HCI_LMP_SUBVERSION 0x0001 //Subversion of the Current LMP or PAL in the Controller
+#define HCI_VERSION 			0x06       //Bluetooth Core Specification 4.0
+#define HCI_REVISION 			0x0002     //Revision of the Current HCI in the BR/EDR Controller
+#define HCI_LMP_VERSION 		0x06       //Version of the Current LMP or PAL in the Controller, Bluetooth Core Specification 4.0
+#define HCI_MANUFACTURER_NAME 	VENDOR_ID  //Manufacturer Name of the BR/EDR Controller
+#define HCI_LMP_SUBVERSION 		0x0001     //Subversion of the Current LMP or PAL in the Controller
 
-#define LMP_FEATURES 0x0000000000000000
+#define LMP_FEATURES 			0x0000000000000000
 
 
 
@@ -69,6 +62,7 @@
 #define HCI_SUB_EVT_LE_GENERATE_DHKEY_COMPLETE				         0x09
 #define HCI_SUB_EVT_LE_ENHANCED_CONNECTION_COMPLETE                  0x0A
 #define HCI_SUB_EVT_LE_DIRECT_ADVERTISE_REPORT		                 0x0B   //core_4.2
+#define HCI_SUB_EVT_LE_PHY_UPDATE_COMPLETE		                     0x0C   //core_5.0
 
 #define HCI_SUB_EVT_LE_CONNECTION_ESTABLISH					         0x20   //telink private
 
@@ -106,6 +100,8 @@
 #define HCI_LE_EVT_MASK_GENERATE_DHKEY_COMPLETE                      0x00000100
 #define HCI_LE_EVT_MASK_ENHANCED_CONNECTION_COMPLETE                 0x00000200
 #define HCI_LE_EVT_MASK_DIRECT_ADVERTISING_REPORT                    0x00000400
+#define HCI_LE_EVT_MASK_DIRECT_ADVERTISING_REPORT                    0x00000400
+#define HCI_LE_EVT_MASK_PHY_UPDATE_COMPLETE                          0x00000800 // core5.0
 
 #define HCI_LE_EVT_MASK_CONNECTION_ESTABLISH                         0x80000000  //telink private
 

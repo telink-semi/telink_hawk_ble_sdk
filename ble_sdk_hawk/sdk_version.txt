@@ -1,2 +1,2 @@
 Telink BLE SDK_VERSION = 
-telink_hawk_ble_sdk_v1.2.0
+telink_hawk_ble_sdk_v1.3.0

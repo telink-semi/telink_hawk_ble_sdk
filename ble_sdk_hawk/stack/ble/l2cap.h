@@ -38,7 +38,6 @@
 #define L2CAP_CID_DYNAMIC                0x0040
 
 #define L2CAP_HEADER_LENGTH              0x0004
-#define L2CAP_MTU_SIZE                   23
 
 #define L2CAP_CMD_REJECT                 0x01
 #define L2CAP_CMD_DISC_CONN_REQ          0x06
@@ -90,14 +89,16 @@
 
 
 
-#if(RAM_OPTIMZATION_FOR_UEI_EN)
-	#define	L2CAP_RX_BUFF_LEN_MAX			  88
+#if (ATT_RSP_BIG_MTU_PROCESS_EN)														 //|----------- 251 -------------|
+   #define	L2CAP_RX_BUFF_LEN_MAX	     268//12(rf pakect header) + 2(link layer header) + 4(l2cap header) + 247(payload) = 265; align->268
 #else
-	#define	L2CAP_RX_BUFF_LEN_MAX			  256
+   #define	L2CAP_RX_BUFF_LEN_MAX		 88 //redhawk SDK and old version of hawk SDK(v1.2.0 or earlier) use this value
 #endif
-#define	ATT_RX_MTU_SIZE_MAX		  		 (L2CAP_RX_BUFF_LEN_MAX - 14)
 
-#define L2CAP_RX_PDU_OFFSET				  12
+
+#define	ATT_RX_MTU_SIZE_MAX		  		 (L2CAP_RX_BUFF_LEN_MAX - 18)
+
+#define L2CAP_RX_PDU_OFFSET				 12
 
 
 
@@ -117,8 +118,8 @@ para_up_req_t	para_upReq;
 
 typedef int (*l2cap_handler_t) (u16 conn, u8 * p);
 
-extern l2cap_handler_t	blc_l2cap_handler;
-
+extern l2cap_handler_t blc_l2cap_handler;
+extern l2cap_handler_t customize_l2cap_handler;
 
 typedef enum{
 	CONN_PARAM_UPDATE_ACCEPT = 0x0000,
@@ -133,7 +134,16 @@ void		bls_l2cap_requestConnParamUpdate (u16 min_interval, u16 max_interval, u16 
 
 void        bls_l2cap_setMinimalUpdateReqSendingTime_after_connCreate(int time_ms);
 
+//GaoQiu add. use for register the function of user customize l2cap data packet process(CID == 0x0004).
+/**
+ * @Brief  : use for register user customize function of l2cap data handle
+ * @Param  : p->
+ * @Return : 1-> l2cap data has been handled by user
+ *           0-> l2cap data will be handle by BLE stack
+ */
+void        blc_l2cap_register_customize_handler(l2cap_handler_t p);
 void		blc_l2cap_register_handler (void *p);
+
 int 		blc_l2cap_packet_receive (u16 connHandle, u8 * p);
 int 		blc_l2cap_send_data (u16 cid, u8 *p, int n);
 
@@ -142,6 +152,10 @@ void 		blc_l2cap_reg_att_sig_hander(void *p);//signaling pkt proc
 
 
 void 		blc_l2cap_SendConnParamUpdateResponse(u16 connHandle, int result);
+
+/******************************* Stack Interface  *****************************/
+ble_sts_t blc_l2cap_pushData_2_controller(u16 connHandle, u16 cid, u8 *format,
+		                                  int format_len, u8 *pDate, int data_len);
 
 
 #endif

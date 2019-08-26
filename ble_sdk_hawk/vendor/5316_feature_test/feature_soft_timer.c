@@ -31,7 +31,7 @@
 
 #if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_TIMER)
 
-
+#define BLE_PM_ENABLE     1
 
 
 #define RX_FIFO_SIZE	64
@@ -146,8 +146,6 @@ int gpio_test3(void)
 
 void feature_soft_timer_test_init(void)
 {
-	/* load customized freq_offset CAP value and TP value.*/
-	blc_app_loadCustomizedParameters();
 
 	u8  mac_public[6];
 	u8  mac_random_static[6];
@@ -223,6 +221,13 @@ void feature_soft_timer_test_init(void)
 	blt_soft_timer_add(&gpio_test2, 13000);//13ms
 	blt_soft_timer_add(&gpio_test3, 27000);//27ms
 
+}
+
+void feature_soft_timer_test_mainloop(void)
+{
+	#if(BLE_PM_ENABLE)
+		bls_pm_setSuspendMask(SUSPEND_ADV | SUSPEND_CONN);
+	#endif
 }
 
 

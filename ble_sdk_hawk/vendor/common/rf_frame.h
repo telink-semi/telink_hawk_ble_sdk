@@ -23,7 +23,7 @@
 #define _RF_FRAME_H_
 #include "drivers.h"
 #include "keyboard.h"
-//#include "../../proj/drivers/keyboard.h"
+#include "tl_common.h"
 
 #define		RF_PROTO_BYTE		0x51
 #define		PIPE0_CODE			0x55556666
@@ -131,9 +131,9 @@ typedef struct {
 	u8	seq_no;
 	u8	pno;
 
-	u32 did;
+//	u32 did;
 
-	u8 data[4*sizeof(kb_data_t)]; //now the data length is variable, if the previous no ACK, data will send again in next time
+	u8 data[sizeof(kb_data_t)]; //now the data length is variable, if the previous no ACK, data will send again in next time
 
 }rf_packet_keyboard_t;
 

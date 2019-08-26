@@ -199,11 +199,7 @@ typedef struct{
 	u8  notifyType;
 }smp_key_notify_t;
 
-typedef struct{
-	u8 sc_sk_dhk_own[32];  // keep sk before receive Ea. and keep dhkey after that.
-	u8 sc_pk_own[64];
-	u8 sc_pk_peer[64];
-}smp_sc_key_t;
+
 
 
 
@@ -269,15 +265,13 @@ typedef struct {  //82
 typedef struct{
 	smp_paring_req_rsp_t  	paring_req;
 	smp_paring_req_rsp_t  	paring_rsp;
+	u16						save_key_flag;
+	smp_authReq_t			auth_req;
 	u8						own_conn_type;  //current connection peer own type
 	u8						own_conn_addr[6];
-	smp_authReq_t			auth_req;
 	u8						paring_tk[16];   // in security connection to keep own random
 	u8						paring_confirm[16];  // in security connection oob mode to keep peer random
 	u8						own_ltk[16];   //used for generate ediv and random
-
-	u8						save_key_flag;
-	u8						enc_method;
 }smp_param_own_t;
 
 u8 cur_enc_keysize;
@@ -311,6 +305,14 @@ typedef struct {
 } bond_device_t;
 
 
+typedef struct{
+	u8	type;				//RFU(3)_MD(1)_SN(1)_NESN(1)-LLID(2)
+	u8  rf_len;				//LEN(5)_RFU(3)
+	u16	l2capLen;
+	u16	chanId;
+	u8  opcode;
+	u8 data[21];
+}smp2llcap_type_t;
 
 
 
@@ -324,10 +326,14 @@ typedef int (*smp_enc_done_cb_t)(void);
 extern smp_check_handler_t		func_smp_check; //HID on android 7.0
 extern smp_init_handler_t		func_smp_init;
 extern smp_info_handler_t		func_smp_info;
-extern smp_bond_clean_handler_t  func_bond_check_clean;
+extern smp_bond_clean_handler_t func_bond_check_clean;
 extern smp_enc_done_cb_t		func_smp_enc_done_cb;
 
 
+extern smp_param_peer_t   	    smp_param_peer;
+extern smp_param_own_t		    smp_param_own;
+
+extern smp2llcap_type_t 		smpResSignalPkt;
 
 typedef enum {
 	JUST_WORKS,
@@ -370,9 +376,14 @@ static const stk_generationMethod_t gen_method_sc[5][5] = {
 	{ PK_RESP_INPUT,   NUMERIC_COMPARISON,  PK_INIT_INPUT,   JUST_WORKS,    NUMERIC_COMPARISON },
 };
 
-//used for enable numeric comparsion confirm value.
-#define NC_CONFIRM_YES					1 //YES(Pairing)
-#define NC_CONFIRM_NO					2 //NO (Cancel)
+typedef u8* (* smp_sc_cmd_handler_t)(u16 conn, u8*p);
+typedef void (* smp_sc_pushPkt_handler_t)( u32 type );
+
+extern smp_sc_cmd_handler_t		 func_smp_sc_cmd_proc;
+extern smp_sc_pushPkt_handler_t  func_smp_sc_pushPkt_proc;
+
+extern	const	u8	PublicKey[64];
+extern	const	u8	PrivateKey[32];
 
 #endif
 
@@ -507,27 +518,19 @@ void blc_smp_enableScFlag (int en);
 void set_smp_sc_only(u8 flg);
 
 /*************************************************
- * Numeric comparison confirm concerned
- */
-void blc_smp_setNCconfirmValue(u8 param);
+ * 	used for ecdh debug mode
+ * */
+u8   blc_smp_getEcdhDebugMode(void);
+void blc_smp_setEcdhDebugMode(u8 mode);
 #endif
 
-/*************************************************
- *	@brief	used for pincode timeout processs concerned.
- */
-void blc_smp_set_pc_timeoutTick (u32 t, u32 timeout_duration);
-u32 blc_get_pc_start_tick(void);
-u32 blc_get_pc_timeout_duration();
+
 
 /*
  * API used for set distribute key enable.
  * */
-void blc_smp_setDistributeKey (u8 LTK_distributeEn, u8 IRK_distributeEn, u8 CSRK_DistributeEn);
-
-/*
- * API used for set distribute key enable.
- * */
-void  blc_smp_expectDistributeKey (u8 LTK_distributeEn, u8 IRK_distributeEn, u8 CSRK_DistributeEn);
+smp_keyDistribution_t blc_smp_setInitiatorKey (u8 LTK_distributeEn, u8 IRK_distributeEn, u8 CSRK_DistributeEn);
+smp_keyDistribution_t blc_smp_setResponderKey (u8 LTK_distributeEn, u8 IRK_distributeEn, u8 CSRK_DistributeEn);
 
 
 
@@ -585,9 +588,12 @@ extern smp_ctrl_t 	blc_smp_ctrl;
 
 void blc_smp_checkSecurityReqeustSending(u32 connStart_tick);
 void HID_service_on_android7p0_init(void);
+void blc_smp_procParingEnd(u8 err_reason);
 
-
-
+#if (SMP_BLE_CERT_TEST)
+void 	blc_smp_setCertTimeoutTick (u32 t);
+void 	blc_smp_certTimeoutLoopEvt (u8 as_master);
+#endif
 
 
 
@@ -675,10 +681,6 @@ void 	tbl_bond_slave_unpair_proc(u8 adr_type, u8 *addr);
 void	blm_smp_encChangeEvt(u8 status, u16 connhandle, u8 enc_enable);
 
 
-#if (SMP_BLE_CERT_TEST)
-void 	blc_smp_setCertTimeoutTick (u32 t);
-void 	blc_smp_certTimeoutLoopEvt (u8 as_master);
-#endif
 
 
 #endif /* BLE_SMP_H_ */

@@ -19,11 +19,7 @@
  *			 file under Mutual Non-Disclosure Agreement. NO WARRENTY of ANY KIND is provided. 
  *           
  *******************************************************************************************************/
-
-#include "../tl_common.h"
-#include "drivers.h"
 #include "utility.h"
-
 
 
 

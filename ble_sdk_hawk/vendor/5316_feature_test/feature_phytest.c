@@ -32,7 +32,7 @@
 
 #if (FEATURE_TEST_MODE == TEST_BLE_PHY)
 
-
+#define BLE_PM_ENABLE     0
 
 
 #if(FEATURE_TEST_MODE == TEST_BLE_PHY)
@@ -81,7 +81,7 @@ void  func_suspend_enter (u8 e, u8 *p, int n)
 	AA_dbg_suspend ++;
 }
 
-#define		MY_RF_POWER_INDEX					RF_POWER_m5dBm
+#define		MY_RF_POWER_INDEX					RF_POWER_3P3dBm
 
 _attribute_ram_code_ void  func_suspend_exit (u8 e, u8 *p, int n)
 {
@@ -154,9 +154,6 @@ _attribute_ram_code_ void  func_suspend_exit (u8 e, u8 *p, int n)
 
 void feature_phytest_init(void)
 {
-	/* load customized freq_offset CAP value and TP value.*/
-	blc_app_loadCustomizedParameters();
-
 	u8  mac_public[6];
 	u8  mac_random_static[6];
 	blc_initMacAddress(CFG_ADR_MAC, mac_public, mac_random_static);

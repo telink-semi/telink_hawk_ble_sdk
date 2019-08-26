@@ -57,6 +57,8 @@
 #include "ll/ll_pm.h"
 #include "ll/ll_slave.h"
 #include "ll/ll_whitelist.h"
+#include "ll/ll_scan.h"
+#include "ll/ll_conn_phy.h"
 
 
 

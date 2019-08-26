@@ -70,6 +70,9 @@ int main(void){
 
 	gpio_init();
 
+	/* load customized freq_offset CAP value and TP value.*/
+	blc_app_loadCustomizedParameters();
+
 	rf_drv_init(RF_MODE_BLE_1M);
 
 	user_init ();

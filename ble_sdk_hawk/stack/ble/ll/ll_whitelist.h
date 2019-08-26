@@ -19,12 +19,6 @@
  *			 file under Mutual Non-Disclosure Agreement. NO WARRENTY of ANY KIND is provided. 
  *           
  *******************************************************************************************************/
-/*
- * ll_whitelist.h
- *
- *  Created on: 2016-9-22
- *      Author: Administrator
- */
 
 #ifndef LL_WHITELIST_H_
 #define LL_WHITELIST_H_
@@ -108,7 +102,8 @@ typedef struct {
 } ll_ResolvingListTbl_t;
 
 
-
+typedef u8 * (*ll_wl_handler_t)(u8 , u8 *);
+extern ll_wl_handler_t			ll_whiteList_handler;
 
 
 /**************************************** User Interface  **********************************************/

@@ -31,7 +31,7 @@
 #if (FEATURE_TEST_MODE == TEST_POWER_ADV)
 
 
-
+#define BLE_PM_ENABLE     1
 
 #define RX_FIFO_SIZE	64
 #define RX_FIFO_NUM		8
@@ -91,9 +91,6 @@ _attribute_ram_code_ void  func_suspend_exit (u8 e, u8 *p, int n)
 
 void feature_adv_power_test_init(void)
 {
-	/* load customized freq_offset CAP value and TP value.*/
-	blc_app_loadCustomizedParameters();
-
 	u8  mac_public[6];
 	u8  mac_random_static[6];
 	blc_initMacAddress(CFG_ADR_MAC, mac_public, mac_random_static);
@@ -166,12 +163,14 @@ void feature_adv_power_test_init(void)
 #else
 	bls_pm_setSuspendMask (SUSPEND_DISABLE);
 #endif
-
-
 }
 
-
-
+void feature_adv_power_test_mainloop(void)
+{
+#if(BLE_PM_ENABLE)
+	bls_pm_setSuspendMask(SUSPEND_ADV | SUSPEND_CONN);
+#endif
+}
 
 #endif
 

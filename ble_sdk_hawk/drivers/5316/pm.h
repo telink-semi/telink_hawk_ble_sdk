@@ -139,25 +139,18 @@ enum {
 	 STATUS_ENTER_SUSPEND  = BIT(30),
 }PM_WakeupStatusTypeDef;
 
-
 #define 	WAKEUP_STATUS_TIMER_CORE	( WAKEUP_STATUS_TIMER | WAKEUP_STATUS_CORE)
-
-
-
-
-
-
-
-
 
 typedef void (*pm_optimize_handler_t)(void);
 typedef int (*suspend_handler_t)(void);
 typedef int (*cpu_pm_handler_t)(SleepMode_TypeDef,  SleepWakeupSrc_TypeDef, unsigned int);
-
+typedef void (*pCheck32kXtalStable)(void);
+typedef unsigned int (*pGet32kXtalTickCb)(void);
 
 extern cpu_pm_handler_t cpu_sleep_wakeup;
 extern suspend_handler_t func_before_suspend;
 extern unsigned char PM_PAD_FILTER_EN;
+extern pCheck32kXtalStable check32kXtalStable;
 
 //void cpu_wakeup_init(int);
 void cpu_wakeup_init(void);
@@ -165,7 +158,7 @@ _attribute_ram_code_ _attribute_no_inline_ void  sleep_start(void);
 
 
 void mcu_32k_rc_clock_calibration(void);
-u32 pm_get_32k_tick(void); ////_attribute_no_inline_
+u32  pm_get_32k_tick(void); ////_attribute_no_inline_
 void pm_set_32k_tick(u32 tick);///_attribute_no_inline_
 
 void bls_pm_registerFuncBeforeSuspend (suspend_handler_t func );
@@ -178,11 +171,6 @@ int cpu_sleep_wakeup_32kpad (SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeD
 void blc_pm_select_internal_32k_crystal(void);
 void blc_pm_select_external_32k_crystal(void);
 void blt_pm_ext32k_crystal_init(void);
-
-
-typedef void (*check_32k_clk_handler_t)(void);
-extern  check_32k_clk_handler_t  check_32k_clk_stable;
-
 
 void cpu_set_gpio_wakeup (int pin, int pol, int en);
 void pm_set_filter(u8 en);

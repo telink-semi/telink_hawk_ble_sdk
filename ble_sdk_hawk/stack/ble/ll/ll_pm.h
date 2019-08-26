@@ -68,6 +68,8 @@ typedef struct {
 	u8      timing_synced;
 	u16		pm_border_flag;
 
+	u8		conn_rcvd_last_pkt; // correctly received last packet of master(consider if more data take effect)
+
 }st_ll_pm_t;
 
 

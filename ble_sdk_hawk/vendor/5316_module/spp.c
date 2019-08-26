@@ -222,17 +222,18 @@ int rx_from_uart_cb (void)//UART data send to Master,we will handler the data as
 		uart_clear_parity_error();
 	}
 	//////
-	if(my_fifo_get(&spp_rx_fifo) == 0)
-	{
+	u8 *p = my_fifo_get(&spp_rx_fifo);
+	if(p == NULL){
 		return 0;
 	}
 
-	u8* p = my_fifo_get(&spp_rx_fifo);
+	//u8* p = my_fifo_get(&spp_rx_fifo);
 	u32 rx_len = p[0]; //usually <= 255 so 1 byte should be sufficient
 
 	if (rx_len)
 	{
-		bls_uart_handler(&p[4], rx_len - 4);
+		bls_uart_handler(&p[4], rx_len - 4);///rx_len - 4 ??
+		*((u32*)p) = 0;//clear DMA length field for distributing Rx buffer of interrupt
 		my_fifo_pop(&spp_rx_fifo);
 	}
 

@@ -19,17 +19,9 @@
  *			 file under Mutual Non-Disclosure Agreement. NO WARRENTY of ANY KIND is provided. 
  *           
  *******************************************************************************************************/
-/*
- * ll_slave.h
- *
- *  Created on: 2017-3-9
- *      Author: Administrator
- */
 
 #ifndef LL_SLAVE_H_
 #define LL_SLAVE_H_
-
-
 
 typedef struct {
 	u8		time_update_st;
@@ -49,7 +41,7 @@ typedef struct {
 
 
 	u8		master_not_ack_slaveAckUpReq;
-	u8		conn_rcvd_ack_pkt;
+	u8		rsvd2;
 	u16		conn_update_inst_diff;
 
 
@@ -134,10 +126,12 @@ ble_sts_t 	bls_hci_mod_setEventMask_cmd(u32 evtMask);  //eventMask: module speci
 
 
 /************************* Stack Interface, user can not use!!! ***************************/
-bool		bls_ll_pushTxFifo (int hanlde, u8 *p);
-ble_sts_t  	bls_hci_reset(void);
+bool bls_ll_pushTxFifo(int hanlde, u8 *p);
+void blt_push_fifo_hold(u8 *p);
 
-ble_sts_t	bls_hci_receiveHostACLData(u16 connHandle, u8 PB_Flag, u8 BC_Flag, u8 *pData );
+ble_sts_t bls_hci_reset(void);
+
+ble_sts_t bls_hci_receiveHostACLData(u16 connHandle, u8 PB_Flag, u8 BC_Flag, u8 *pData );
 
 
 

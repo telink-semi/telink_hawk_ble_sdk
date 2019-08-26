@@ -27,7 +27,7 @@
 
 extern void app_timer_test_init(void);
 extern void app_timerModule_led_init(void);
-
+extern void app_emi_init(void);
 extern void app_gpio_test_init(void);
 extern void app_gpioModule_led_init(void);
 
@@ -36,7 +36,7 @@ extern void app_i2c_test_init(void);
 extern void app_spi_test_init(void);
 extern void app_adc_test_init(void);
 extern void app_pwm_test(void);
-
+extern void app_rf_emi_test_start(void);
 
 void user_init()
 {
@@ -71,7 +71,7 @@ void user_init()
 	#elif(DRIVER_TEST_MODE == TEST_LOW_POWER)
 		///v1.1.0 not support
 	#elif(DRIVER_TEST_MODE == TEST_RF_EMI)
-		///v1.1.0 not support
+		app_emi_init();
 	#else
 
 	#endif
@@ -93,7 +93,7 @@ void main_loop (void)
 	#elif(DRIVER_TEST_MODE == TEST_ADC)
 		app_adc_test_start();
 	#elif(DRIVER_TEST_MODE == TEST_RF_EMI)
-		////v1.1.0 not support
+		app_rf_emi_test_start();
 	#endif
 
 }

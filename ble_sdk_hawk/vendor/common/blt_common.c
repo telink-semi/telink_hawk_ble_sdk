@@ -56,10 +56,6 @@ void blc_initMacAddress(int flash_addr, u8 *mac_public, u8 *mac_random_static)
 		flash_write_page (flash_addr, 6, mac_public);
 	}
 
-
-
-
-
 	mac_random_static[0] = mac_public[0];
 	mac_random_static[1] = mac_public[1];
 	mac_random_static[2] = mac_public[2];

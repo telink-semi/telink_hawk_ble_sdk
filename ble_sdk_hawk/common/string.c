@@ -21,8 +21,8 @@
  *******************************************************************************************************/
 #include "types.h"
 #include "string.h"
-#include "../common/assert.h"
-#include "../tl_common.h"
+#include "assert.h"
+
 
 char* strcpy(char * dst0, const char * src0) {
 	char *s = dst0;

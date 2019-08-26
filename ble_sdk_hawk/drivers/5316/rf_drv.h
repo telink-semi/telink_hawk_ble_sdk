@@ -26,6 +26,7 @@
 #include "driver_config.h"
 #include "bsp.h"
 #include "analog.h"
+#include "gpio.h"
 ////////////External Crystal Type///////////////////
 
 //#define		RF_FAST_MODE_1M		1
@@ -76,18 +77,6 @@ enum{
 	RF_POWER_LEVEL_MIN = 100,
 };
 
-enum{
-	XTAL_12M_RF_1m_MODE = 1,
-	XTAL_12M_RF_2m_MODE = 2,
-	XTAL_16M_RF_1m_MODE = 4,
-	XTAL_16M_RF_2m_MODE = 8,
-
-	XTAL_12M = XTAL_12M_RF_1m_MODE,
- 	XTAL_16M = XTAL_16M_RF_1m_MODE,
-
-	XTAL_24M_RF_1m_MODE = 1,
- 	XTAL_24M = XTAL_24M_RF_1m_MODE,
-};
 
 ///////////////////////////////////////////////////////
 
@@ -112,16 +101,21 @@ typedef enum {
     RF_MODE_AUTO=2
 }RF_StatusTypeDef;
 
+typedef enum {
+	RFFE_RX_PA6 = GPIO_PA6,
+    RFFE_RX_PB0 = GPIO_PB0,
+} RF_LNARxPinDef;
+
+//TX_CYC2PA;
+typedef enum {
+	RFFE_TX_PA7 = GPIO_PA7,
+    RFFE_TX_PB1 = GPIO_PB1,
+} RF_PATxPinDef;
+
 typedef enum{
-	RF_MODE_BLE_2M       = BIT(0),
-	RF_MODE_BLE_1M       = BIT(1),
-    RF_MODE_BLE_1M_NO_PN = BIT(2),
-
-	RF_MODE_ZIGBEE_250K  = BIT(3),
-
-	RF_MODE_NORDIC_1M    = BIT(4),
+	RF_MODE_BLE_1M       = BIT(0),
+	RF_MODE_BLE_2M       = BIT(1),
 	RF_MODE_NORDIC_2M    = BIT(5),
-	RF_MODE_BLE_2M_NO_PN = BIT(6),
 }RF_ModeTypeDef;
 
 typedef enum {
@@ -197,11 +191,11 @@ static inline void rf_clk_enable(void)
 		#define	RF_PACKET_CRC_OK(p)		((p[p[0]+3] & 0x51) == 0x40)
 	#endif
 #elif RF_FAST_MODE_1M
-	#define	RF_PACKET_LENGTH_OK(p)		(p[0] == (p[13]&0x3f)+17)
-	#define	RF_PACKET_CRC_OK(p)			((p[p[0]+3] & 0x51) == 0x40)
+	#define	RF_PACKET_LENGTH_OK(p)		(*((unsigned int*)&p[0]) == p[13]+17)
+	#define	RF_PACKET_CRC_OK(p)			((p[*((unsigned int*)&p[0]) + 3] & 0x51) == 0x40)
 
-	#define	RF_BLE_PACKET_LENGTH_OK(p)	(p[0] == (p[13])+17)
-	#define	RF_BLE_PACKET_CRC_OK(p)		((p[p[0]+3] & 0x51) == 0x40)
+	#define	RF_BLE_PACKET_LENGTH_OK(p)	(*((unsigned int*)&p[0]) == p[13]+17)
+	#define	RF_BLE_PACKET_CRC_OK(p)		((p[*((unsigned int*)&p[0]) + 3] & 0x51) == 0x40)
 #else
 	#define	RF_PACKET_LENGTH_OK(p)		(p[0] == p[12]+13)
 	#define	RF_PACKET_CRC_OK(p)			((p[p[0]+3] & 0x51) == 0x10)
@@ -218,6 +212,7 @@ static inline void rf_clk_enable(void)
 
 void rf_drv_init (RF_ModeTypeDef RF_Mode);
 void rf_update_tp_value(unsigned char tp0, unsigned char tp1);
+void rf_load_2m_tp_value (unsigned char tp0, unsigned char tp1);
 void rf_set_channel (signed char chn, unsigned short set);
 void rf_set_ble_channel (signed char chn);
 
@@ -232,12 +227,26 @@ int rf_set_trx_state(RF_StatusTypeDef rf_status, signed char rf_channel);
 void rf_tx_pkt(unsigned char *RF_TxBufAddr);
 RF_StatusTypeDef rf_get_trx_state(void);
 
-
+void rf_ble_switch_phy(RF_ModeTypeDef phy);
 void rf_set_tp_gain (char chn);
 void rf_set_ack_packet  (void* addr);
 
 void rf_set_manual_max_gain (void);
 void rf_set_agc (void);
+/**
+*	@brief	  	This function serves to set pin for RFFE of RF
+*   @param      tx_pin - select pin to send
+*   @param      rx_pin - select pin to receive
+*	@return	 	none
+*
+*/
+extern void rf_rffe_set_pin(RF_PATxPinDef tx_pin, RF_LNARxPinDef rx_pin);
+
+
+static inline void rf_adjust_tx_settle(u8 txSettle_us)
+{
+	write_reg16(0xf04, txSettle_us);
+}
 
 /**
 *	@brief	  	This function serves to start Tx of ble_mode.
@@ -293,6 +302,13 @@ static inline void rf_reset_sn (void)
 {
 	write_reg8  (0x800f01, 0x3f);
 	write_reg8  (0x800f01, 0x00);
+}
+
+/////////////////////  RF BaseBand ///////////////////////////////
+static inline void reset_baseband(void)
+{
+	REG_ADDR8(0x60) = BIT(7);		//reset baseband
+	REG_ADDR8(0x60) = 0;			//release reset signal
 }
 
 static inline unsigned char is_rf_receiving_pkt(void)

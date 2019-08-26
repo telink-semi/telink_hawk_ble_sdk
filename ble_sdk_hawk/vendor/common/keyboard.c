@@ -25,7 +25,6 @@
 #include "keyboard.h"
 
 
-#if(RC_BTN_ENABLE)
 
 #if (defined(KB_DRIVE_PINS) && defined(KB_SCAN_PINS))
 
@@ -95,7 +94,17 @@ repeatKey_t repeat_key = {
 
 #endif
 
+#if KB_MODE_EXCHANGE
 
+combinationKey_t combination_key = {
+		0,
+		0,
+		0,
+		0,
+		U32_MAX,
+};
+
+#endif
 
 
 
@@ -317,7 +326,12 @@ u32 kb_scan_key_value (int numlock_status, int read_key,unsigned char * gpio)
 
 		u32 key_changed = key_debounce_filter( pressed_matrix, \
 						(numlock_status & KB_NUMLOCK_STATUS_POWERON) ? 0 : 1);
-
+#if KB_MODE_EXCHANGE
+		if(key_changed && (!combination_key.key_2p4g_ui_press_flg) && (!combination_key.key_ble_1m_ui_press_flg)
+		&& (!combination_key.key_ble_2m_ui_press_flg)) {
+			combination_key.key_vaild_tick = clock_time();
+		}
+#endif
 #if (KB_REPEAT_KEY_ENABLE)
 		if(key_changed){
 			repeat_key.key_change_flg = KEY_CHANGE;
@@ -342,7 +356,6 @@ u32 kb_scan_key_value (int numlock_status, int read_key,unsigned char * gpio)
 		///////////////////////////////////////////////////////////////////
 		DTYPE_MATRIX  *pd;
 		if (key_changed) {
-
 			/////////// push to matrix buffer /////////////////////////
 			pd = matrix_buff[matrix_wptr&3];
 			for (int k=0; k<ARRAY_SIZE(drive_pins); k++) {
@@ -392,7 +405,6 @@ u32 kb_scan_key_value (int numlock_status, int read_key,unsigned char * gpio)
 
 #endif
 
-#endif /* End of RC_BTN_ENABLE */
 
 
 ///////////////////////////////////////////////////////////////////////////////////////

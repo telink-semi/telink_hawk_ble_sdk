@@ -40,10 +40,10 @@ _attribute_ram_code_ void irq_handler(void)
 
 }
 
-int main(void){
-
+int main(void)
+{
 	blc_pm_select_internal_32k_crystal();
-
+	//blc_pm_select_external_32k_crystal();
 
 	/***********************************************
 	 * if the bin size is less than 48K, we recommend using this setting.
@@ -55,11 +55,11 @@ int main(void){
 
 	cpu_wakeup_init();
 
-	#if (CLOCK_SYS_CLOCK_HZ == 16000000)
+	#if(CLOCK_SYS_CLOCK_HZ == 16000000)
 		clock_init(SYS_CLK_16M_Crystal);
-	#elif (CLOCK_SYS_CLOCK_HZ == 32000000)
+	#elif(CLOCK_SYS_CLOCK_HZ == 32000000)
 		clock_init(SYS_CLK_32M_Crystal);
-	#elif (CLOCK_SYS_CLOCK_HZ == 48000000)
+	#elif(CLOCK_SYS_CLOCK_HZ == 48000000)
 		clock_init(SYS_CLK_48M_Crystal);
 	#endif
 
@@ -69,18 +69,21 @@ int main(void){
 		deep_wakeup_proc();
 	#endif
 
+	/* load customized freq_offset CAP value and TP value.*/
+	blc_app_loadCustomizedParameters(); //do this operation before "rf_drv_init"
+
 	rf_drv_init(RF_MODE_BLE_1M);
 
-	#if FIRMWARES_SIGNATURE_ENABLE
+	#if(FIRMWARES_SIGNATURE_ENABLE)
 		blt_firmware_signature_check();
 	#endif
 
-	user_init ();
+	user_init();
 
     irq_enable();
 
-	while (1) {
-	#if (MODULE_WATCHDOG_ENABLE)
+	while(1){
+	#if(MODULE_WATCHDOG_ENABLE)
 		wd_clear(); //clear watch dog
 	#endif
 		main_loop ();

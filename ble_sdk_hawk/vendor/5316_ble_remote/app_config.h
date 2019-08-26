@@ -28,7 +28,7 @@ extern "C" {
 
 
 /* Function Select -----------------------------------------------------------*/
-#define BLE_REMOTE_PM_ENABLE			1
+
 #define BLE_REMOTE_SECURITY_ENABLE      1
 #define BLE_REMOTE_OTA_ENABLE			1
 #define REMOTE_IR_ENABLE				0
@@ -40,7 +40,7 @@ extern "C" {
 #define FLASH_SIZE_OPTION_128K          0
 #define FLASH_SIZE_OPTION_512K          1
 
-#define FLASH_SIZE_OPTION               FLASH_SIZE_OPTION_512K
+#define FLASH_SIZE_OPTION               FLASH_SIZE_OPTION_128K
 
 /***firmware check***/
 #define FIRMWARES_SIGNATURE_ENABLE      0
@@ -360,7 +360,10 @@ typedef enum
 
 
 
-
+/* Simulate uart debug Interface ---------------------------------------------*/
+#define SIMULATE_UART_EN       0
+#define DEBUG_TX_PIN           GPIO_PB4
+#define DEBUG_BAUDRATE         (115200)
 
 
 /* Debug Interface -----------------------------------------------------------*/

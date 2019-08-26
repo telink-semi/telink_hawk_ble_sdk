@@ -226,9 +226,6 @@ unsigned int lowBattDet_tick = 0;
 
 void user_init()
 {
-	/* load customized freq_offset CAP value and TP value.*/
-	blc_app_loadCustomizedParameters();
-
 	/***********************************************************************************
 	 * Power Management initialization and gpio wake up source setting.
 	 * Note: These section must be before battery_power_check.

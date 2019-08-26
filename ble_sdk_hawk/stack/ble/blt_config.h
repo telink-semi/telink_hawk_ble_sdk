@@ -38,13 +38,17 @@
 
 #define RAMCODE_OPTIMIZE_CONN_POWER_NEGLECT_ENABLE			0
 
+#if(__TL_LIB_5316__ || MCU_CORE_TYPE == MCU_CORE_5317)
 //Use for UEI UTB2
-#define RAM_OPTIMZATION_FOR_UEI_EN    						0
+#define RAM_OPTIMZATION_FOR_UEI_EN    						1
+#endif
 
 #if (RAM_OPTIMZATION_FOR_UEI_EN)
 	#define SMP_BONDING_DEVICE_MAX_NUM						1
 #endif
 
+
+#define ATT_RSP_BIG_MTU_PROCESS_EN      1
 
 
 typedef struct{
@@ -55,7 +59,6 @@ typedef struct{
 }misc_para_t;
 
 misc_para_t blt_miscParam;
-
 
 
 static inline void blc_app_setExternalCrystalCapEnable(u8  en)
@@ -76,15 +79,15 @@ static inline void blc_app_loadCustomizedParameters(void)
 		 }
 	 }
 
-
-	 // customize TP0/TP1
+	 // customize TP0/TP1 1M
 	 if( ((*(unsigned char*) (CUST_TP_INFO_ADDR)) != 0xff) && ((*(unsigned char*) (CUST_TP_INFO_ADDR+1)) != 0xff) ){
 		 rf_update_tp_value(*(unsigned char*) (CUST_TP_INFO_ADDR), *(unsigned char*) (CUST_TP_INFO_ADDR+1));
 	 }
 
+	 if ( ((*(unsigned char*) (CUST_TP_INFO_ADDR+2)) != 0xff) && ((*(unsigned char*) (CUST_TP_INFO_ADDR+3)) != 0xff) ){
+		 rf_load_2m_tp_value(*(unsigned char*) (CUST_TP_INFO_ADDR+2), *(unsigned char*) (CUST_TP_INFO_ADDR+3));
+	 }
 }
-
-
 
 
 
@@ -99,21 +102,24 @@ static inline void blc_app_loadCustomizedParameters(void)
 
 
 #ifndef SECURE_CONNECTION_ENABLE
-#define SECURE_CONNECTION_ENABLE								0
+#define SECURE_CONNECTION_ENABLE								1
 #endif
 
-
+#if(__TL_LIB_5316__ || MCU_CORE_TYPE == MCU_CORE_5316)
 #if (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K)
 //	#define	BLS_ADV_INTERVAL_CHECK_ENABLE			    0
 	#define BLE_CORE42_DATA_LENGTH_EXTENSION_ENABLE		0
 #endif
+#endif
 
-
+//Link layer feature enable flag default setting
 #ifndef BLE_CORE42_DATA_LENGTH_EXTENSION_ENABLE
 #define BLE_CORE42_DATA_LENGTH_EXTENSION_ENABLE			1
 #endif
 
-
+#ifndef LL_FEATURE_SUPPORT_LE_2M_PHY
+#define LL_FEATURE_SUPPORT_LE_2M_PHY					1
+#endif
 
 
 #ifndef		BLS_ADV_INTERVAL_CHECK_ENABLE
@@ -122,10 +128,6 @@ static inline void blc_app_loadCustomizedParameters(void)
 
 
 
-
-#ifndef BLE_LL_ADV_IN_MAINLOOP_ENABLE
-#define BLE_LL_ADV_IN_MAINLOOP_ENABLE					1
-#endif
 
 
 

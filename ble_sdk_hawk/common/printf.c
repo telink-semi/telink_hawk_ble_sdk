@@ -29,23 +29,24 @@
 
  #define putchar(c) outbyte(c)
  */
+#include "printf.h"
+#include <stdarg.h>
 
-#if 0
-
-
-
-static void printchar(char **str, int c) {
-	if (str) {
+static void printchar(char **str, int c)
+{
+	if(str){
 		**str = c;
 		++(*str);
-	} else
-		(void) putchar(c);
+	}else{
+		putchar(c);
+	}
 }
 
 #define PAD_RIGHT 1
 #define PAD_ZERO 2
 
-static int prints(char **out, const char *string, int width, int pad) {
+static int prints(char **out, const char *string, int width, int pad)
+{
 	register int pc = 0, padchar = ' ';
 
 	if (width > 0) {
@@ -81,8 +82,8 @@ static int prints(char **out, const char *string, int width, int pad) {
 /* the following should be enough for 32 bit int */
 #define PRINT_BUF_LEN 12
 
-static int printi(char **out, int i, int b, int sg, int width, int pad,
-		int letbase) {
+static int printi(char **out, int i, int b, int sg, int width, int pad, int letbase)
+{
 	char print_buf[PRINT_BUF_LEN];
 	register char *s;
 	register int t, neg = 0, pc = 0;
@@ -123,7 +124,8 @@ static int printi(char **out, int i, int b, int sg, int width, int pad,
 	return pc + prints(out, s, width, pad);
 }
 
-static int print(char **out, const char *format, va_list args) {
+static int print(char **out, const char *format, va_list args)
+{
 	register int width, pad;
 	register int pc = 0;
 	char scr[2];
@@ -187,16 +189,26 @@ static int print(char **out, const char *format, va_list args) {
 	return pc;
 }
 
-int my_printf(const char *format, ...) {
+int my_printf(const char *format, ...)
+{
 	va_list args;
 	va_start( args, format );
 	return print(0, format, args);
 }
 
-int my_sprintf(char *out, const char *format, ...) {
+int my_sprintf(char *out, const char *format, ...)
+{
 	va_list args;
 	va_start( args, format );
 	return print(&out, format, args);
 }
 
-#endif
+void array_printf(unsigned char*data, unsigned int len)
+{
+	my_printf("{");
+	for(int i = 0; i < len; ++i){
+		my_printf("%02X,", data[i]);
+	}
+	my_printf("}\n");
+}
+

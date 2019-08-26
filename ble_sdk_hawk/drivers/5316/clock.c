@@ -26,7 +26,6 @@
 #include "irq.h"
 #include "analog.h"
 
-
 int SYS_TICK_DIV = 0;
 
 /**
@@ -36,7 +35,6 @@ int SYS_TICK_DIV = 0;
  */
 void clock_init(SYS_CLK_TYPEDEF SYS_CLK)
 {
-
 	if(SYS_CLK == SYS_CLK_16M_Crystal){
 		SYS_TICK_DIV = 1;
 	}
@@ -51,7 +49,6 @@ void clock_init(SYS_CLK_TYPEDEF SYS_CLK)
 	}
 
 	reg_clk_sel = (unsigned char)SYS_CLK;
-
 
 	/* WatchDog Configuration */
 	#if(MODULE_WATCHDOG_ENABLE)

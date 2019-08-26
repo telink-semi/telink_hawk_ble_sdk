@@ -34,6 +34,10 @@
 #define DEEPBACK_KEY_WAIT_RELEASE   		2
 
 
+#ifndef		KB_MODE_EXCHANGE
+#define		KB_MODE_EXCHANGE				0
+#endif
+
 #ifndef		KB_REPEAT_KEY_ENABLE
 #define		KB_REPEAT_KEY_ENABLE			0
 #endif
@@ -49,7 +53,21 @@ typedef struct{
 	unsigned int key_change_tick;
 }repeatKey_t;
 
+
 extern repeatKey_t repeat_key;
+
+#if KB_MODE_EXCHANGE
+typedef struct{
+	unsigned char key_2p4g_ui_press_flg;
+	unsigned char key_ble_1m_ui_press_flg;
+	unsigned char key_ble_2m_ui_press_flg;
+	unsigned char rsvd1;
+	unsigned int key_vaild_tick;
+}combinationKey_t;
+
+extern combinationKey_t combination_key;
+
+#endif
 
 #ifndef		KEYSCAN_IRQ_TRIGGER_MODE
 #define		KEYSCAN_IRQ_TRIGGER_MODE		0
