@@ -92,6 +92,7 @@ ble_sts_t bls_ll_setAdvDuration(u32 duration_us, u8 duration_en);
 void blc_ll_setAdvCustomedChannel(u8 chn0, u8 chn1, u8 chn2);
 
 void bls_ll_adjustScanRspTiming(s8 t_us );
+void blt_enable_adv_after_scan_req(u8 en);
 
 //Extend BLE state (ADV in connection state)
 ble_sts_t blc_ll_addAdvertisingInConnSlaveRole(void);

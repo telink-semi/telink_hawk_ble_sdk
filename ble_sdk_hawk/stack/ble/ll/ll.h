@@ -207,7 +207,7 @@ typedef struct{
     u8 ll_recentAvgRSSI;
     u8 tx_irq_proc_en;
     u8 conn_rx_num; //slave: rx number in a new interval
-    u8 rsvd;
+    u8 is_adv_after_scan_req;
 
     u32 custom_access_code;
 
