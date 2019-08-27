@@ -59,7 +59,7 @@
 							</tool>
 							<tool id="com.telink.tc32eclipse.tool.archiver.TC32Win.base.1252160024" name="TC32 Archiver" superClass="com.telink.tc32eclipse.tool.archiver.TC32Win.base"/>
 							<tool id="com.telink.tc32eclipse.tool.objdump.TC32Win.app.debug.736225456" name="TC32 Create Extended Listing" superClass="com.telink.tc32eclipse.tool.objdump.TC32Win.app.debug">
-								<option id="com.telink.tc32eclipse.objdump.option.output.1843508487" name="Output Filename" superClass="com.telink.tc32eclipse.objdump.option.output" value="5316_dual_mode.lst" valueType="string"/>
+								<option id="com.telink.tc32eclipse.objdump.option.output.1843508487" name="Output Filename" superClass="com.telink.tc32eclipse.objdump.option.output" value="5316_ble_remote.lst" valueType="string"/>
 							</tool>
 							<tool id="com.telink.tc32eclipse.tool.objcopy.flash.TC32Win.app.debug.2144164157" name="TC32 Create Flash image" superClass="com.telink.tc32eclipse.tool.objcopy.flash.TC32Win.app.debug">
 								<option id="com.telink.tc32eclipse.objcopy.flash.option.output.1812267666" name="Output Filename" superClass="com.telink.tc32eclipse.objcopy.flash.option.output" value="" valueType="string"/>
@@ -591,7 +591,7 @@
 							</tool>
 							<tool id="com.telink.tc32eclipse.tool.archiver.TC32Win.base.1314275315" name="TC32 Archiver" superClass="com.telink.tc32eclipse.tool.archiver.TC32Win.base"/>
 							<tool id="com.telink.tc32eclipse.tool.objdump.TC32Win.app.debug.1084389456" name="TC32 Create Extended Listing" superClass="com.telink.tc32eclipse.tool.objdump.TC32Win.app.debug">
-								<option id="com.telink.tc32eclipse.objdump.option.output.2100078229" name="Output Filename" superClass="com.telink.tc32eclipse.objdump.option.output" value="5316_ble_remote.lst" valueType="string"/>
+								<option id="com.telink.tc32eclipse.objdump.option.output.2100078229" name="Output Filename" superClass="com.telink.tc32eclipse.objdump.option.output" value="5316_dual_mode.lst" valueType="string"/>
 							</tool>
 							<tool id="com.telink.tc32eclipse.tool.objcopy.flash.TC32Win.app.debug.409793734" name="TC32 Create Flash image" superClass="com.telink.tc32eclipse.tool.objcopy.flash.TC32Win.app.debug">
 								<option id="com.telink.tc32eclipse.objcopy.flash.option.output.1810799989" name="Output Filename" superClass="com.telink.tc32eclipse.objcopy.flash.option.output" value="" valueType="string"/>
