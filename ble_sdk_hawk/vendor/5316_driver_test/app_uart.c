@@ -37,9 +37,15 @@
 	#define USE_CTS    		2
 	#define USE_RTS    		3
 
-	#define FLOW_CTR  		USE_RTS
+	#define FLOW_CTR  		NORMAL
 
+	#if( FLOW_CTR==NORMAL)
+		u8 uart_rx_flag = 0;
+		u8 uart_ndmairq_index = 0;
+		u8 uart_ndmairq_cnt = 0;
+	#endif
 	#if( FLOW_CTR==USE_CTS)
+		u8 uart_cts_count = 0;
 		#define STOP_VOLT   	1			//0 :Low level stops TX.  1 :High level stops TX.
 	#endif
 
@@ -153,13 +159,13 @@ __attribute__((aligned(4))) unsigned char trans_buff[TRANS_BUFF_LEN] = {0x0c, 0x
 		WaitMs(1000);
 		#if( FLOW_CTR == NORMAL)
 
-			for(unsigned char i=0;i<trans_buff_Len;i++){
+			for(unsigned char i=0;i<TRANS_BUFF_LEN;i++){
 				uart_ndma_send_byte(trans_buff[i]);
 			}
 			if(uart_rx_flag>0){
 				uart_ndmairq_cnt=0; //Clear uart_ndmairq_cnt
 				uart_rx_flag=0;
-				for(unsigned char i=0;i<trans_buff_Len;i++){
+				for(unsigned char i=0;i<REV_BUFF_LE;i++){
 					uart_ndma_send_byte(rec_buff[i]);
 				}
 			}

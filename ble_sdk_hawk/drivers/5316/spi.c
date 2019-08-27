@@ -23,6 +23,7 @@
 #include "spi.h"
 #include "register.h"
 #include "gpio.h"
+#include "irq.h"
 /**
  * @brief     This function configures the clock and working mode for SPI interface
  * @param[in] DivClock - the division factor for SPI module
