@@ -82,7 +82,7 @@ void app_pwm_test(void){
 		//only pwm0 support fifo mode
 		gpio_set_func(GPIO_PA0, AS_PWM0);
 		pwm_set_mode(PWM0_ID, PWM_IR_DMA_FIFO_MODE);
-		pwm_set_phase(PWM0_ID, 0);   //no phase at pwm beginning
+		//pwm_set_phase(PWM0_ID, 0);   //no phase at pwm beginning
 
 		//config TMAX0  & TCMP0: 38k, 1/3 duty
 		pwm_set_cycle_and_duty(PWM0_ID, PWM_CARRIER_CYCLE_TICK,  PWM_CARRIER_HIGH_TICK );

@@ -22,7 +22,6 @@
 #include "app.h"
 #include <stack/ble/ble.h>
 #include "tl_common.h"
-#include "drivers.h"
 #include "../common/blt_led.h"
 #include "../common/keyboard.h"
 #include "../common/blt_soft_timer.h"
@@ -78,14 +77,14 @@ my_fifo_t	spp_tx_fifo = {
 
 /* ADV Packet, SCAN Response Packet define */
 const u8 tbl_advData[] = {
-	 0x05, 0x09, 'h', 'M', 'o', 'd',
+	 0x05, 0x09, 'G', 'M', 'o', 'd',
 	 0x02, 0x01, 0x05, 							// BLE limited discoverable mode and BR/EDR not supported
 	 0x03, 0x19, 0x80, 0x01, 					// 384, Generic Remote Control, Generic category
 	 0x05, 0x02, 0x12, 0x18, 0x0F, 0x18,		// incomplete list of service class UUIDs (0x1812, 0x180F)
 };
 
 const u8 tbl_scanRsp [] = {
-	0x08, 0x09, 'h', 'M', 'o', 'd', 'u', 'l', 'e',
+	0x08, 0x09, 'G', 'M', 'o', 'd', 'u', 'l', 'e',
 };
 
 
@@ -128,7 +127,7 @@ void entry_ota_mode(void)
 {
 	ota_is_working = 1;
 	device_led_setup(led_cfg[LED_SHINE_OTA]);
-	bls_ota_setTimeout(15 * 1000 * 1000); //set OTA timeout  15 seconds
+	bls_ota_setTimeout(50 * 1000 * 1000); //set OTA timeout  15 seconds
 }
 
 void LED_show_ota_result(int result)
@@ -239,7 +238,7 @@ void user_init()
 
 		gpio_set_wakeup(GPIO_WAKEUP_MODULE,1,1);  	   //drive pin core(gpio) high wakeup suspend
 		//mcu can wake up module from suspend or deepsleep by pulling up GPIO_WAKEUP_MODULE
-		cpu_set_gpio_wakeup (GPIO_WAKEUP_MODULE, GPIO_Level_High, 1);  // pad high wakeup deepsleep
+		cpu_set_gpio_wakeup(GPIO_WAKEUP_MODULE, GPIO_Level_High, 1);  // pad high wakeup deepsleep
 
 		GPIO_WAKEUP_MODULE_LOW;
 
@@ -350,6 +349,10 @@ void user_init()
 	bls_ota_registerStartCmdCb(entry_ota_mode);
 	bls_ota_registerResultIndicateCb(LED_show_ota_result);
 #endif
+
+	//OTA_Test
+	u32 temp = 0xaaaa5555;
+	flash_write_page(0x78000, 4, (u8*)&temp);
 }
 
 /*----------------------------------------------------------------------------*/
