@@ -53,12 +53,12 @@ _attribute_ram_code_ void irq_handler(void)
     	dma_chn_irq_status_clr(FLD_DMA_CHN_UART_TX);
     }
 #endif
-
 }
 
 int main(void){
 
-	blc_pm_select_internal_32k_crystal();
+	//blc_pm_select_internal_32k_crystal();
+	blc_pm_select_external_32k_crystal();
 
 	#if(FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K) ///FLASH_SIZE_OPTION_128K
 		bls_ota_setFirmwareSizeAndOffset(48, 0x10000);///default : ota_firmware_size_k=128;ota_program_bootAddr=0x20000; it is for hawk 128K flash
@@ -82,7 +82,7 @@ int main(void){
 
 	rf_drv_init(RF_MODE_BLE_1M);
 
-	user_init ();
+	user_init();
 
     irq_enable();
 

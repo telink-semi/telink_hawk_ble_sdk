@@ -22,6 +22,7 @@
 #include "battery_check.h"
 #include "tl_common.h"
 #include "drivers.h"
+#include "stack/ble/ble.h"
 
 int adc_hw_initialized = 0;
 
@@ -134,6 +135,19 @@ void battery_power_check(int minVol_mV)
 			gpio_set_output_en(GPIO_LED, 0);
 		#endif
 
+		//Avoid the MCU entering DEEP when the user presses the key, causing the RF key not to be released.
+		extern int key_not_released;
+		extern u8 key_type;
+		if(key_not_released){
+			if(key_type == KEYBOARD_KEY){
+				u8 key_report[8]={0};
+				bls_att_pushNotifyData(HID_NORMAL_KB_REPORT_INPUT_DP_H, key_report, 8);
+			}
+			else if(key_type == CONSUMER_KEY){
+				u8 consume[8]={0};
+				bls_att_pushNotifyData(HID_CONSUME_REPORT_INPUT_DP_H, consume, 8);
+			}
+		}
 		analog_write(DEEP_ANA_REG2, BATTERY_VOL_LOW);
 		cpu_sleep_wakeup(PM_SLeepMode_Deep, PM_WAKEUP_PAD, 0);
 	}

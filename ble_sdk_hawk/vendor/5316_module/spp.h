@@ -66,6 +66,7 @@ typedef struct {
 	u8  param[0];
 } spp_event_t;
 
+extern u32 connected_start_tick;
 
 int bls_uart_handler (u8 *p, int n);
 int spp_send_data (u32 header, spp_event_t * pEvt);

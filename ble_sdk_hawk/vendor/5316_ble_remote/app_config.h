@@ -28,7 +28,7 @@ extern "C" {
 
 
 /* Function Select -----------------------------------------------------------*/
-
+#define BLE_REMOTE_PM_ENABLE	    	1
 #define BLE_REMOTE_SECURITY_ENABLE      1
 #define BLE_REMOTE_OTA_ENABLE			1
 #define REMOTE_IR_ENABLE				0
@@ -36,20 +36,26 @@ extern "C" {
 #define RC_BTN_ENABLE               	1
 #define BLT_APP_LED_ENABLE				1
 
-/***select flash size***/
-#define FLASH_SIZE_OPTION_128K          0
-#define FLASH_SIZE_OPTION_512K          1
-
-#define FLASH_SIZE_OPTION               FLASH_SIZE_OPTION_128K
-
-/***firmware check***/
+/* Firmware check ------------------------------------------------------------*/
 #define FIRMWARES_SIGNATURE_ENABLE      0
 
-/* software timer -----------------------------------------------------------*/
-#define BLT_TEST_SOFT_TIMER_ENABLE			0
+/* Select flash size ---------------------------------------------------------*/
+#define FLASH_SIZE_OPTION_128K          0
+#define FLASH_SIZE_OPTION_512K          1
+#define FLASH_SIZE_OPTION               FLASH_SIZE_OPTION_512K
 
+/* System clock initialization -----------------------------------------------*/
+#define CLOCK_SYS_CLOCK_HZ      		16000000
+enum{
+	CLOCK_SYS_CLOCK_1S  = CLOCK_SYS_CLOCK_HZ,
+	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),
+	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),
+};
+
+/* Software timer -----------------------------------------------------------*/
+#define BLT_TEST_SOFT_TIMER_ENABLE		0
 #if (BLT_TEST_SOFT_TIMER_ENABLE)
-	#define BLT_SOFTWARE_TIMER_ENABLE		1
+	#define BLT_SOFTWARE_TIMER_ENABLE	1
 #endif
 
 
@@ -76,6 +82,11 @@ extern "C" {
 #define KB_REPEAT_KEY_NUM				1
 #define KB_MAP_REPEAT					{VK_1, }
 
+/* Key type Macro */
+#define IDLE_KEY	   			0
+#define CONSUMER_KEY   	   		1
+#define KEYBOARD_KEY   	   		2
+#define IR_KEY   	   			3
 
 #define			CR_VOL_UP				0xf0  ////
 #define			CR_VOL_DN				0xf1
@@ -224,17 +235,6 @@ extern "C" {
 
 #define		KB_MAP_NUM		KB_MAP_NORMAL
 #define		KB_MAP_FN		KB_MAP_NORMAL
-
-
-
-/* System clock initialization -----------------------------------------------*/
-#define CLOCK_SYS_CLOCK_HZ      16000000
-enum{
-	CLOCK_SYS_CLOCK_1S  = CLOCK_SYS_CLOCK_HZ,
-	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),
-	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),
-};
-
 
 /* WatchDog ------------------------------------------------------------------*/
 #define MODULE_WATCHDOG_ENABLE	0

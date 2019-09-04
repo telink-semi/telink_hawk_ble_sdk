@@ -77,7 +77,7 @@ static u8 serviceChangeCCC[2]={0,0};
 
 
 
-#define DEV_NAME                        "hModule"
+#define DEV_NAME                        "GModule"
 extern u8  ble_devName[];
 
 // Device Name Characteristic Properties

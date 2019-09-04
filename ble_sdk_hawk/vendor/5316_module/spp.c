@@ -40,6 +40,8 @@ u8  pairing_end_status;
 
 u32 spp_cmd_restart_flag;
 
+u32 connected_start_tick = 0;
+extern u8 mtu_size_exchanged;
 
 int controller_event_handler(u32 h, u8 *para, int n)
 {
@@ -67,6 +69,8 @@ int controller_event_handler(u32 h, u8 *para, int n)
 			{
 				bls_l2cap_requestConnParamUpdate (8, 12, 99, 400);
 
+				connected_start_tick = clock_time()|1;
+
 				spp_send_data(HCI_FLAG_EVENT_TLK_MODULE, pEvt);
 			}
 			break;
@@ -74,6 +78,8 @@ int controller_event_handler(u32 h, u8 *para, int n)
 
 			case BLT_EV_FLAG_TERMINATE:
 			{
+				connected_start_tick = 0;
+				mtu_size_exchanged = false;
 				spp_send_data(HCI_FLAG_EVENT_TLK_MODULE, pEvt);
 			}
 			break;

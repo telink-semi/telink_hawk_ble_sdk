@@ -32,10 +32,8 @@
 
 blt_soft_timer_t	blt_timer;
 
-
-//按照定时时间将timer排序，便于process时 依次触发timer
 /***
- * sort soft timer according to the period of per soft timer. thus it is easier for processing.
+ * ort timers by timing order, so that timers can be triggered sequentially
  */
 int  blt_soft_timer_sort(void)
 {
@@ -83,6 +81,9 @@ int blt_soft_timer_add(blt_timer_callback_t func, u32 interval_us)
 		blt_timer.currentNum ++;
 
 		blt_soft_timer_sort();
+
+		bls_pm_setAppWakeupLowPower(blt_timer.timer[0].t,  1);
+
 		return  1;
 	}
 }
@@ -185,18 +186,16 @@ void  	blt_soft_timer_process(int type)
 			blt_soft_timer_sort();
 		}
 
-		if( (u32)(blt_timer.timer[0].t - now) < 3000 *  CLOCK_16M_SYS_TIMER_CLK_1MS){
+		if( (u32)(blt_timer.timer[0].t - now) < 8000 *  CLOCK_16M_SYS_TIMER_CLK_1MS){
 			bls_pm_setAppWakeupLowPower(blt_timer.timer[0].t,  1);
 		}
 		else{
 			bls_pm_setAppWakeupLowPower(0, 0);  //disable
 		}
-
 	}
 	else{
 		bls_pm_setAppWakeupLowPower(0, 0);  //disable
 	}
-
 }
 
 

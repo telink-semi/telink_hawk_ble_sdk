@@ -33,7 +33,7 @@
 
 
 #if(__PROJECT_5316_BLE_REMOTE__ )
-#define BLE_REMOTE_PM_ENABLE	    1
+
 
 #define RC_DEEP_SLEEP_EN            1
 #define ADV_IDLE_ENTER_DEEP_TIME	60  //60 s
@@ -92,12 +92,6 @@ u32	advertise_begin_tick;
 unsigned int lowBattDet_tick = 0;
 
 int ui_mtu_size_exchange_req = 0;
-
-/* Key type Macro */
-#define IDLE_KEY	   			0
-#define CONSUMER_KEY   	   		1
-#define KEYBOARD_KEY   	   		2
-#define IR_KEY   	   			3
 
 u8 	key_type;
 u8 	user_key_mode;
@@ -472,6 +466,7 @@ void blt_pm_proc(void)
 	{
 		bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
 
+	#if(RC_BTN_ENABLE)
 		user_task_flg = ota_is_working || scan_pin_need || key_not_released || DEVICE_LED_BUSY;
 
 		if(user_task_flg){
@@ -487,7 +482,7 @@ void blt_pm_proc(void)
 				bls_pm_setManualLatency(0);
 			#endif
 		}
-
+    #endif
 
 	#if(RC_DEEP_SLEEP_EN) //deepsleep
 		if(sendTerminate_before_enterDeep == 1){ //sending Terminate and wait for ack before enter deepsleep

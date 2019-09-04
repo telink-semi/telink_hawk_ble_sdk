@@ -51,9 +51,15 @@ extern "C" {
 /***select flash size***/
 #define FLASH_SIZE_OPTION_128K          0
 #define FLASH_SIZE_OPTION_512K          1
-
 #define FLASH_SIZE_OPTION               FLASH_SIZE_OPTION_512K
 
+/* System clock initialization -----------------------------------------------*/
+#define CLOCK_SYS_CLOCK_HZ      16000000
+enum{
+	CLOCK_SYS_CLOCK_1S  = CLOCK_SYS_CLOCK_HZ,
+	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),
+	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),
+};
 
 /* LED -----------------------------------------------------------------------*/
 #define	GPIO_LED	GPIO_PB0
@@ -76,15 +82,6 @@ extern "C" {
 #define GPIO_WAKEUP_MCU_HIGH				do{gpio_set_output_en(GPIO_WAKEUP_MCU, 1); gpio_write(GPIO_WAKEUP_MCU, 1);}while(0)
 #define GPIO_WAKEUP_MCU_LOW					do{gpio_set_output_en(GPIO_WAKEUP_MCU, 1); gpio_write(GPIO_WAKEUP_MCU, 0);}while(0)
 #define GPIO_WAKEUP_MCU_FLOAT				do{gpio_set_output_en(GPIO_WAKEUP_MCU, 0); gpio_write(GPIO_WAKEUP_MCU, 0);}while(0)
-
-
-/* System clock initialization -----------------------------------------------*/
-#define CLOCK_SYS_CLOCK_HZ      16000000
-enum{
-	CLOCK_SYS_CLOCK_1S  = CLOCK_SYS_CLOCK_HZ,
-	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),
-	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),
-};
 
 
 ///////////////////////////////////// ATT  HANDLER define ///////////////////////////////////////

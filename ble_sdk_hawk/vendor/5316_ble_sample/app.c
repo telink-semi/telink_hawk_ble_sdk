@@ -121,12 +121,12 @@ void ble_remote_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 void task_connect(u8 e, u8 *p, int n)
 {
 	/**
-	 * internal   interval=10ms latency=99 timeout=4s     5 min     36uA
-     *            interval=10ms latency=199 timeout=4s    5 min     27uA
-     *            interval=10ms latency=299 timeout=4s    5 min     21uA
-	 * external  interval=10ms latency=99 timeout=4s     5 min     33uA
-     *           interval=10ms latency=199 timeout=4s    5 min     22uA
-     *           interval=10ms latency=299 timeout=4s    5 min     17uA
+	 * internal  interval=10ms latency=99  timeout=4s         36uA
+     *           interval=10ms latency=199 timeout=6s         27uA
+     *           interval=10ms latency=299 timeout=8s         21uA
+	 * external  interval=10ms latency=99  timeout=4s         33uA
+     *           interval=10ms latency=199 timeout=6s         22uA
+     *           interval=10ms latency=299 timeout=8s         17uA
      */
 	bls_l2cap_requestConnParamUpdate (8, 8, 99, 400);  //interval=10ms latency=99 timeout=4s
 

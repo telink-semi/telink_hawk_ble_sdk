@@ -333,6 +333,8 @@ void rc_ir_irq_prc(void)
 
 void rc_ir_init(void)
 {
+	//Enable PWM clock(must)
+	reg_clk_en1 |= FLD_CLK1_PWM_EN;
 
 //only pwm0 support fifo mode
 	pwm_n_revert(PWM0_ID);	//if use PWMx_N, user must set "pwm_n_revert" before gpio_set_func(pwmx_N).

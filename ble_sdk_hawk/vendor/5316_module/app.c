@@ -219,7 +219,12 @@ void app_power_management ()
 #endif
 }
 
-
+#define MY_MTU_SIZE      100
+u8 mtu_size_exchanged = false;
+void mtu_size_exchange_cb(u16 connHandle, u16 remoteMtuSize, u16 effectMtuSize)
+{
+	mtu_size_exchanged = true;
+}
 
 unsigned int lowBattDet_tick = 0;
 
@@ -313,6 +318,9 @@ void user_init()
 	bls_ll_setAdvEnable(1);  //adv enable
 	rf_set_power_level_index (RF_POWER_7P9dBm);
 
+	//MTU Size
+    blc_att_setRxMtuSize(MY_MTU_SIZE);
+    blc_att_registerMtuSizeExchangeCb(mtu_size_exchange_cb);
 
 	/*-- SPP initialization --------------------------------------------------*/
 	//note: dma addr must be set first before any other uart initialization! (confirmed by sihui)
@@ -349,10 +357,6 @@ void user_init()
 	bls_ota_registerStartCmdCb(entry_ota_mode);
 	bls_ota_registerResultIndicateCb(LED_show_ota_result);
 #endif
-
-	//OTA_Test
-	u32 temp = 0xaaaa5555;
-	flash_write_page(0x78000, 4, (u8*)&temp);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -362,6 +366,14 @@ u32 tick_loop;
 void main_loop (void)
 {
 	tick_loop ++;
+
+	if(!mtu_size_exchanged && blc_ll_getCurrentState() == BLS_LINK_STATE_CONN
+	   && clock_time_exceed(connected_start_tick, 5000*1000))
+	{
+		blc_att_requestMtuSizeExchange(BLS_CONN_HANDLE, MY_MTU_SIZE);
+		mtu_size_exchanged = true;
+		//write_reg32(0x8000, 0xaaaa5555);
+	}
 
 	/* BLE entry -------------------------------------------------------------*/
 	blt_sdk_main_loop(); ///rx_from_uart_cb  tx_to_uart_cb

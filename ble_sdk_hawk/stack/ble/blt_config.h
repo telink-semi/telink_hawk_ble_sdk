@@ -105,13 +105,6 @@ static inline void blc_app_loadCustomizedParameters(void)
 #define SECURE_CONNECTION_ENABLE								1
 #endif
 
-#if(__TL_LIB_5316__ || MCU_CORE_TYPE == MCU_CORE_5316)
-#if (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K)
-//	#define	BLS_ADV_INTERVAL_CHECK_ENABLE			    0
-	#define BLE_CORE42_DATA_LENGTH_EXTENSION_ENABLE		0
-#endif
-#endif
-
 //Link layer feature enable flag default setting
 #ifndef BLE_CORE42_DATA_LENGTH_EXTENSION_ENABLE
 #define BLE_CORE42_DATA_LENGTH_EXTENSION_ENABLE			1
