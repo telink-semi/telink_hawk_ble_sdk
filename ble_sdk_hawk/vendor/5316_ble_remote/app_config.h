@@ -52,7 +52,7 @@ enum{
 	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),
 };
 
-/* Software timer -----------------------------------------------------------*/
+/* Software timer ------------------------------------------------------------*/
 #define BLT_TEST_SOFT_TIMER_ENABLE		0
 #if (BLT_TEST_SOFT_TIMER_ENABLE)
 	#define BLT_SOFTWARE_TIMER_ENABLE	1
