@@ -37,8 +37,6 @@
 	#include "../5316_driver_test/app_config.h"
 #elif(__PROJECT_5316_FEATURE_TEST__)
 	#include "../5316_feature_test/app_config.h"
-#elif(__PROJECT_5316_BEACON__)
-    #include "../5316_beacon/app_config.h"
 #else
 	#include "../common/default_config.h"
 #endif
