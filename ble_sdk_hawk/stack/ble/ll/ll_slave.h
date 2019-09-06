@@ -117,7 +117,7 @@ void		bls_ll_disableConnBrxEvent(void);
 void		bls_ll_restoreConnBrxEvent(void);
 
 
-
+void blc_ll_setShortTolerance(int short_tor_us);
 
 //ble module event
 ble_sts_t 	bls_hci_mod_setEventMask_cmd(u32 evtMask);  //eventMask: module special
