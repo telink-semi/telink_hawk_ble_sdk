@@ -31,7 +31,6 @@
 #include "battery_check.h"
 #include "rc_ir.h"
 
-
 #if(__PROJECT_5316_BLE_REMOTE__ )
 
 
