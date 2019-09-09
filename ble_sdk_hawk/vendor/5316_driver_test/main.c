@@ -61,8 +61,10 @@ int main(void){
 
 	clock_init(SYS_CLK_16M_Crystal);
 
-
 	gpio_init();
+
+	/* load customized freq_offset CAP value and TP value.*/
+	blc_app_loadCustomizedParameters(); //do this operation before "rf_drv_init"
 
 	rf_drv_init(RF_MODE_BLE_1M);
 
