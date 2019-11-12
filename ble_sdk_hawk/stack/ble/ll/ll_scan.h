@@ -23,10 +23,11 @@
 #define LL_SCAN_H_
 
 #include "config.h"
-
-#if(__TL_LIB_5316__ || MCU_CORE_TYPE == MCU_CORE_5316)
-
 #include "stack/ble/ble_common.h"
+
+#if((__TL_LIB_5316__ || MCU_CORE_TYPE == MCU_CORE_5316) && BLE_STATE_MACHINE_EXTENSION_EN)
+
+
 
 /* Macro define */
 #define BLC_SCAN_DISABLE				0
@@ -58,12 +59,15 @@ typedef struct {
 
 typedef int (*ll_procScanPkt_callback_t)(u8 *, u8 *, u32);
 typedef int (*ll_procScanDat_callback_t)(u8 *);
+typedef void (*ll_switchScanChannel_t)(int, int);
 
 /* External variable statement */
 st_ll_scan_t  blts;
 u32 blts_scan_interval;
 extern rf_packet_scan_req_t	pkt_scan_req;
 
+
+//extern ll_switchScanChannel_t     blc_ll_switchScanChannelCb;
 extern ll_procScanPkt_callback_t  blc_ll_procScanPktCb;
 extern ll_procScanDat_callback_t  blc_ll_procScanDatCb;
 

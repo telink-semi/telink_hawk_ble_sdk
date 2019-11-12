@@ -68,6 +68,7 @@ void app_pwm_test(void){
 
 	WaitMs(1000);
 
+	reg_clk_en1 |= FLD_CLK1_PWM_EN;
 	pwm_set_clk(CLOCK_SYS_CLOCK_HZ, CLOCK_SYS_CLOCK_HZ);
 
 	#if (TEST_PWM_SELECT == PWM_NORMAL)

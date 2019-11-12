@@ -48,6 +48,16 @@
 #endif
 
 
+#define ELECTRONIC_SCALE_APPLICATION                        0
+#if ELECTRONIC_SCALE_APPLICATION
+	#define SECURE_CONNECTION_ENABLE					    0
+	//Link layer feature enable flag default setting
+	#define BLE_CORE42_DATA_LENGTH_EXTENSION_ENABLE			0
+	#define LL_FEATURE_SUPPORT_LE_2M_PHY					0
+	#define BLE_STATE_MACHINE_EXTENSION_EN                  0
+#endif
+
+
 #define ATT_RSP_BIG_MTU_PROCESS_EN      1
 
 
@@ -78,6 +88,10 @@ static inline void blc_app_loadCustomizedParameters(void)
 			 analog_write(0x81, (analog_read(0x81)&0xe0) | ((*(unsigned char*) CUST_CAP_INFO_ADDR)&0x1f) );
 		 }
 	 }
+	 else{//use external 24M cap
+		analog_write(0x80, analog_read(0x80)&0xbf);//an_80<6> = 0, disable internal cap
+		analog_write(0x81, analog_read(0x81)&0xe0);//an_81<4:0> = 0, clear internal cap value
+	 }
 
 	 // customize TP0/TP1 1M
 	 if( ((*(unsigned char*) (CUST_TP_INFO_ADDR)) != 0xff) && ((*(unsigned char*) (CUST_TP_INFO_ADDR+1)) != 0xff) ){
@@ -97,12 +111,9 @@ static inline void blc_app_loadCustomizedParameters(void)
 
 
 
-/////////////////// Code Size & Feature ////////////////////////////
-
-
-
+/////////////////// Feature ////////////////////////////
 #ifndef SECURE_CONNECTION_ENABLE
-#define SECURE_CONNECTION_ENABLE								1
+#define SECURE_CONNECTION_ENABLE					    1
 #endif
 
 //Link layer feature enable flag default setting
@@ -114,12 +125,13 @@ static inline void blc_app_loadCustomizedParameters(void)
 #define LL_FEATURE_SUPPORT_LE_2M_PHY					1
 #endif
 
-
 #ifndef		BLS_ADV_INTERVAL_CHECK_ENABLE
-#define		BLS_ADV_INTERVAL_CHECK_ENABLE					0 ////1 according to sihui's advise, disable interval check.
+#define		BLS_ADV_INTERVAL_CHECK_ENABLE				0 ////1 according to sihui's advise, disable interval check.
 #endif
 
-
+#ifndef BLE_STATE_MACHINE_EXTENSION_EN
+	#define BLE_STATE_MACHINE_EXTENSION_EN              1
+#endif
 
 
 

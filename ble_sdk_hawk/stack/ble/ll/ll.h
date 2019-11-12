@@ -101,15 +101,23 @@ extern u8 blt_state;
 #define LL_MIN_USED_CHANNELS_IND 	 0x19 //Core 5.0
 /*-------------------End of BLE Controller feature ---------------------------*/
 
-//Tx settle time
-#define	LL_ADV_TX_SETTLE_1M		   (80)//0x50 tested
-#define LL_SCAN_TX_SETTLE_1M	   (80)
-#define LL_SLAVE_TX_SETTLE_1M	   (87)//0x57 tested
+/*-------------------- Tx settle time ----------------------------------------*/
+//#if(CLOCK_SYS_CLOCK_HZ == 48000000)
+//	#define	LL_ADV_TX_SETTLE_1M		   (87)//tested
+//#elif(CLOCK_SYS_CLOCK_HZ == 32000000)
+//	#define	LL_ADV_TX_SETTLE_1M		   (85)
+//#else
+//	#define	LL_ADV_TX_SETTLE_1M		   (80)//tested
+//#endif
 
-#define	LL_ADV_TX_SETTLE_2M		   (80)
-#define LL_SCAN_TX_SETTLE_2M	   (80)
-#define LL_SLAVE_TX_SETTLE_2M	   (89)//tested. 0x402 = 0x26 -> tx settle = 113
+//#define	LL_ADV_TX_SETTLE_1M		    (80)//tested
+//#define LL_SCAN_TX_SETTLE_1M	   		(80)
+#define LL_SLAVE_TX_SETTLE_1M	   		(87)//tested
 
+//#define	LL_ADV_TX_SETTLE_2M		    (80)
+//#define LL_SCAN_TX_SETTLE_2M	   		(80)
+#define LL_SLAVE_TX_SETTLE_2M	   		(89)//tested. 0x402 = 0x26 -> tx settle = 113
+/*----------------------------------------------------------------------------*/
 
 #define SLAVE_LL_ENC_OFF 			0
 #define SLAVE_LL_ENC_REQ 			1
@@ -213,6 +221,7 @@ typedef struct{
 
     u16	bluetooth_subver;
     u8  bluetooth_ver;
+    u8	sdk_mainLoop_run_flag;   //Prevent enter sleep in first main_loop
 
 } st_ll_conn_t;
 
@@ -220,17 +229,8 @@ typedef struct{
 st_ll_conn_t bltParam;
 
 
-#if (SECURE_CONNECTION_ENABLE)
 
-	typedef struct{
-		u8 sc_sk_dhk_own[32];  // keep sk before receive Ea. and keep dhkey after that.
-		u8 sc_prk_own[32];     // own  private key
-		u8 sc_pk_own[64];      // own  public key
-		u8 sc_pk_peer[64];     // peer public key
-	}smp_sc_key_t;
 
-	extern smp_sc_key_t smp_sc_key;
-#endif
 
 ////////////////// Telink defined Event Callback  ////////////////////////
 typedef void (*blt_event_callback_t)(u8 e, u8 *p, int n);
@@ -345,7 +345,13 @@ void blt_adjust_timer0_capt(u32 sys_timer_tick);
 
 static inline u8 blc_ll_getTxFifoNumber(void)
 {
-    return ((reg_dma_tx_wptr - reg_dma_tx_rptr) & 15) + ((blt_txfifo.wptr - blt_txfifo.rptr) & 31);
+	u8 r = irq_disable();
+
+	u8 fifo_num = ((reg_dma_tx_wptr - reg_dma_tx_rptr) & 15 )  +  ( (blt_txfifo.wptr - blt_txfifo.rptr) & 31 ) ;
+
+	irq_restore(r);
+
+	return  fifo_num;
 }
 
 static inline u8 blc_ll_getTxHardWareFifoNumber(void)

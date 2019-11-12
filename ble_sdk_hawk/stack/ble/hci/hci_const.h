@@ -240,6 +240,11 @@
 #define HCI_CMD_LINK_POLICY_OPCODE_OGF								 0x08 //0x02<<2 = 0x08
 #define HCI_CMD_TEST_OPCODE_OGF										 0x18 //0x06<<2 = 0x18
 
+//core 5.0
+#define HCI_CMD_LE_READ_PHY                              			 0x30
+#define HCI_CMD_LE_SET_DEFAULT_PHY                                   0x31
+#define HCI_CMD_LE_SET_PHY                                           0x32
+
 // Vendor specific Commands
 //-- OGF --
 #define HCI_CMD_VENDOR_OPCODE_OGF									 0xFC  //0x3f <<2 = 0xFC

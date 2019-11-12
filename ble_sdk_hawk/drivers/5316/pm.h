@@ -146,11 +146,13 @@ typedef int (*suspend_handler_t)(void);
 typedef int (*cpu_pm_handler_t)(SleepMode_TypeDef,  SleepWakeupSrc_TypeDef, unsigned int);
 typedef void (*pCheck32kXtalStable)(void);
 typedef unsigned int (*pGet32kXtalTickCb)(void);
+typedef unsigned char (*pKick32kXtal)(int kickCnt);
 
 extern cpu_pm_handler_t cpu_sleep_wakeup;
 extern suspend_handler_t func_before_suspend;
 extern unsigned char PM_PAD_FILTER_EN;
 extern pCheck32kXtalStable check32kXtalStable;
+extern pKick32kXtal pm_kick_32k_xtal_cb;
 
 //void cpu_wakeup_init(int);
 void cpu_wakeup_init(void);

@@ -101,6 +101,7 @@ typedef enum {
     UART_RTS_MODE_MANUAL,
 } UART_RTSModeTypeDef;
 
+extern unsigned char uart_TxIndex;
 
 /**
  * @brief     This function servers to indicate Tx state.
@@ -110,6 +111,17 @@ typedef enum {
 static inline unsigned char uart_tx_is_busy(void)
 {
     return ( (reg_uart_status1 & FLD_UART_TX_DONE) ? 0 : 1) ;
+}
+
+/**
+ * @brief     This function is used to set the 'uart_TxIndex' to 0.
+ *			  After wakeup from power-saving mode, you must call this function before sending the data.
+ * @param[in] none.
+ * @return    none.
+ */
+static inline void uart_ndma_clear_tx_index(void)
+{
+    uart_TxIndex=0;
 }
 
 /**

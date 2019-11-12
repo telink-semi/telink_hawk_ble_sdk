@@ -232,10 +232,10 @@ unsigned char uart_ndma_get_irq(void)
  * @param[in] uartData - the data to be send.
  * @return    none
  */
+unsigned char uart_TxIndex = 0;
 void uart_ndma_send_byte(unsigned char uartData)
 {
 	int t;
-	static unsigned char uart_TxIndex = 0;
 
 	t = 0;
 	while( uart_tx_is_busy() && (t<0xfffff))
@@ -250,6 +250,8 @@ void uart_ndma_send_byte(unsigned char uartData)
 	uart_TxIndex++;
 	uart_TxIndex &= 0x03;// cycle the four register 0x90 0x91 0x92 0x93.
 }
+
+
 
 
 /**

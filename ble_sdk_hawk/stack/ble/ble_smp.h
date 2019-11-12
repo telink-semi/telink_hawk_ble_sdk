@@ -385,6 +385,15 @@ extern smp_sc_pushPkt_handler_t  func_smp_sc_pushPkt_proc;
 extern	const	u8	PublicKey[64];
 extern	const	u8	PrivateKey[32];
 
+typedef struct{
+	u8 sc_sk_dhk_own[32];  // keep sk before receive Ea. and keep dhkey after that.
+	u8 sc_prk_own[32];     // own  private key
+	u8 sc_pk_own[64];      // own  public key
+	u8 sc_pk_peer[64];     // peer public key
+}smp_sc_key_t;
+
+extern smp_sc_key_t smp_sc_key;
+
 #endif
 
 #define IO_CAPABLITY_DISPLAY_ONLY		0x00
