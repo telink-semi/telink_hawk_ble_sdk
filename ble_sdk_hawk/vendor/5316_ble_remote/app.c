@@ -719,6 +719,7 @@ void user_init()
 
 	/* Power Management initialization */
   #if(BLE_REMOTE_PM_ENABLE)
+	//pm_32kRcTrackDelayEnable(1000, 1);
 	blc_ll_initPowerManagement_module();        //pm module:      	 optional
 	bls_pm_setSuspendMask(SUSPEND_ADV | SUSPEND_CONN);
 	bls_app_registerEventCallback(BLT_EV_FLAG_SUSPEND_ENTER, &ble_remote_set_sleep_wakeup);

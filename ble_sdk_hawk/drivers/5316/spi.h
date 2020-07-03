@@ -28,6 +28,9 @@
 #include "bsp.h"
 #include "gpio.h"
 
+#define SPI_WRITE_CMD   0x00
+#define SPI_READ_CMD    0x80
+
 /**
  *  @brief  Define the mode for SPI interface
  */

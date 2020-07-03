@@ -73,11 +73,22 @@ extern 			int				SMP_PARAM_NV_ADDR_START;
 #define			SMP_PARAM_NV_SEC_ADDR_END				(SMP_PARAM_NV_SEC_ADDR_START + SMP_PARAM_NV_MAX_LEN - 1)
 
 
+#ifndef SIMPLE_MULTI_MAC_EN
+#define SIMPLE_MULTI_MAC_EN    0
+#endif
 
+#if SIMPLE_MULTI_MAC_EN
+	extern u8 device_mac_index;
+	#define DEVICE_INDEX_MASK            0x0F
+	#define FLAG_SMP_PARAM_SAVE_BASE     (0x40 + (device_mac_index & DEVICE_INDEX_MASK))
+#else
+	#define FLAG_SMP_PARAM_SAVE_BASE     (0x40)
+#endif
+	#define FLAG_SMP_PARAM_MASK           0xC0
+	#define FLAG_SMP_PARAM_VALID          0x40
 
-
-#define		FLAG_SMP_PARAM_SAVE_PENDING				0x7B  // 0111 1011
-#define		FLAG_SMP_PARAM_SAVE_OK					0x5A  // 0101 1010
+//#define		FLAG_SMP_PARAM_SAVE_OK					0x5A  // 0101 1010
+#define		FLAG_SMP_PARAM_SAVE_PENDING				0xCF//0x7B  // 0111 1011
 #define		FLAG_SMP_PARAM_SAVE_ERASE				0x00  //
 
 
@@ -96,8 +107,11 @@ extern 			int				SMP_PARAM_NV_ADDR_START;
 #define SMP_STANDARD_PAIR   	0
 #define SMP_FAST_CONNECT   		1
 
-
-
+/* pairing phase stated define */
+#define PAIRING_IDLE_PHASE                   0x00000000UL
+#define PAIRING_FEARTURE_EXCHANGE_PHASE_OK   0x00000001UL
+#define PAIRING_KEY_GENERATE_PHASE_OK        0x00000002UL
+//#define  PAIRING_KEY_TRANSPORT_PHASE_OK      0x00000004UL
 
 typedef union {
 	struct{

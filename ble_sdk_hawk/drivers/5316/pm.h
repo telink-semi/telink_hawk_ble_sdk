@@ -158,7 +158,7 @@ extern pKick32kXtal pm_kick_32k_xtal_cb;
 void cpu_wakeup_init(void);
 _attribute_ram_code_ _attribute_no_inline_ void  sleep_start(void);
 
-
+void pm_32kRcTrackDelayEnable(u32 timeUs, bool en);
 void mcu_32k_rc_clock_calibration(void);
 u32  pm_get_32k_tick(void); ////_attribute_no_inline_
 void pm_set_32k_tick(u32 tick);///_attribute_no_inline_

@@ -23,7 +23,6 @@
 #include "spi.h"
 #include "register.h"
 #include "gpio.h"
-#include "irq.h"
 /**
  * @brief     This function configures the clock and working mode for SPI interface
  * @param[in] DivClock - the division factor for SPI module
@@ -117,7 +116,7 @@ void spi_write_buff(unsigned int Addr, unsigned char AddrLen,  unsigned char *Da
 	   while(reg_spi_ctrl& FLD_SPI_BUSY); //wait writing finished
    }
 
-   reg_spi_data = 0x00;			   		// write cmd:0x00
+   reg_spi_data = SPI_WRITE_CMD;			   		// write cmd:0x00
    while(reg_spi_ctrl& FLD_SPI_BUSY);
 
    /***write Data***/
@@ -154,7 +153,7 @@ void spi_read_buff(unsigned int Addr, unsigned char AddrLen, unsigned char *Data
 		 while(reg_spi_ctrl& FLD_SPI_BUSY ); //wait writing finished
 	}
 
-	reg_spi_data = 0x80;			   		//read cmd:0x80
+	reg_spi_data = SPI_READ_CMD;			   		//read cmd:0x80
 	while(reg_spi_ctrl& FLD_SPI_BUSY);
 
 	/***when the read_bit was set 1,you can read 0x800008 to take eight clock cycle***/

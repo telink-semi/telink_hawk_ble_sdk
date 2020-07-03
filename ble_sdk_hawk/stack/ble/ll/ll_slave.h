@@ -91,6 +91,8 @@ typedef struct {
 	int		conn_enc_dec_busy;
 	int		conn_stop_brx;
 #endif
+
+    u8 isVersionExchanged; //record version exchanged.
 } st_ll_conn_slave_t;
 
 

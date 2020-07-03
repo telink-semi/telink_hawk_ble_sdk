@@ -145,7 +145,7 @@ _attribute_ram_code_ void flash_read_page(unsigned long addr, unsigned long len,
 	irq_restore(r);
 }
 
-#if (FIRMWARES_SIGNATURE_ENABLE)
+
 /***********************************
  * @brief	  MAC id. Before reading UID of flash, you must read MID of flash. and then you can
  *            look up the related table to select the idcmd and read UID of flash
@@ -169,6 +169,8 @@ _attribute_ram_code_ void flash_read_mid(unsigned char *buf){
 
 	irq_restore(r);
 }
+
+#if (FIRMWARES_SIGNATURE_ENABLE)
 /***********************************
  * @brief	  UID. Before reading UID of flash, you must read MID of flash. and then you can
  *            look up the related table to select the idcmd and read UID of flash
@@ -206,7 +208,6 @@ _attribute_ram_code_ void flash_read_uid(unsigned char idcmd,unsigned char *buf)
 	mspi_high();
 	irq_restore(r);
 }
-
 /**
  * @brief 		 This function serves to read flash mid and uid,and check the correctness of mid and uid.
  * @param[out]   flash_mid - Flash Manufacturer ID
@@ -221,28 +222,38 @@ _attribute_ram_code_ int flash_read_mid_uid_with_check( unsigned int *flash_mid 
 	 flash_read_mid((unsigned char*)&mid);
 	 mid = mid&0xffff;
 	 *flash_mid  = mid;
-	 //  ÐÍºÅ   	  		 CMD        MID
-	 //  GD25D10BW 		 0x4b     0x40c8
-	 //  MD25D40DGIG	 0x4b     0x4051
-	 //  P25D40HDWF  	 0x4b     0x6085
-	 if( (mid == 0x40C8) || (mid == 0x6085) ||(mid == 0x4051)){
+	 /*
+		   Flash Type    CMD        MID      Company
+		   GD25LD40C 	 0x4b     0x60C8     GD
+		   GD25LD05C  	 0x4b 	  0x60C8     GD
+		   P25Q40L   	 0x4b     0x6085     PUYA
+		   MD25D40DGIG	 0x4b     0x4051     GD
+		   GD25D10C      0x4b     0x40C8     GD
+		   PN25F04C      0x5a     0x311C     XTX
+	*/
+	 if( (mid == 0x60C8) || (mid == 0x6085) ||(mid == 0x4051)||(mid==0x40C8)){
 		 flash_read_uid(FLASH_READ_UID_CMD,(unsigned char *)flash_uid);
-		  }else{
+	 }
+	 else if(mid==0x311C){
+		 flash_read_uid(FLASH_READ_UID_CMD2,(unsigned char *)flash_uid);
+	 }
+	 else{
+		 return 0;
+	 }
+	  for(i=0;i<16;i++){
+		if(flash_uid[i]==no_uid[i]){
+			f_cnt++;
+		}
+	  }
+	  if(f_cnt==16){//no uid flash
 			  return 0;
-		  }
-		  for(i=0;i<16;i++){
-			if(flash_uid[i]==no_uid[i]){
-				f_cnt++;
-			}
-		  }
-		  if(f_cnt==16){//no uid flash
-				  return 0;
 
-		  }else{
-			  return  1;
-		  }
+	  }else{
+		  return  1;
+	  }
 }
 #endif
+
 #if 0
 /**
  * @brief This function reads the status of flash.
