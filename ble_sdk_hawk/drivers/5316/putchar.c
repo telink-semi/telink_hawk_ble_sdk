@@ -136,7 +136,7 @@ int putchar(int c)
   #if(SIMULATE_UART_EN)
 	uart_put_char(c);
   #else
-	uart_ndma_send_byte(c);
+	//uart_ndma_send_byte(c);
   #endif
 	return c;
 }

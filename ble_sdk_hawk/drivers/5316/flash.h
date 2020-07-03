@@ -25,6 +25,8 @@
 #include "compiler.h"
 #include "../../common/config/user_config.h"
 
+#if 1
+
 #if (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_512K)
 	#ifndef		CFG_ADR_MAC
 	#define		CFG_ADR_MAC						0x76000
@@ -59,7 +61,7 @@
 	#endif
 
 #endif
-
+#endif
 
 enum{
 	FLASH_WRITE_STATUS_CMD	=	0x01,
@@ -71,6 +73,7 @@ enum{
 	FLASH_SECT_ERASE_CMD	=	0x20,
 	FLASH_READ_UID_CMD		=	0x4B,	//Flash Type = GD/PUYA
 	FLASH_32KBLK_ERASE_CMD	=	0x52,
+	FLASH_READ_UID_CMD2		=	0x5A,	//Flash Type = XTX
 	FLASH_CHIP_ERASE_CMD	=	0x60,   //or 0xc7
 	FLASH_PAGE_ERASE_CMD	=	0x81,   //caution: only P25Q40L support this function
 	FLASH_64KBLK_ERASE_CMD	=	0xD8,
@@ -78,6 +81,26 @@ enum{
 	FLASH_POWER_DOWN_RELEASE=	0xAB,
 	FLASH_GET_JEDEC_ID		=	0x9F,
 };
+
+/**
+ * @brief     flash capacity definition
+ * Call flash_read_mid function to get the size of flash capacity.
+ * Example is as follows:
+ * unsigned char temp_buf[4];
+ * flash_read_mid(temp_buf);
+ * The value of temp_buf[2] reflects flash capacity.
+ */
+typedef enum {
+    FLASH_SIZE_64K     = 0x10,
+    FLASH_SIZE_128K    = 0x11,
+    FLASH_SIZE_256K    = 0x12,
+    FLASH_SIZE_512K    = 0x13,
+    FLASH_SIZE_1M      = 0x14,
+    FLASH_SIZE_2M      = 0x15,
+    FLASH_SIZE_4M      = 0x16,
+    FLASH_SIZE_8M      = 0x17,
+} Flash_CapacityDef;
+
 /**
  * @brief This function serves to erase a sector.
  * @param[in]   addr the start address of the sector needs to erase.

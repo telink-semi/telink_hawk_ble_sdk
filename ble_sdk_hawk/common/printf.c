@@ -191,16 +191,26 @@ static int print(char **out, const char *format, va_list args)
 
 int my_printf(const char *format, ...)
 {
+	int cnt = 0;
 	va_list args;
+
 	va_start( args, format );
-	return print(0, format, args);
+	cnt = print(0, format, args);
+	va_end(args);
+
+	return cnt;
 }
 
 int my_sprintf(char *out, const char *format, ...)
 {
+	int cnt = 0;
 	va_list args;
+
 	va_start( args, format );
-	return print(&out, format, args);
+	cnt = print(&out, format, args);
+	va_end(args);
+
+	return cnt;
 }
 
 void array_printf(unsigned char*data, unsigned int len)

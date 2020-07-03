@@ -28,6 +28,8 @@
 #include "drivers.h"
 #include "tl_common.h"
 
+#define BLE_DEBUG     0 //!!! use for debug.  when release SDK, "BLE_DEBUG" must be set to 0.
+
 #define  MAX_DEV_NAME_LEN 				18
 
 #ifndef DEV_NAME
@@ -77,7 +79,7 @@ static inline void blc_app_setExternalCrystalCapEnable(u8  en)
 }
 
 
-
+#if 1
 static inline void blc_app_loadCustomizedParameters(void)
 {
 	 if(!blt_miscParam.ext_cap_en)
@@ -102,6 +104,7 @@ static inline void blc_app_loadCustomizedParameters(void)
 		 rf_load_2m_tp_value(*(unsigned char*) (CUST_TP_INFO_ADDR+2), *(unsigned char*) (CUST_TP_INFO_ADDR+3));
 	 }
 }
+#endif
 
 
 
