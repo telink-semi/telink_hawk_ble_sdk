@@ -27,6 +27,7 @@
 #include "compiler.h"
 #include "analog.h"
 
+#define XTAL_EXCEPTION_FIX_EN              1
 
 #ifndef PM_TIM_RECOVER_MODE
 #define PM_TIM_RECOVER_MODE					1
@@ -162,6 +163,8 @@ void pm_32kRcTrackDelayEnable(u32 timeUs, bool en);
 void mcu_32k_rc_clock_calibration(void);
 u32  pm_get_32k_tick(void); ////_attribute_no_inline_
 void pm_set_32k_tick(u32 tick);///_attribute_no_inline_
+unsigned int get_32k_xtal_tick(void);
+unsigned int get_32k_xtal_set_value(void);
 
 void bls_pm_registerFuncBeforeSuspend (suspend_handler_t func );
 //int cpu_sleep_wakeup (int deepsleep, int wakeup_src, u32 wakeup_tick);
