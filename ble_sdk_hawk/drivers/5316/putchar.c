@@ -91,7 +91,7 @@ int swire_putc(int c)
 }
 
 #if(SIMULATE_UART_EN)
-#define	BIT_INTERVAL	  (CLOCK_SYS_CLOCK_HZ/DEBUG_BAUDRATE)
+#define	BIT_INTERVAL	  (16000000/DEBUG_BAUDRATE)
 void uart_put_char(u8 byte)
 {
 	u8 j = 0;
@@ -116,7 +116,7 @@ void uart_put_char(u8 byte)
 	bit[9] = tmp_bit1;
 
 	//注意：此处的关闭了中断，可能影响应用层。但是不关中断，一但产生了中断就会影响数据发送.需要权衡
-	u8 r = irq_disable();
+	//u8 r = irq_disable();
 	t1 = reg_system_tick;
 	for(j = 0;j<10;j++)
 	{
@@ -126,7 +126,7 @@ void uart_put_char(u8 byte)
 		}
 		write_reg8(pcTxReg,bit[j]);        //send bit0
 	}
-	irq_restore(r);
+	//irq_restore(r);
 }
 #endif
 
