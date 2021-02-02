@@ -31,7 +31,7 @@
 #endif
 
 #ifndef DEBUG_TX_PIN
-	#define DEBUG_TX_PIN   GPIO_PB4
+	#define DEBUG_TX_PIN        GPIO_PB4
 #endif
 
 #ifndef DEBUG_BAUDRATE
