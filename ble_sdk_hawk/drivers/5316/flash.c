@@ -46,6 +46,7 @@
 
 
 #include "flash.h"
+#include "watchdog.h"
 
 _attribute_ram_code_ static inline int flash_is_busy(){
 	return mspi_read() & 0x01;				//  the busy bit, pls check flash spec
@@ -105,6 +106,8 @@ _attribute_ram_code_ static void flash_wait_done(void)
  */
 _attribute_ram_code_ void flash_erase_sector(unsigned long addr){
 	unsigned char r = irq_disable();
+
+	wd_clear();
 
 	flash_send_cmd(FLASH_WRITE_ENABLE_CMD);
 	flash_send_cmd(FLASH_SECT_ERASE_CMD);
