@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	flash_type.h
+ * @file	flash_mid1360cd.h
  *
- * @brief	This is the header file for TLSR8232
+ * @brief	This is the header file for b85m
  *
  * @author	Driver Group
- * @date	May 8, 2018
+ * @date	2020
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -43,23 +43,77 @@
  *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *******************************************************************************************************/
-#ifndef __FLASH_TYPE_H__
-#define __FLASH_TYPE_H__
+#ifndef __MID1360CD_H__
+#define __MID1360CD_H__
 
-#include "../flash.h"
-#include "flash_mid1140c8.h"	// GD25D10C / GD25D10B
-#include "flash_mid134051.h"	// MD25D40D
-#include "flash_mid11325e.h"	// ZB25WD10A
-#include "flash_mid13325e.h"	// ZB25WD40B
-#include "flash_mid1360cd.h"	// TH25D40HB
+/*
+ * @brief     MID = 0x1360cd Flash include TH25D40HB.
+ */
 
-#define FLASH_LOCK_EN      0
 
+/**
+ * @brief     define the section of the protected memory area which is read-only and unalterable.
+ */
+typedef enum{
+	FLASH_LOCK_NONE_MID1360CD		=	0x0000,	//000000h-000000h	//0x0020 0x407c 0x4030...
+	FLASH_LOCK_UP_64K_MID1360CD		=	0x0004,	//070000h-07FFFFh
+	FLASH_LOCK_UP_128K_MID1360CD	=	0x0008,	//060000h-07FFFFh
+	FLASH_LOCK_UP_256K_MID1360CD	=	0x000c,	//040000h-07FFFFh	//0x402c
+	FLASH_LOCK_LOW_64K_MID1360CD	=	0x0024,	//000000h-00FFFFh
+	FLASH_LOCK_LOW_128K_MID1360CD	=	0x0028,	//000000h-01FFFFh
+	FLASH_LOCK_LOW_256K_MID1360CD	=	0x002c,	//000000h-03FFFFh	//0x400c
+	FLASH_LOCK_UP_4K_MID1360CD		=	0x0044,	//07F000h-07FFFFh
+	FLASH_LOCK_UP_8K_MID1360CD		=	0x0048,	//07E000h-07FFFFh
+	FLASH_LOCK_UP_16K_MID1360CD		=	0x004c,	//07C000h-07FFFFh
+	FLASH_LOCK_UP_32K_MID1360CD		=	0x0050,	//078000h-07FFFFh	//0x0054 0x0058
+	FLASH_LOCK_LOW_4K_MID1360CD		=	0x0064,	//000000h-000FFFh
+	FLASH_LOCK_LOW_8K_MID1360CD		=	0x0068,	//000000h-001FFFh
+	FLASH_LOCK_LOW_16K_MID1360CD	=	0x006c,	//000000h-003FFFh
+	FLASH_LOCK_LOW_32K_MID1360CD	=	0x0070,	//000000h-007FFFh	//0x0074 0x0078
+	FLASH_LOCK_LOW_448K_MID1360CD	=	0x4004,	//000000h-06FFFFh
+	FLASH_LOCK_LOW_384K_MID1360CD	=	0x4008,	//000000h-05FFFFh
+	FLASH_LOCK_UP_448K_MID1360CD	=	0x4024,	//010000h-07FFFFh
+	FLASH_LOCK_UP_384K_MID1360CD	=	0x4028,	//020000h-07FFFFh
+	FLASH_LOCK_LOW_508K_MID1360CD	=	0x4044,	//000000h-07EFFFh
+	FLASH_LOCK_LOW_504K_MID1360CD	=	0x4048,	//000000h-07DFFFh
+	FLASH_LOCK_LOW_496K_MID1360CD	=	0x404c,	//000000h-07BFFFh
+	FLASH_LOCK_LOW_480K_MID1360CD	=	0x4050,	//000000h-077FFFh	//0x4054 0x4058
+	FLASH_LOCK_UP_508K_MID1360CD	=	0x4064,	//001000h-07FFFFh
+	FLASH_LOCK_UP_504K_MID1360CD	=	0x4068,	//002000h-07FFFFh
+	FLASH_LOCK_UP_496K_MID1360CD	=	0x406c,	//004000h-07FFFFh
+	FLASH_LOCK_UP_480K_MID1360CD	=	0x4070,	//008000h-07FFFFh	//0x4074 0x4078
+	FLASH_LOCK_ALL_512K_MID1360CD	=	0x007c,	//000000h-07FFFFh	//0x4000 0x4040 0x4020 0x4060...
+}mid1360cd_lock_block_e;
+
+/**
+ * @brief     The starting address of the Security Registers.
+ */
+typedef enum{
+	FLASH_OTP_0x001000_512K_MID1360CD	=	0x001000,	//001000h-0011FFh
+	FLASH_OTP_0x002000_512K_MID1360CD	=	0x002000,	//002000h-0021FFh
+	FLASH_OTP_0x003000_512K_MID1360CD	=	0x003000,	//003000h-0031FFh
+}mid1360cd_otp_block_e;
+
+/**
+ * @brief     the lock area of the Security Registers.
+ */
+typedef enum{
+	FLASH_LOCK_OTP_0x001000_512K_MID1360CD	=	0x0800,	//001000h-0011FFh
+	FLASH_LOCK_OTP_0x002000_512K_MID1360CD	=	0x1000,	//002000h-0021FFh
+	FLASH_LOCK_OTP_0x003000_512K_MID1360CD	=	0x2000,	//003000h-0031FFh
+}mid1360cd_lock_otp_e;
+
+/**
+ * @brief     the range of bits to be modified when writing status.
+ */
+typedef enum{
+	FLASH_WRITE_STATUS_BP_MID1360CD		=	0x407c,
+	FLASH_WRITE_STATUS_OTP_MID1360CD	=	0x3800,
+}mid1360cd_write_status_bit_e;
 
 #if FLASH_LOCK_EN
 /**
- * @brief		This function reads the status of flash.
- * @param[in] 	cmd	- the cmd of read status.
+ * @brief 		This function reads the status of flash.
  * @return 		the value of status.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
@@ -71,12 +125,28 @@
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-unsigned char flash_read_status(unsigned char cmd);
+unsigned short flash_read_status_mid1360cd(void);
 
 /**
  * @brief 		This function write the status of flash.
- * @param[in]  	type	- the type of status.8 bit or 16 bit.
  * @param[in]  	data	- the value of status.
+ * @param[in]  	bit		- the range of bits to be modified when writing status.
+ * @return 		none.
+ * @note		Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ */
+void flash_write_status_mid1360cd(unsigned short data, mid1360cd_write_status_bit_e bit);
+
+/**
+ * @brief 		This function serves to set the protection area of the flash.
+ * @param[in]   data	- refer to the protection area definition in the .h file.
  * @return 		none.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
@@ -88,11 +158,29 @@ unsigned char flash_read_status(unsigned char cmd);
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-void flash_write_status(flash_status_typedef_e type , unsigned short data);
+void flash_lock_mid1360cd(mid1360cd_lock_block_e data);
+
+/**
+ * @brief 		This function serves to flash release protection.
+ * @return 		none.
+ * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ */
+void flash_unlock_mid1360cd(void);
 
 /**
  * @brief 		This function serves to read data from the Security Registers of the flash.
  * @param[in]   addr	- the start address of the Security Registers.
+ *						the address of the  Security Registers #1 0x001000-0x0011ff
+ *						the address of the  Security Registers #2 0x002000-0x0021ff
+ *						the address of the  Security Registers #3 0x003000-0x0031ff
  * @param[in]   len		- the length of the content to be read.
  * @param[out]  buf		- the starting address of the content to be read.
  * @return 		none.
@@ -106,11 +194,14 @@ void flash_write_status(flash_status_typedef_e type , unsigned short data);
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-void flash_read_otp(unsigned long addr, unsigned long len, unsigned char* buf);
+void flash_read_otp_mid1360cd(unsigned long addr, unsigned long len, unsigned char* buf);
 
 /**
  * @brief 		This function serves to write data to the Security Registers of the flash you choose.
  * @param[in]   addr	- the start address of the Security Registers.
+ *						the address of the  Security Registers #1 0x001000-0x0011ff
+ *						the address of the  Security Registers #2 0x002000-0x0021ff
+ *						the address of the  Security Registers #3 0x003000-0x0031ff
  * @param[in]   len		- the length of content to be written.
  * @param[in]   buf		- the starting address of the content to be written.
  * @return 		none.
@@ -124,14 +215,19 @@ void flash_read_otp(unsigned long addr, unsigned long len, unsigned char* buf);
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-void flash_write_otp(unsigned long addr, unsigned long len, unsigned char *buf);
+void flash_write_otp_mid1360cd(unsigned long addr, unsigned long len, unsigned char *buf);
 
 /**
  * @brief 		This function serves to erase the data of the Security Registers that you choose.
+ * 				You can erase 512-byte one time.
  * @param[in]   addr	- the address that you want to erase.
+ *						the address of the  Security Registers #1 0x001000-0x0011ff
+ *						the address of the  Security Registers #2 0x002000-0x0021ff
+ *						the address of the  Security Registers #3 0x003000-0x0031ff
  * @return 		none.
- * @Attention	Even you choose the middle area of the Security Registers,it will erase the whole area.
- * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ * @note		Even you choose the middle area of the Security Registers,it will erase the whole area.
+ *
+ *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
  *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
@@ -141,7 +237,26 @@ void flash_write_otp(unsigned long addr, unsigned long len, unsigned char *buf);
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-void flash_erase_otp(unsigned long addr);
+void flash_erase_otp_mid1360cd(mid1360cd_otp_block_e addr);
+
+/**
+ * @brief 		This function serves to provide the write protect control to the Security Registers.
+ * @param[in]   data	- the lock area of the Security Registers.
+ * @return 		none.
+ * @note		once they are set to 1, the Security Registers will become read-only permanently,
+ * 				you can't write or erase the area anymore.
+ *
+ *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ */
+void flash_lock_otp_mid1360cd(mid1360cd_lock_otp_e data);
 
 #endif
 
