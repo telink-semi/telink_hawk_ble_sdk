@@ -106,7 +106,7 @@ enum{
 	FLASH_SECT_ERASE_CMD				=	0x20,
 	FLASH_ERASE_SECURITY_REGISTERS_CMD	=	0x44,
 
-	FLASH_READ_UID_CMD_GD_PUYA_ZB_UT	=	0x4B,	//Flash Type = GD/PUYA/ZB/UT
+	FLASH_READ_UID_CMD_GD_PUYA_ZB_TH	=	0x4B,	//Flash Type = GD/PUYA/ZB/TH
 	FLASH_READ_UID_CMD_XTX				=	0x5A,	//Flash Type = XTX
 
 	FLASH_GET_JEDEC_ID					=	0x9F,
@@ -136,10 +136,9 @@ typedef enum{
  * @brief     flash vendor and technology definition
  */
 typedef enum{
-	FLASH_ETOX_ZB  		= 0x0100325E,	// 325E
+	FLASH_ETOX_ZB  		= 0x0100325E,	// 325E                   bit[24]:ETOX: Byte Program Time != Page Programming Time
 	FLASH_ETOX_GD   	= 0x010060C8,	// 60C8/4051
-	FLASH_SONOS_PUYA  	= 0x02006085,	// 6085
-	FLASH_SONOS_UT  	= 0x020060EB,	// 60EB/60CD
+	FLASH_SST_TH  		= 0x040060CD,	// 60CD		              bit[26]:SST:  Byte Program Time != Page Programming Time
 }flash_vendor_e;
 
 /**

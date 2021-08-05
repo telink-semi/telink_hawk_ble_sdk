@@ -435,7 +435,7 @@ unsigned int flash_read_mid(void)
  */
 void flash_read_uid(unsigned char idcmd, unsigned char *buf)
 {
-	if(idcmd == FLASH_READ_UID_CMD_GD_PUYA_ZB_UT)	//< GD/PUYA/ZB/UT
+	if(idcmd == FLASH_READ_UID_CMD_GD_PUYA_ZB_TH)	//< GD/PUYA/ZB/TH
 	{
 		flash_mspi_read_ram(idcmd, 0x00, 1, 1, buf, 16);
 	}
@@ -468,7 +468,7 @@ int flash_read_mid_uid_with_check(unsigned int *flash_mid, unsigned char *flash_
 
 	for(i=0; i<FLASH_CNT; i++){
 		if(flash_support_mid[i] == *flash_mid){
-			flash_read_uid(FLASH_READ_UID_CMD_GD_PUYA_ZB_UT, (unsigned char *)flash_uid);
+			flash_read_uid(FLASH_READ_UID_CMD_GD_PUYA_ZB_TH, (unsigned char *)flash_uid);
 			break;
 		}
 	}
@@ -504,12 +504,8 @@ unsigned int flash_get_vendor(unsigned int flash_mid)
 		return FLASH_ETOX_GD;
 	case 0x00004051:
 		return FLASH_ETOX_GD;
-	case 0x00006085:
-		return FLASH_SONOS_PUYA;
-	case 0x000060EB:
-		return FLASH_SONOS_UT;
 	case 0x000060CD:
-		return FLASH_SONOS_UT;
+		return FLASH_SST_TH;
 	default:
 		return 0;
 	}
