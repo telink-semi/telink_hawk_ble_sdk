@@ -518,7 +518,7 @@ void sys_mode_chg_proc(void)
 				analog_write(DEEP_ANA_REG1, user_key_mode);
 			#endif
 			sys_status.sys_2p4g_mode_chg_flg = 0;
-			rf_ble_switch_phy(TLK_NORDIC_2M);
+			rf_ble_switch_phy(TLK_PRIVATE_2M);
 
 			user_2p4g_init();
 			analog_write (PM_REG_SYS_MODE, SYS_2P4G_MODE);

@@ -115,7 +115,7 @@ typedef enum {
 typedef enum{
 	RF_MODE_BLE_1M       = BIT(0),
 	RF_MODE_BLE_2M       = BIT(1),
-	RF_MODE_NORDIC_2M    = BIT(5),
+	RF_MODE_PRIVATE_2M    = BIT(5),
 }RF_ModeTypeDef;
 
 typedef enum {
