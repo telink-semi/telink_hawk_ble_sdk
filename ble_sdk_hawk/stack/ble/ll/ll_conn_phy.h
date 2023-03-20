@@ -67,7 +67,7 @@ extern u8 tx_settle_slave[];
 typedef enum{
     BLE_PHY_1M    = BIT(0),
     BLE_PHY_2M    = BIT(1),
-    TLK_NORDIC_2M = BIT(5),
+    TLK_PRIVATE_2M = BIT(5),
 } le_phy_type_t;
 
 typedef enum{
